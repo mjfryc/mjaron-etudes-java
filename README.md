@@ -4,6 +4,16 @@ Common java code.
 
 [![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
 
+## TODO: How to integrate with Gradle
+
+```gradle
+buildscript {
+    repositories {
+        maven {name = "mjfryc"; url = uri("https://maven.pkg.github.com/mjfryc/mjaron-etudes-java")}
+    }
+}
+```
+
 ## Printing object list as a table
 
 ```
