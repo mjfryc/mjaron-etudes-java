@@ -36,6 +36,15 @@ class ObjTest {
         return cat;
     }
 
+    private static Cat otherCat() {
+        final Cat cat = new Cat();
+        cat.name = "Bob";
+        cat.legsCount = 5;
+        cat.setLazy(false);
+        cat.setTopSpeed(75.00);
+        return cat;
+    }
+
     @Test
     void getFieldValues() {
         final Cat cat = sampleCat();
@@ -51,7 +60,7 @@ class ObjTest {
     @Test
     void asTable() {
         final Cat cat = sampleCat();
-        final String table = Obj.asTable(List.of(cat), Cat.class);
+        final String table = Obj.asTable(List.of(cat, otherCat()), Cat.class);
         System.out.println(table);
     }
 

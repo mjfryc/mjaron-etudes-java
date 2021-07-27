@@ -155,7 +155,7 @@ public abstract class Obj {
         // Printing headers separator
         for (final String name : names) {
             ss.append("| ");
-            for (int i = name.length(); i > 0; --i) {
+            for (int i = fieldWidths.get(name); i > 0; --i) {
                 ss.append('-');
             }
             ss.append(' ');
