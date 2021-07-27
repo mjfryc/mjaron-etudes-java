@@ -2,6 +2,8 @@
 
 Common java code.
 
+[![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
+
 ## Printing object list as a table
 
 ```
