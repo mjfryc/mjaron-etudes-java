@@ -22,7 +22,7 @@ plugins {
 }
 
 group 'pl.mjaron'
-version '1.0-SNAPSHOT'
+version '0.0.2'
 
 repositories {
     mavenCentral()
@@ -36,4 +36,9 @@ dependencies {
 
 test {
     useJUnitPlatform()
+
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+        //showStandardStreams = true
+    }
 }
