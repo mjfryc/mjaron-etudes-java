@@ -4,15 +4,16 @@ Common java code.
 
 [![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
 
-## TODO: How to integrate with Gradle
+## How to integrate with Gradle
 
-```gradle
-buildscript {
-    repositories {
-        maven {name = "mjfryc"; url = uri("https://maven.pkg.github.com/mjfryc/mjaron-etudes-java")}
-    }
-}
-```
+* Download latest release
+    * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
+    * To `[gradle's root directory]/libs/`
+    * E.g: `my-project/libs/mjaron-etudes-java-0.0.11.jar`
+* In any Gradle subproject which needs this library, put following content:
+    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.0.11.jar')`
+* Now import package and use it, e.g:
+    * `import pl.mjaron.etudes.Obj;`
 
 ## Printing object list as a table
 
