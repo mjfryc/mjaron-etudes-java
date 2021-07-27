@@ -19,6 +19,7 @@
 
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'pl.mjaron'
@@ -42,3 +43,18 @@ test {
         //showStandardStreams = true
     }
 }
+
+// Source: https://docs.github.com/en/actions/guides/publishing-java-packages-with-gradle
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/mjfryc/mjaron-etudes-java"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
