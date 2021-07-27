@@ -24,7 +24,20 @@ plugins {
 
 def getVersion(){
     def out = new ByteArrayOutputStream();
-    exec {
+
+    def gitTry = exec {
+        executable = 'git'
+        args = ['describe', '--tags', '--abbrev=0']
+        standardOutput = out
+        ignoreExitValue true
+    }
+    if (gitTry.exitValue != 0) {
+        println("Exit value suggests error: [${gitTry.exitValue}], trying to fetch tags.");
+        exec {
+            executable = 'git'
+            args = ['fetch', '--tags']
+            standardOutput = out
+        }
         executable = 'git'
         args = ['describe', '--tags', '--abbrev=0']
         standardOutput = out
