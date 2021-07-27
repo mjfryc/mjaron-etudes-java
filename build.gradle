@@ -22,8 +22,19 @@ plugins {
     id 'maven-publish'
 }
 
+def getVersion(){
+    def out = new ByteArrayOutputStream();
+    exec {
+        executable = 'git'
+        args = ['describe', '--tags', '--abbrev=0']
+        standardOutput = out
+    }
+    return out.toString().replace('\n','')
+}
+
 group 'pl.mjaron'
-version '0.0.2'
+version getVersion()
+println("Project version determined: $version")
 
 repositories {
     mavenCentral()
