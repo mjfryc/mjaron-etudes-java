@@ -31,7 +31,7 @@ def getVersion(){
         e.printStackTrace()
     }
     def procFetch = new ProcessBuilder('git', 'fetch', '--tags')
-    procFetch.start().waitFor()
+    println("Git fetch result: " + new String(procFetch.start().getInputStream().readAllBytes()))
     def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0')
     return new String(procDescribe.start().getInputStream().readAllBytes()).replace('\n','')
 }
