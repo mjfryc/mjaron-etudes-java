@@ -22,32 +22,33 @@ plugins {
     id 'maven-publish'
 }
 
-/// @return Last tag or null
-def getLastTag() {
-    def procAllTags = new ProcessBuilder('git', 'tag').start()
-    def allTags = new String(procAllTags.getInputStream().readAllBytes())
-
-    def allTagsByLine = allTags.split('\n')
-    for (int i = allTagsByLine.size() -1; i >= 0; --i) {
-        def iLine = allTagsByLine[i] as String
-        def iTrimmedLine = iLine.trim()
-        if (!iTrimmedLine.isEmpty()) {
-            return iTrimmedLine;
-        }
-    }
-    return null
-}
-
-def gitFetchTags() {
-    def procFetchRun = new ProcessBuilder('git', 'fetch', '--tags').start()
-
-    if (procFetchRun.waitFor() != 0) {
-        throw new RuntimeException("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
-    }
-    println("Git fetch has finished with 0. Process output: " + new String(procFetchRun.getInputStream().readAllBytes()))
-}
-
 def getVersion() {
+    /// @return Last tag or null
+    def getLastTag = {
+        def procAllTags = new ProcessBuilder('git', 'tag', '--sort=creatordate').start()
+        def allTags = new String(procAllTags.getInputStream().readAllBytes())
+
+        def allTagsByLine = allTags.split('\n')
+        for (int i = allTagsByLine.size() -1; i >= 0; --i) {
+            def iLine = allTagsByLine[i] as String
+            def iTrimmedLine = iLine.trim()
+            if (!iTrimmedLine.isEmpty()) {
+                return iTrimmedLine;
+            }
+        }
+        return null
+    }
+
+    /// Fetches tags from origin
+    def gitFetchTags = {
+        def procFetchRun = new ProcessBuilder('git', 'fetch', '--tags').start()
+
+        if (procFetchRun.waitFor() != 0) {
+            throw new RuntimeException("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
+        }
+        println("Git fetch has finished with 0. Process output: " + new String(procFetchRun.getInputStream().readAllBytes()))
+    }
+
     def lastTagA = getLastTag()
     if (lastTagA != null) {
         return lastTagA
