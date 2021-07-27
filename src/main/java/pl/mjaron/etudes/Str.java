@@ -54,4 +54,29 @@ public abstract class Str {
     public static String capitalize(final String what) {
         return capitalize(what, Locale.ROOT);
     }
+
+    /**
+     * Add fill string with given character from left side.
+     */
+    public static void padLeft(final String what, final char ch, final int size, final StringBuilder out) {
+        int missing = size - what.length();
+        while(missing > 0) {
+            out.append(ch);
+            --missing;
+        }
+        out.append(what);
+    }
+
+    /**
+     * Add fill string with given character from right side.
+     */
+    public static void padRight(final String what, final char ch, final int size, final StringBuilder out) {
+        out.append(what);
+
+        int missing = size - what.length();
+        while(missing > 0) {
+            out.append(ch);
+            --missing;
+        }
+    }
 }

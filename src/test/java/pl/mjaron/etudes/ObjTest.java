@@ -21,19 +21,24 @@ package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ObjTest {
 
-    @Test
-    void getFieldValues() {
-
+    private static Cat sampleCat() {
         final Cat cat = new Cat();
         cat.name = "John";
         cat.legsCount = 4;
         cat.setLazy(true);
         cat.setTopSpeed(35.24);
+        return cat;
+    }
 
+    @Test
+    void getFieldValues() {
+        final Cat cat = sampleCat();
         var values = Obj.getFieldValues(cat);
         System.out.println(values);
 
@@ -41,6 +46,13 @@ class ObjTest {
         assertEquals(4, values.get("legsCount"));
         assertEquals(true, values.get("lazy"));
         assertEquals(35.24, values.get("topSpeed"));
+    }
+
+    @Test
+    void asTable() {
+        final Cat cat = sampleCat();
+        final String table = Obj.asTable(List.of(cat), Cat.class);
+        System.out.println(table);
     }
 
     @SuppressWarnings("unused")
