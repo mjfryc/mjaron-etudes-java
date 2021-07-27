@@ -16,7 +16,9 @@ Common java code.
 * Now import package and use it, e.g:
     * `import pl.mjaron.etudes.Obj;`
 
-## Printing object list as a Markdown table
+## Object utils
+
+### Printing object list as a Markdown table
 
 ```
 | name | legsCount |  lazy | topSpeed |
@@ -31,7 +33,7 @@ final String table = Obj.asTable(List.of(cat, otherCat()), Cat.class);
 System.out.println(table);
 ```
 
-## Getting object values
+### Getting object values
 
 ```
 {topSpeed=35.24, legsCount=4, lazy=true, name=John}
@@ -41,4 +43,48 @@ System.out.println(table);
 final Cat cat = sampleCat();
 var values = Obj.getFieldValues(cat);
 System.out.println(values);
+```
+## Array utils
+
+### Joining arrays, adding elements
+
+```java
+int[] a = new int[]{1, 2, 3};
+int[] b = new int[]{6, 7, 5};
+int[] c = Arr.add(a, b);
+assertArrayEquals(c, new int[]{1, 2, 3, 6, 7, 5});
+```
+
+## Pair implementation
+
+```java
+Pair<Integer, String> pair = new Pair<>(5, "C");
+assertEquals(5, pair.getKey());
+assertEquals("C", pair.getValue());
+```
+
+## Resource (file) path utils
+
+### Get extension(without a dot)
+
+```java
+assertEquals("txt", Path.extension("/my/path/to/file.txt"));
+assertEquals("", Path.extension("/my/path/to/file"));
+assertEquals("", Path.extension("/my/path/to/file."));
+```
+
+## String utils
+
+```java
+assertEquals(2, Str.charsCount("commit", 'm'));
+assertEquals("String", Str.capitalize("string"));
+assertEquals("  3", Str.padLeft("3", 3));
+assertEquals("3  ", Str.padRight("3", 3));
+```
+## Time utils
+
+```java
+Timer t = new Timer();
+doLongOperation();
+System.out.println("Passed time: " + t.getMillis() + " milliseconds.");
 ```
