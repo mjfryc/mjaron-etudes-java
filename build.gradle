@@ -22,6 +22,8 @@ plugins {
     id 'maven-publish'
 }
 
+// Not used because when used as a gradle source repository points to wrong git version.
+@Deprecated
 def getVersion() {
     /// @return Last tag or null
     def getLastTag = {
@@ -63,7 +65,7 @@ def getVersion() {
 }
 
 group 'pl.mjaron'
-version getVersion()
+version "0.0.10"
 println("Project version determined: $version")
 
 java {
