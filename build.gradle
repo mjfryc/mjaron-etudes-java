@@ -23,33 +23,37 @@ plugins {
 }
 
 def getVersion() {
-    try {
-        def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0')
-        def procDescribeRun = procDescribe.start()
-        if (procDescribeRun.waitFor() != 0) {
-            throw new RuntimeException("Git describe has failed with: [" + procDescribeRun.exitValue() + "], error stream: " + new String(procDescribeRun.getErrorStream().readAllBytes()))
+    if (false) {
+        try {
+            def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0')
+            def procDescribeRun = procDescribe.start()
+            if (procDescribeRun.waitFor() != 0) {
+                throw new RuntimeException("Git describe has failed with: [" + procDescribeRun.exitValue() + "], error stream: " + new String(procDescribeRun.getErrorStream().readAllBytes()))
+            }
+            return new String(procDescribeRun.getInputStream().readAllBytes()).replace('\n', '')
+        } catch (Exception e) {
+            println("git describe has failed. Let's try to fetch tags. Error description: " + e.message)
         }
-        return new String(procDescribeRun.getInputStream().readAllBytes()).replace('\n', '')
-    } catch (Exception e) {
-        println("git describe has failed. Let's try to fetch tags. Error description: " + e.message)
+        def procFetchBuilder = new ProcessBuilder('git', 'fetch', '--tags')
+        def procFetchRun = procFetchBuilder.start()
+        if (procFetchRun.waitFor() != 0) {
+            println("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
+        }
+        println("Git fetch result: " + new String(procFetchRun.getInputStream().readAllBytes()))
     }
-    def procFetchBuilder = new ProcessBuilder('git', 'fetch', '--tags')
-    def procFetchRun = procFetchBuilder.start()
-    if (procFetchRun.waitFor() != 0) {
-        println("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
-    }
-    println("Git fetch result: " + new String(procFetchRun.getInputStream().readAllBytes()))
 
     def procAllTags = new ProcessBuilder('git', 'tag').start()
-    println("All tags: " + new String(procAllTags.getInputStream().readAllBytes()))
+    def allTags = new String(procAllTags.getInputStream().readAllBytes())
 
-    def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0').start()
-    if (procDescribe.waitFor() != 0) {
-        throw new RuntimeException("Git describe failed with [${procDescribe.exitValue()}] even after fetching tags. Error stream: " + new String(procDescribe.getInputStream().readAllBytes()))
+    def allTagsByLine = allTags.split('\n')
+    for (int i = allTagsByLine.size() -1; i >= 0; --i) {
+        def iLine = allTagsByLine[i] as String
+        def iTrimmedLine = iLine.trim()
+        if (!iTrimmedLine.isEmpty()) {
+            return iTrimmedLine;
+        }
     }
-    def procDescribeOutput = new String(procDescribe.getInputStream().readAllBytes())
-    println("Git describe after fetching tags: " + procDescribeOutput)
-    return procDescribeOutput.replace('\n', '')
+    throw new RuntimeException("Failed to read last tag. Git tag returned only empty lines? All tags: " + allTags)
 }
 
 group 'pl.mjaron'
