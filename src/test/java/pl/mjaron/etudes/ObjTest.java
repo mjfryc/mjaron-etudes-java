@@ -19,39 +19,55 @@
 
 package pl.mjaron.etudes;
 
-import java.util.Locale;
+import org.junit.jupiter.api.Test;
 
-/**
- * String utilities class.
- */
-public abstract class Str {
-    /**
-     * @param what String where looking for char occurrences.
-     * @param ch   Searched character.
-     * @return Count of character ch in string what.
-     */
-    public static int charsCount(final String what, final char ch) {
-        int count = 0;
-        final int len = what.length();
-        for (int i = 0; i < len; ++i) {
-            if (what.charAt(i) == ch) {
-                ++count;
-            }
-        }
-        return count;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ObjTest {
+
+    @Test
+    void getFieldValues() {
+
+        final Cat cat = new Cat();
+        cat.name = "John";
+        cat.legsCount = 4;
+        cat.setLazy(true);
+        cat.setTopSpeed(35.24);
+
+        var values = Obj.getFieldValues(cat);
+        System.out.println(values);
+
+        assertEquals("John", values.get("name"));
+        assertEquals(4, values.get("legsCount"));
+        assertEquals(true, values.get("lazy"));
+        assertEquals(35.24, values.get("topSpeed"));
     }
 
-    public static String capitalize(final String what, final java.util.Locale locale) {
-        if (what == null || what.isEmpty()) {
-            return what;
-        }
-        if (!Character.isLowerCase(what.charAt(0))) {
-            return what;
-        }
-        return what.substring(0, 1).toUpperCase(locale) + what.substring(1);
-    }
+    @SuppressWarnings("unused")
+    static class Cat {
 
-    public static String capitalize(final String what) {
-        return capitalize(what, Locale.ROOT);
+        public String name;
+
+        public int legsCount = 0;
+
+        public boolean lazy = true;
+
+        private double topSpeed = 0;
+
+        public double getTopSpeed() {
+            return topSpeed;
+        }
+
+        public void setTopSpeed(double topSpeed) {
+            this.topSpeed = topSpeed;
+        }
+
+        public boolean isLazy() {
+            return lazy;
+        }
+
+        public void setLazy(boolean lazy) {
+            this.lazy = lazy;
+        }
     }
 }
