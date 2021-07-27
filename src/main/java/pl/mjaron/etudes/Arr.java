@@ -34,9 +34,109 @@ public abstract class Arr {
 
     public static <T> T[] add(final T[] array, final T[] other) {
         T[] newArray = Arrays.copyOf(array, array.length + other.length);
-        for (int i = 0; i < other.length; ++i) {
-            newArray[array.length + i] = other[i];
-        }
+        System.arraycopy(other, 0, newArray, array.length, other.length);
+        return newArray;
+    }
+
+
+    public static byte[] add(byte[] array, final byte what) {
+        byte[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = what;
+        return newArray;
+    }
+
+    public static byte[] add(final byte[] array, final byte[] other) {
+        byte[] newArray = Arrays.copyOf(array, array.length + other.length);
+        System.arraycopy(other, 0, newArray, array.length, other.length);
+        return newArray;
+    }
+
+
+    public static char[] add(char[] array, final char what) {
+        char[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = what;
+        return newArray;
+    }
+
+    public static char[] add(final char[] array, final char[] other) {
+        char[] newArray = Arrays.copyOf(array, array.length + other.length);
+        System.arraycopy(other, 0, newArray, array.length, other.length);
+        return newArray;
+    }
+
+
+    public static short[] add(short[] array, final short what) {
+        short[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = what;
+        return newArray;
+    }
+
+    public static short[] add(final short[] array, final short[] other) {
+        short[] newArray = Arrays.copyOf(array, array.length + other.length);
+        System.arraycopy(other, 0, newArray, array.length, other.length);
+        return newArray;
+    }
+
+    public static int[] add(int[] array, final int what) {
+        int[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = what;
+        return newArray;
+    }
+
+    public static int[] add(final int[] array, final int[] other) {
+        int[] newArray = Arrays.copyOf(array, array.length + other.length);
+        System.arraycopy(other, 0, newArray, array.length, other.length);
+        return newArray;
+    }
+
+    public static long[] add(long[] array, final long what) {
+        long[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = what;
+        return newArray;
+    }
+
+    public static long[] add(final long[] array, final long[] other) {
+        long[] newArray = Arrays.copyOf(array, array.length + other.length);
+        System.arraycopy(other, 0, newArray, array.length, other.length);
+        return newArray;
+    }
+
+
+    public static float[] add(float[] array, final float what) {
+        float[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = what;
+        return newArray;
+    }
+
+    public static float[] add(final float[] array, final float[] other) {
+        float[] newArray = Arrays.copyOf(array, array.length + other.length);
+        System.arraycopy(other, 0, newArray, array.length, other.length);
+        return newArray;
+    }
+
+
+    public static double[] add(double[] array, final double what) {
+        double[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = what;
+        return newArray;
+    }
+
+    public static double[] add(final double[] array, final double[] other) {
+        double[] newArray = Arrays.copyOf(array, array.length + other.length);
+        System.arraycopy(other, 0, newArray, array.length, other.length);
+        return newArray;
+    }
+
+
+    public static boolean[] add(boolean[] array, final boolean what) {
+        boolean[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = what;
+        return newArray;
+    }
+
+    public static boolean[] add(final boolean[] array, final boolean[] other) {
+        boolean[] newArray = Arrays.copyOf(array, array.length + other.length);
+        System.arraycopy(other, 0, newArray, array.length, other.length);
         return newArray;
     }
 }

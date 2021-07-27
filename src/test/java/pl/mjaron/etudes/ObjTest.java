@@ -62,6 +62,7 @@ class ObjTest {
     @Test
     void asTable() {
         final Cat cat = sampleCat();
+        List<Cat> cats = Arrays.asList(cat, otherCat());
         final String table = Obj.asTable(Arrays.asList(cat, otherCat()), Cat.class);
         System.out.println(table);
     }

@@ -58,7 +58,7 @@ public abstract class Str {
     /**
      * Add fill string with given character from left side.
      */
-    public static void padLeft(final String what, final char ch, final int size, final StringBuilder out) {
+    public static void padLeft(final String what, final int size, final char ch, final StringBuilder out) {
         int missing = size - what.length();
         while(missing > 0) {
             out.append(ch);
@@ -67,16 +67,35 @@ public abstract class Str {
         out.append(what);
     }
 
+    public static String padLeft(final String what, final int size, final char ch) {
+        final StringBuilder out = new StringBuilder();
+        padLeft(what, size, ch, out);
+        return out.toString();
+    }
+
+    public static String padLeft(final String what, final int size) {
+        return padLeft(what, size, ' ');
+    }
+
     /**
      * Add fill string with given character from right side.
      */
-    public static void padRight(final String what, final char ch, final int size, final StringBuilder out) {
+    public static void padRight(final String what, final int size, final char ch, final StringBuilder out) {
         out.append(what);
-
         int missing = size - what.length();
         while(missing > 0) {
             out.append(ch);
             --missing;
         }
+    }
+
+    public static String padRight(final String what, final int size, final char ch) {
+        final StringBuilder out = new StringBuilder();
+        padRight(what, size, ch, out);
+        return out.toString();
+    }
+
+    public static String padRight(final String what, final int size) {
+        return padRight(what, size, ' ');
     }
 }

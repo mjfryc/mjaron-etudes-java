@@ -146,7 +146,7 @@ public abstract class Obj {
         // Printing headers
         for (final String name : names) {
             ss.append("| ");
-            Str.padLeft(name, ' ', fieldWidths.get(name), ss);
+            Str.padLeft(name, fieldWidths.get(name), ' ', ss);
             ss.append(' ');
         }
         ss.append('|');
@@ -169,7 +169,7 @@ public abstract class Obj {
             for (final String name : names) {
                 final String value = fields.get(name);
                 ss.append("| ");
-                Str.padLeft(value, ' ', fieldWidths.get(name), ss);
+                Str.padLeft(value, fieldWidths.get(name), ' ', ss);
                 ss.append(' ');
             }
             ss.append('|');
