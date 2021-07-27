@@ -22,26 +22,8 @@ plugins {
     id 'maven-publish'
 }
 
-def getVersion() {
-    if (false) {
-        try {
-            def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0')
-            def procDescribeRun = procDescribe.start()
-            if (procDescribeRun.waitFor() != 0) {
-                throw new RuntimeException("Git describe has failed with: [" + procDescribeRun.exitValue() + "], error stream: " + new String(procDescribeRun.getErrorStream().readAllBytes()))
-            }
-            return new String(procDescribeRun.getInputStream().readAllBytes()).replace('\n', '')
-        } catch (Exception e) {
-            println("git describe has failed. Let's try to fetch tags. Error description: " + e.message)
-        }
-        def procFetchBuilder = new ProcessBuilder('git', 'fetch', '--tags')
-        def procFetchRun = procFetchBuilder.start()
-        if (procFetchRun.waitFor() != 0) {
-            println("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
-        }
-        println("Git fetch result: " + new String(procFetchRun.getInputStream().readAllBytes()))
-    }
-
+/// @return Last tag or null
+def getLastTag() {
     def procAllTags = new ProcessBuilder('git', 'tag').start()
     def allTags = new String(procAllTags.getInputStream().readAllBytes())
 
@@ -53,7 +35,30 @@ def getVersion() {
             return iTrimmedLine;
         }
     }
-    throw new RuntimeException("Failed to read last tag. Git tag returned only empty lines? All tags: " + allTags)
+    return null
+}
+
+def gitFetchTags() {
+    def procFetchRun = new ProcessBuilder('git', 'fetch', '--tags').start()
+
+    if (procFetchRun.waitFor() != 0) {
+        throw new RuntimeException("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
+    }
+    println("Git fetch has finished with 0. Process output: " + new String(procFetchRun.getInputStream().readAllBytes()))
+}
+
+def getVersion() {
+    def lastTagA = getLastTag()
+    if (lastTagA != null) {
+        return lastTagA
+    }
+    println("No tags found. Trying to fetch tags.")
+    gitFetchTags()
+    def lastTagB = getLastTag()
+    if (lastTagB != null) {
+        return lastTagB
+    }
+    throw new RuntimeException("Failed to read last tag, even after fetching tags.")
 }
 
 group 'pl.mjaron'
