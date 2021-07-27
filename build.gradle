@@ -46,7 +46,7 @@ def getVersion() {
         if (procFetchRun.waitFor() != 0) {
             throw new RuntimeException("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
         }
-        println("Git fetch has finished with 0. Process output: " + new String(procFetchRun.getInputStream().readAllBytes()))
+        println("Git fetch has finished with 0.")
     }
 
     def lastTagA = getLastTag()
