@@ -25,13 +25,17 @@ plugins {
 def getVersion(){
     try {
         def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0')
-        return new String(procDescribe.start().getInputStream().readAllBytes()).replace('\n','')
+        def procDescribeRun = procDescribe.start()
+        if (procDescribeRun.waitFor() != 0) {
+            throw new RuntimeException("Git describe has failed with: [" + procDescribeRun.exitValue() + "], error stream: " + new String(procDescribeRun.getErrorStream().readAllBytes()))
+        }
+        return new String(procDescribeRun.getInputStream().readAllBytes()).replace('\n','')
     } catch (Exception e) {
-        println("git describe has failed. Let's try to fetch tags...")
-        e.printStackTrace()
+        println("git describe has failed. Let's try to fetch tags. Error description: " + e.message)
     }
-    def procFetch = new ProcessBuilder('git', 'fetch', '--tags')
-    println("Git fetch result: " + new String(procFetch.start().getInputStream().readAllBytes()))
+    def procFetchBuilder = new ProcessBuilder('git', 'fetch', '--tags')
+    def procFetchRun = procFetchBuilder.start()
+    println("Git fetch result: " + new String(procFetchRun.getInputStream().readAllBytes()))
     def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0')
     return new String(procDescribe.start().getInputStream().readAllBytes()).replace('\n','')
 }
