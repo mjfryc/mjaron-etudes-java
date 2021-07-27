@@ -35,6 +35,9 @@ def getVersion(){
     }
     def procFetchBuilder = new ProcessBuilder('git', 'fetch', '--tags')
     def procFetchRun = procFetchBuilder.start()
+    if (procFetchRun.waitFor() != 0) {
+        println("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
+    }
     println("Git fetch result: " + new String(procFetchRun.getInputStream().readAllBytes()))
     def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0')
     return new String(procDescribe.start().getInputStream().readAllBytes()).replace('\n','')
