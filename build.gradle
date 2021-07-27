@@ -24,7 +24,7 @@ plugins {
 
 // Not used because when used as a gradle source repository points to wrong git version.
 @Deprecated
-def getVersion() {
+def detectVersionTag() {
     /// @return Last tag or null
     def getLastTag = {
         def procAllTags = new ProcessBuilder('git', 'tag', '--sort=creatordate').start()
@@ -65,7 +65,7 @@ def getVersion() {
 }
 
 group 'pl.mjaron'
-version "0.0.10"
+version "0.0.11"
 println("Project version determined: $version")
 
 java {

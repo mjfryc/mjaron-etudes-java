@@ -56,41 +56,41 @@ public abstract class Obj {
 
         final Field[] fields = clazz.getDeclaredFields();
         for (final Field field : fields) {
-            if (field.canAccess(what)) {
-                try {
-                    final Object fieldValue = field.get(what);
-                    map.put(field.getName(), fieldValue);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
-                            "], of type: [" + field.getType() + "]: Getting field value has failed.");
-                }
-            } else {
-                final String fieldNameCapitalized = Str.capitalize(field.getName());
-                Method getter;
-                try {
-                    getter = clazz.getMethod("get" + fieldNameCapitalized);
-                } catch (final NoSuchMethodException e1) {
-                    if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
-                        try {
-                            getter = clazz.getMethod("is" + fieldNameCapitalized);
-                        } catch (final NoSuchMethodException e2) {
-                            throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
-                                    "], of type: [" + field.getType() + "]: Field is not public and there is no get"
-                                    + fieldNameCapitalized + "() + nor is" + fieldNameCapitalized + "() method accessible.", e2);
-                        }
-                    } else {
+            try {
+                final Object fieldValue = field.get(what);
+                map.put(field.getName(), fieldValue);
+                continue;
+            } catch (IllegalAccessException e) {
+//                throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
+//                        "], of type: [" + field.getType() + "]: Getting field value has failed.");
+            }
+
+            // Failed to get field value. Trying to obtain getter method.
+            final String fieldNameCapitalized = Str.capitalize(field.getName());
+            Method getter;
+            try {
+                getter = clazz.getMethod("get" + fieldNameCapitalized);
+            } catch (final NoSuchMethodException e1) {
+                if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
+                    try {
+                        getter = clazz.getMethod("is" + fieldNameCapitalized);
+                    } catch (final NoSuchMethodException e2) {
                         throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
                                 "], of type: [" + field.getType() + "]: Field is not public and there is no get"
-                                + fieldNameCapitalized + "() method accessible.", e1);
+                                + fieldNameCapitalized + "() + nor is" + fieldNameCapitalized + "() method accessible.", e2);
                     }
-                }
-                try {
-                    final Object getterResult = getter.invoke(what);
-                    map.put(field.getName(), getterResult);
-                } catch (IllegalAccessException | InvocationTargetException e) {
+                } else {
                     throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
-                            "], of type: [" + field.getType() + "]: invocation of getter has failed.", e);
+                            "], of type: [" + field.getType() + "]: Field is not public and there is no get"
+                            + fieldNameCapitalized + "() method accessible.", e1);
                 }
+            }
+            try {
+                final Object getterResult = getter.invoke(what);
+                map.put(field.getName(), getterResult);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
+                        "], of type: [" + field.getType() + "]: invocation of getter has failed.", e);
             }
         }
         return map;
@@ -99,7 +99,7 @@ public abstract class Obj {
     public static <T> Map<String, String> getFieldValuesAsStrings(final T what) {
         final Map<String, Object> fieldObjects = getFieldValues(what);
         final Map<String, String> fieldStrings = new HashMap<>();
-        for (final var entry : fieldObjects.entrySet()) {
+        for (final Map.Entry<String, Object> entry : fieldObjects.entrySet()) {
             fieldStrings.put(entry.getKey(), entry.getValue().toString());
         }
         return fieldStrings;
@@ -127,7 +127,7 @@ public abstract class Obj {
         final Map<String, Integer> fieldWidths = new HashMap<>();
         for (final T tEntry : iterable) {
             final Map<String, String> fields = getFieldValuesAsStrings(tEntry);
-            for (final var fieldKeyValue : fields.entrySet()) {
+            for (final Map.Entry<String, String> fieldKeyValue : fields.entrySet()) {
                 final int oldEntryWidth = fieldWidths.getOrDefault(fieldKeyValue.getKey(), 0);
                 final int newEntryWidth = Integer.max(oldEntryWidth, fieldKeyValue.getValue().length());
                 fieldWidths.put(fieldKeyValue.getKey(), newEntryWidth);

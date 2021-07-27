@@ -21,7 +21,9 @@ package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -48,7 +50,7 @@ class ObjTest {
     @Test
     void getFieldValues() {
         final Cat cat = sampleCat();
-        var values = Obj.getFieldValues(cat);
+        final Map<String, Object> values = Obj.getFieldValues(cat);
         System.out.println(values);
 
         assertEquals("John", values.get("name"));
@@ -60,7 +62,7 @@ class ObjTest {
     @Test
     void asTable() {
         final Cat cat = sampleCat();
-        final String table = Obj.asTable(List.of(cat, otherCat()), Cat.class);
+        final String table = Obj.asTable(Arrays.asList(cat, otherCat()), Cat.class);
         System.out.println(table);
     }
 
