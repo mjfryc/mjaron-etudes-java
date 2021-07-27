@@ -16,7 +16,7 @@ Common java code.
 * Now import package and use it, e.g:
     * `import pl.mjaron.etudes.Obj;`
 
-## Printing object list as a table
+## Printing object list as a Markdown table
 
 ```
 | name | legsCount |  lazy | topSpeed |
