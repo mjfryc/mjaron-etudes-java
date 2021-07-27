@@ -43,8 +43,13 @@ def getVersion() {
     def procAllTags = new ProcessBuilder('git', 'tag').start()
     println("All tags: " + new String(procAllTags.getInputStream().readAllBytes()))
 
-    def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0')
-    return new String(procDescribe.start().getInputStream().readAllBytes()).replace('\n', '')
+    def procDescribe = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0').start()
+    if (procDescribe.waitFor() != 0) {
+        throw new RuntimeException("Git describe failed with [${procDescribe.exitValue()}] even after fetching tags. Error stream: " + new String(procDescribe.getInputStream().readAllBytes()))
+    }
+    def procDescribeOutput = new String(procDescribe.getInputStream().readAllBytes())
+    println("Git describe after fetching tags: " + procDescribeOutput)
+    return procDescribeOutput.replace('\n', '')
 }
 
 group 'pl.mjaron'
