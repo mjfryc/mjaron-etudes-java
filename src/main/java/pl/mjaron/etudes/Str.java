@@ -98,4 +98,10 @@ public abstract class Str {
     public static String padRight(final String what, final int size) {
         return padRight(what, size, ' ');
     }
+
+    public static void pad(final StringBuilder out, int size, final char ch) {
+        for (;size > 0; --size) {
+            out.append(ch);
+        }
+    }
 }

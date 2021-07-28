@@ -19,21 +19,23 @@
 
 package pl.mjaron.etudes;
 
+import pl.mjaron.etudes.flat.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Common object code.
  */
 public abstract class Obj {
 
-    public static <T> List<String> getFieldNames(final Class<T> clazz) {
-        final Field[] fields = clazz.getDeclaredFields();
+    public static <T> Field[] getFields(final Class<T> tClass) {
+        return tClass.getDeclaredFields();
+    }
+
+    public static <T> List<String> getFieldNames(final Class<T> tClass, final Field[] fields) {
         List<String> names = new ArrayList<>(fields.length);
         for (final Field entry : fields) {
             names.add(entry.getName());
@@ -41,24 +43,31 @@ public abstract class Obj {
         return names;
     }
 
+    public static <T> List<String> getFieldNames(final Class<T> tClass) {
+        final Field[] fields = getFields(tClass);
+        return getFieldNames(tClass, fields);
+    }
+
     /**
-     * Provides map with fields and its values.
-     *
-     * @param what Analyzed object.
-     * @param <T>  Type of object.
-     * @return Map of field names related with field values.
+     * Abstract visitor of any types of field values.
      */
-    public static <T> Map<String, Object> getFieldValues(final T what) {
+    public interface IFieldVisitor {
+        void visit(final String name, final Object value);
+    }
 
-        Map<String, Object> map = new HashMap<>();
-
-        @SuppressWarnings("unchecked") final Class<T> clazz = (Class<T>) what.getClass();
-
-        final Field[] fields = clazz.getDeclaredFields();
+    /**
+     * Allows to visit all values of Java Bean object.
+     * @param what Object reference.
+     * @param tClass Class of object.
+     * @param fields Fields of object class.
+     * @param visitor visitor instance.
+     * @param <T> Type of object.
+     */
+    public static <T> void visitFieldValues(final T what, final Class<T> tClass, final Field[] fields, final IFieldVisitor visitor) {
         for (final Field field : fields) {
             try {
                 final Object fieldValue = field.get(what);
-                map.put(field.getName(), fieldValue);
+                visitor.visit(field.getName(), fieldValue);
                 continue;
             } catch (IllegalAccessException e) {
 //                throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
@@ -69,11 +78,11 @@ public abstract class Obj {
             final String fieldNameCapitalized = Str.capitalize(field.getName());
             Method getter;
             try {
-                getter = clazz.getMethod("get" + fieldNameCapitalized);
+                getter = tClass.getMethod("get" + fieldNameCapitalized);
             } catch (final NoSuchMethodException e1) {
                 if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
                     try {
-                        getter = clazz.getMethod("is" + fieldNameCapitalized);
+                        getter = tClass.getMethod("is" + fieldNameCapitalized);
                     } catch (final NoSuchMethodException e2) {
                         throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
                                 "], of type: [" + field.getType() + "]: Field is not public and there is no get"
@@ -87,12 +96,33 @@ public abstract class Obj {
             }
             try {
                 final Object getterResult = getter.invoke(what);
-                map.put(field.getName(), getterResult);
+                visitor.visit(field.getName(), getterResult);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
                         "], of type: [" + field.getType() + "]: invocation of getter has failed.", e);
             }
         }
+    }
+
+    /**
+     * Provides map with fields and its values.
+     *
+     * @param what Analyzed object.
+     * @param <T>  Type of object.
+     * @return Map of field names related with field values.
+     */
+    public static <T> Map<String, Object> getFieldValues(final T what) {
+
+        Map<String, Object> map = new HashMap<>();
+        @SuppressWarnings("unchecked") final Class<T> clazz = (Class<T>) what.getClass();
+        final Field[] fields = clazz.getDeclaredFields();
+
+        visitFieldValues(what, clazz, fields, new IFieldVisitor() {
+            @Override
+            public void visit(String name, Object value) {
+                map.put(name, value);
+            }
+        });
         return map;
     }
 
@@ -115,67 +145,17 @@ public abstract class Obj {
      * </pre>
      *
      * @param iterable
-     * @param clazz
+     * @param tClass
      * @param <T>
-     * @return
+     * @return Markdown table.
      */
-    public static <T> String asTable(final Iterable<T> iterable, final Class<T> clazz) {
-        // List of field names.
-        final List<String> names = getFieldNames(clazz);
+    public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
+        final BeanTableSource<T> source = new BeanTableSource<>(iterable, tClass);
+        return asTable(source, new MarkdownTableWriter(TableColumnsWidthComputer.compute(source)));
+    }
 
-        // Max widths of field values.
-        final Map<String, Integer> fieldWidths = new HashMap<>();
-        for (final T tEntry : iterable) {
-            final Map<String, String> fields = getFieldValuesAsStrings(tEntry);
-            for (final Map.Entry<String, String> fieldKeyValue : fields.entrySet()) {
-                final int oldEntryWidth = fieldWidths.getOrDefault(fieldKeyValue.getKey(), 0);
-                final int newEntryWidth = Integer.max(oldEntryWidth, fieldKeyValue.getValue().length());
-                fieldWidths.put(fieldKeyValue.getKey(), newEntryWidth);
-            }
-        }
-        // Appending max widths of headers.
-        for (final String name : names) {
-            final int oldEntryWidth = fieldWidths.getOrDefault(name, 0);
-            final int newEntryWidth = Integer.max(oldEntryWidth, name.length());
-            fieldWidths.put(name, newEntryWidth);
-        }
-
-        // Time to start printing table.
-        final StringBuilder ss = new StringBuilder();
-
-        // Printing headers
-        for (final String name : names) {
-            ss.append("| ");
-            Str.padLeft(name, fieldWidths.get(name), ' ', ss);
-            ss.append(' ');
-        }
-        ss.append('|');
-        ss.append('\n');
-
-        // Printing headers separator
-        for (final String name : names) {
-            ss.append("| ");
-            for (int i = fieldWidths.get(name); i > 0; --i) {
-                ss.append('-');
-            }
-            ss.append(' ');
-        }
-        ss.append('|');
-        ss.append('\n');
-
-        // Printing values
-        for (final T tEntry : iterable) {
-            final Map<String, String> fields = getFieldValuesAsStrings(tEntry);
-            for (final String name : names) {
-                final String value = fields.get(name);
-                ss.append("| ");
-                Str.padLeft(value, fieldWidths.get(name), ' ', ss);
-                ss.append(' ');
-            }
-            ss.append('|');
-            ss.append('\n');
-        }
-
-        return ss.toString();
+    public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
+        source.readTo(writer);
+        return writer.getTable();
     }
 }

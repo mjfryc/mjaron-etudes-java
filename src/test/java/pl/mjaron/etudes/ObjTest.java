@@ -20,6 +20,7 @@
 package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
+import pl.mjaron.etudes.flat.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +66,11 @@ class ObjTest {
         List<Cat> cats = Arrays.asList(cat, otherCat());
         final String table = Obj.asTable(Arrays.asList(cat, otherCat()), Cat.class);
         System.out.println(table);
+
+        final int[][] arr = {{0, 1, 2}, {3, 499, 5}, {6, 7, 8}};
+        final ITableSource source = new ListTableSource<String>(StringSeriesArray.from(arr));
+        final String arrTable = Obj.asTable(source , new BlankTableWriter(TableColumnsWidthComputer.compute(source)));
+        System.out.println("Numbers array:\n" + arrTable);
     }
 
     @SuppressWarnings("unused")
