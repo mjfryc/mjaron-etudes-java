@@ -5,6 +5,9 @@ Common java code.
 [![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
 [![Publish package to GitHub Packages](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml)
 
+![Etudes](other/Etudes.png)
+_Pianists practice etudes, programmers also!_
+
 ## How to integrate with Gradle
 
 * Download latest release
