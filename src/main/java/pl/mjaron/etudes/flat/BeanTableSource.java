@@ -20,6 +20,7 @@
 package pl.mjaron.etudes.flat;
 
 import pl.mjaron.etudes.Obj;
+import pl.mjaron.etudes.Str;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -43,11 +44,6 @@ public class BeanTableSource<BeanT> implements ITableSource {
         this.values = values;
         this.tFields = Obj.getFields(this.tClass);
         this.headers = Obj.getFieldNames(this.tClass, tFields);
-    }
-
-    @Override
-    public boolean hasHeaders() {
-        return true;
     }
 
     @Override
@@ -89,7 +85,7 @@ public class BeanTableSource<BeanT> implements ITableSource {
             Obj.visitFieldValues(bean, this.tClass, this.tFields, new Obj.IFieldVisitor() {
                 @Override
                 public void visit(final String name, final Object value) {
-                    stringSeries.add(value.toString());
+                    stringSeries.add(Str.orEmpty(value));
                 }
             });
             return stringSeries;

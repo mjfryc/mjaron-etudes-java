@@ -22,7 +22,7 @@ package pl.mjaron.etudes.flat;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class StringSeriesArray {
+public abstract class StringSeriesList {
 
     public static <T> List<List<String>> from(final List<List<T>> rows) {
         final List<List<String>> stringTable = new ArrayList<>(rows.size());

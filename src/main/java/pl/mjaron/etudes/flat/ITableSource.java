@@ -26,8 +26,9 @@ import java.util.Iterator;
  */
 public interface ITableSource extends Iterable<Iterable<String>> {
 
-    boolean hasHeaders();
-
+    /**
+     * @return Width of table.
+     */
     int getColumnsCount();
 
     /**
@@ -40,6 +41,10 @@ public interface ITableSource extends Iterable<Iterable<String>> {
      */
     @Override
     Iterator<Iterable<String>> iterator();
+
+    default boolean hasHeaders() {
+        return getHeaders() != null;
+    }
 
     default void readTo(final ITableWriter writer) {
         ITableWriter.writeOperation(this, writer);

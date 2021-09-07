@@ -19,51 +19,44 @@
 
 package pl.mjaron.etudes.flat;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
-import java.util.List;
 
-@Deprecated
-public class ListTableSource<T> implements ITableSource {
+public abstract class TableSourceFactory {
 
-    final List<List<T>> array;
+    ITableSource from(final int[][] data) {
+        return new ITableSource() {
 
-    public ListTableSource(final List<List<T>> array) {
-        this.array = array;
+            @Override
+            public int getColumnsCount() {
+                return (data.length == 0) ? 0 : data[0].length;
+            }
+
+            @Override
+            public Iterable<String> getHeaders() {
+                return null;
+            }
+
+            @Override
+            public Iterator<Iterable<String>> iterator() {
+                return new Iterator<Iterable<String>>() {
+
+                    int rowIdx = 0;
+
+                    @Override
+                    public boolean hasNext() {
+                        return rowIdx < data.length;
+                    }
+
+                    @Override
+                    public Iterable<String> next() {
+                        return () -> SeriesIteratorFactory.from(data[rowIdx++]);
+                    }
+                };
+            }
+        };
     }
 
-    @Override
-    public int getColumnsCount() {
-        if (array.size() == 0) return 0;
-        return array.get(0).size();
-    }
-
-    @Override
-    public Iterable<String> getHeaders() {
-        return null;
-    }
-
-    @Override
-    public Iterator<Iterable<String>> iterator() {
-        return new ArrayIterator<>(array);
-    }
-
-    private static class ArrayIterator<T> implements Iterator<Iterable<String>> {
-        private final List<List<T>> array;
-        private final Iterator<List<T>> it;
-
-        ArrayIterator(final List<List<T>> array) {
-            this.array = array;
-            this.it = array.iterator();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return it.hasNext();
-        }
-
-        @Override
-        public Iterable<String> next() {
-            return StringSeries.from(it.next());
-        }
-    }
 }
+

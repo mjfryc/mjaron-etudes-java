@@ -19,15 +19,18 @@
 
 package pl.mjaron.etudes.flat;
 
+import pl.mjaron.etudes.Str;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public abstract class StringSeries {
 
     public static <T> List<String> from(final List<T> objects) {
         final List<String> series = new ArrayList<>(objects.size());
         for (final T obj : objects) {
-            series.add(obj.toString());
+            series.add(Str.orEmpty(obj));
         }
         return series;
     }
@@ -35,7 +38,7 @@ public abstract class StringSeries {
     public static <T> List<String> from(final T[] objects) {
         final List<String> series = new ArrayList<>(objects.length);
         for (final T obj : objects) {
-            series.add(obj.toString());
+            series.add(Str.orEmpty(obj));
         }
         return series;
     }

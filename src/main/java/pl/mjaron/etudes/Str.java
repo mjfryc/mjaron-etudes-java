@@ -25,6 +25,29 @@ import java.util.Locale;
  * String utilities class.
  */
 public abstract class Str {
+
+    /**
+     * @param what Any nullable String.
+     * @return String object given in parameter or empty String it
+     */
+    public static String orEmpty(final String what) {
+        if (what == null) {
+            return "";
+        }
+        return what;
+    }
+
+    /**
+     * @param what Any object.
+     * @return toString() result or empty String if given object was null.
+     */
+    public static String orEmpty(final Object what) {
+        if (what == null) {
+            return "";
+        }
+        return what.toString();
+    }
+
     /**
      * @param what String where looking for char occurrences.
      * @param ch   Searched character.

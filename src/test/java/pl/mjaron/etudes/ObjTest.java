@@ -68,7 +68,7 @@ class ObjTest {
         System.out.println(table);
 
         final int[][] arr = {{0, 1, 2}, {3, 499, 5}, {6, 7, 8}};
-        final ITableSource source = new ListTableSource<>(StringSeriesArray.from(arr));
+        final ITableSource source = new ListTableSource<>(StringSeriesList.from(arr));
         final String arrTable = Obj.asTable(source , new BlankTableWriter(TableColumnsWidthComputer.compute(source)));
         System.out.println("Numbers array:\n" + arrTable);
     }
