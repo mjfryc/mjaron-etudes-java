@@ -33,7 +33,9 @@ public abstract class TableColumnsWidthComputer {
 
     public static int[] compute(final ITableSource source) {
         final int[] widths = new int[source.getColumnsCount()];
-        apply(widths, source.getHeaders());
+        if (source.hasHeaders()) {
+            apply(widths, source.getHeaders());
+        }
         for (final Iterable<String> row : source) {
             apply(widths, row);
         }
