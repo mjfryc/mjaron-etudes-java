@@ -17,50 +17,44 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.flat;
+package pl.mjaron.etudes.table;
 
-import pl.mjaron.etudes.Str;
+import java.util.Iterator;
 
-public class BlankTableWriter implements ITableWriter {
+public abstract class TableSourceFactory {
 
-    private final StringBuilder out = new StringBuilder();
-    private final int[] widths;
-    private int columnIdx = 0;
+    ITableSource from(final int[][] data) {
+        return new ITableSource() {
 
-    public BlankTableWriter(final int[] widths) {
-        this.widths = widths;
+            @Override
+            public int getColumnsCount() {
+                return (data.length == 0) ? 0 : data[0].length;
+            }
+
+            @Override
+            public Iterable<String> getHeaders() {
+                return null;
+            }
+
+            @Override
+            public Iterator<Iterable<String>> iterator() {
+                return new Iterator<Iterable<String>>() {
+
+                    int rowIdx = 0;
+
+                    @Override
+                    public boolean hasNext() {
+                        return rowIdx < data.length;
+                    }
+
+                    @Override
+                    public Iterable<String> next() {
+                        return () -> SeriesIteratorFactory.from(data[rowIdx++]);
+                    }
+                };
+            }
+        };
     }
 
-    @Override
-    public void beginHeader() {
-
-    }
-
-    @Override
-    public void endHeader() {
-
-    }
-
-    @Override
-    public void beginRow() {
-        columnIdx = 0;
-    }
-
-    @Override
-    public void endRow() {
-        out.append('\n');
-    }
-
-    @Override
-    public void writeCell(String what) {
-        out.append(' ');
-        Str.padLeft(what, widths[columnIdx], ' ', out);
-        out.append(' ');
-        ++columnIdx;
-    }
-
-    @Override
-    public String getTable() {
-        return out.toString();
-    }
 }
+

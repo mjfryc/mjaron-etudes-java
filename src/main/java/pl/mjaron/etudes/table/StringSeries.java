@@ -17,28 +17,38 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.flat;
+package pl.mjaron.etudes.table;
 
-public abstract class TableColumnsWidthComputer {
+import pl.mjaron.etudes.Str;
 
-    private static void apply(final int[] widths, final Iterable<String> series) {
-        int i = 0;
-        for (final String entry : series) {
-            final int oldEntryWidth = widths[i];
-            final int newEntryWidth = Integer.max(oldEntryWidth, entry.length());
-            widths[i] = newEntryWidth;
-            ++i;
+import java.util.ArrayList;
+import java.util.List;
+
+@Deprecated
+public abstract class StringSeries {
+
+    public static <T> List<String> from(final List<T> objects) {
+        final List<String> series = new ArrayList<>(objects.size());
+        for (final T obj : objects) {
+            series.add(Str.orEmpty(obj));
         }
+        return series;
     }
 
-    public static int[] compute(final ITableSource source) {
-        final int[] widths = new int[source.getColumnsCount()];
-        if (source.hasHeaders()) {
-            apply(widths, source.getHeaders());
+    public static <T> List<String> from(final T[] objects) {
+        final List<String> series = new ArrayList<>(objects.length);
+        for (final T obj : objects) {
+            series.add(Str.orEmpty(obj));
         }
-        for (final Iterable<String> row : source) {
-            apply(widths, row);
+        return series;
+    }
+
+    public static <T> List<String> from(final int[] objects) {
+        final List<String> series = new ArrayList<>(objects.length);
+        for (final int obj : objects) {
+            series.add(String.valueOf(obj));
         }
-        return widths;
+        return series;
     }
 }
+

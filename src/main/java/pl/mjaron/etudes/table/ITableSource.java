@@ -17,38 +17,36 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.flat;
+package pl.mjaron.etudes.table;
 
-import pl.mjaron.etudes.Str;
+import java.util.Iterator;
 
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * Abstract source which provides string-based data usable for printing table.
+ */
+public interface ITableSource extends Iterable<Iterable<String>> {
 
-@Deprecated
-public abstract class StringSeries {
+    /**
+     * @return Width of table.
+     */
+    int getColumnsCount();
 
-    public static <T> List<String> from(final List<T> objects) {
-        final List<String> series = new ArrayList<>(objects.size());
-        for (final T obj : objects) {
-            series.add(Str.orEmpty(obj));
-        }
-        return series;
+    /**
+     * @return Ordered series of data with header values.
+     */
+    Iterable<String> getHeaders();
+
+    /**
+     * @return Iterator which allows to read all rows sequentially.
+     */
+    @Override
+    Iterator<Iterable<String>> iterator();
+
+    default boolean hasHeaders() {
+        return getHeaders() != null;
     }
 
-    public static <T> List<String> from(final T[] objects) {
-        final List<String> series = new ArrayList<>(objects.length);
-        for (final T obj : objects) {
-            series.add(Str.orEmpty(obj));
-        }
-        return series;
-    }
-
-    public static <T> List<String> from(final int[] objects) {
-        final List<String> series = new ArrayList<>(objects.length);
-        for (final int obj : objects) {
-            series.add(String.valueOf(obj));
-        }
-        return series;
+    default void readTo(final ITableWriter writer) {
+        ITableWriter.writeOperation(this, writer);
     }
 }
-

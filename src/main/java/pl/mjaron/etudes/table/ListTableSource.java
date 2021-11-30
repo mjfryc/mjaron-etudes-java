@@ -17,38 +17,53 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.flat;
+package pl.mjaron.etudes.table;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public abstract class StringSeriesList {
+@Deprecated
+public class ListTableSource<T> implements ITableSource {
 
-    public static <T> List<List<String>> from(final List<List<T>> rows) {
-        final List<List<String>> stringTable = new ArrayList<>(rows.size());
-        for (final List<T> objectSeries : rows) {
-            final List<String> stringSeries = StringSeries.from(objectSeries);
-            stringTable.add(stringSeries);
-        }
-        return stringTable;
+    final List<List<T>> array;
+
+    public ListTableSource(final List<List<T>> array) {
+        this.array = array;
     }
 
-    public static <T> List<List<String>> from(final T[][] rows) {
-        final List<List<String>> stringTable = new ArrayList<>(rows.length);
-        for (final T[] objectSeries : rows) {
-            final List<String> stringSeries = StringSeries.from(objectSeries);
-            stringTable.add(stringSeries);
-        }
-        return stringTable;
+    @Override
+    public int getColumnsCount() {
+        if (array.size() == 0) return 0;
+        return array.get(0).size();
     }
 
-    public static List<List<String>> from(final int[][] rows) {
-        final List<List<String>> stringTable = new ArrayList<>(rows.length);
-        for (final int[] objectSeries : rows) {
-            final List<String> stringSeries = StringSeries.from(objectSeries);
-            stringTable.add(stringSeries);
-        }
-        return stringTable;
+    @Override
+    public Iterable<String> getHeaders() {
+        return null;
     }
 
+    @Override
+    public Iterator<Iterable<String>> iterator() {
+        return new ArrayIterator<>(array);
+    }
+
+    private static class ArrayIterator<T> implements Iterator<Iterable<String>> {
+        private final List<List<T>> array;
+        private final Iterator<List<T>> it;
+
+        ArrayIterator(final List<List<T>> array) {
+            this.array = array;
+            this.it = array.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override
+        public Iterable<String> next() {
+            return StringSeries.from(it.next());
+        }
+    }
 }

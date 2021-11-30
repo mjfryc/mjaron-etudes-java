@@ -17,39 +17,28 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.flat;
+package pl.mjaron.etudes.table;
 
-/**
- * Abstract operations required to write table.
- */
-public interface ITableWriter {
-    void beginHeader();
-    void endHeader();
-    void beginRow();
-    void endRow();
-    void writeCell(final String what);
+public abstract class TableColumnsWidthDetector {
 
-    String getTable();
-
-    default void writeFrom(final ITableSource source) {
-        writeOperation(source, this);
+    private static void apply(final int[] widths, final Iterable<String> series) {
+        int i = 0;
+        for (final String entry : series) {
+            final int oldEntryWidth = widths[i];
+            final int newEntryWidth = Integer.max(oldEntryWidth, entry.length());
+            widths[i] = newEntryWidth;
+            ++i;
+        }
     }
 
-    static void writeOperation(final ITableSource source, final ITableWriter writer) {
+    public static int[] compute(final ITableSource source) {
+        final int[] widths = new int[source.getColumnsCount()];
         if (source.hasHeaders()) {
-            writer.beginHeader();
-            for (final String header : source.getHeaders()) {
-                writer.writeCell(header);
-            }
-            writer.endHeader();
+            apply(widths, source.getHeaders());
         }
-
         for (final Iterable<String> row : source) {
-            writer.beginRow();
-            for (final String cell : row) {
-                writer.writeCell(cell);
-            }
-            writer.endRow();
+            apply(widths, row);
         }
+        return widths;
     }
 }

@@ -19,7 +19,7 @@
 
 package pl.mjaron.etudes;
 
-import pl.mjaron.etudes.flat.*;
+import pl.mjaron.etudes.table.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -144,16 +144,24 @@ public abstract class Obj {
      * | John |         4 | true |    35.24 |
      * </pre>
      *
-     * @param iterable
-     * @param tClass
-     * @param <T>
+     * @param iterable Any iterable collection.
+     * @param tClass Class of iterated entries.
+     * @param <T> Type of iterated entries.
      * @return Markdown table.
      */
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
         final BeanTableSource<T> source = new BeanTableSource<>(iterable, tClass);
-        return asTable(source, new MarkdownTableWriter(TableColumnsWidthComputer.compute(source)));
+        return asTable(source, new MarkdownTableWriter(TableColumnsWidthDetector.compute(source)));
     }
 
+    /**
+     * Read from table source and write to table writer.
+     * @param source Table source.
+     * @param writer Table destination.
+     * @param <SourceT> Type of table source.
+     * @param <WriterT> Type of table destination.
+     * @return Table written as a String.
+     */
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
         source.readTo(writer);
         return writer.getTable();

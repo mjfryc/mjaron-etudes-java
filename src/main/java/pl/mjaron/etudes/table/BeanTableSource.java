@@ -17,7 +17,7 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.flat;
+package pl.mjaron.etudes.table;
 
 import pl.mjaron.etudes.Obj;
 import pl.mjaron.etudes.Str;

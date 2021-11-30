@@ -20,7 +20,7 @@
 package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
-import pl.mjaron.etudes.flat.*;
+import pl.mjaron.etudes.table.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,7 +69,7 @@ class ObjTest {
 
         final int[][] arr = {{0, 1, 2}, {3, 499, 5}, {6, 7, 8}};
         final ITableSource source = new ListTableSource<>(StringSeriesList.from(arr));
-        final String arrTable = Obj.asTable(source , new BlankTableWriter(TableColumnsWidthComputer.compute(source)));
+        final String arrTable = Obj.asTable(source , new BlankTableWriter(TableColumnsWidthDetector.compute(source)));
         System.out.println("Numbers array:\n" + arrTable);
     }
 

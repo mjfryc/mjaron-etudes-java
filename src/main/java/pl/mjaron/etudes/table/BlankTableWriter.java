@@ -17,41 +17,28 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.flat;
+package pl.mjaron.etudes.table;
 
 import pl.mjaron.etudes.Str;
 
-/**
- * Writes table in Markdown style.
- */
-public class MarkdownTableWriter implements ITableWriter {
+public class BlankTableWriter implements ITableWriter {
 
     private final StringBuilder out = new StringBuilder();
     private final int[] widths;
     private int columnIdx = 0;
 
-    public MarkdownTableWriter(final int[] widths) {
+    public BlankTableWriter(final int[] widths) {
         this.widths = widths;
     }
 
     @Override
-    public String getTable() {
-        return out.toString();
-    }
-
-    @Override
     public void beginHeader() {
+
     }
 
     @Override
     public void endHeader() {
-        out.append("|\n");
-        for (Integer w : widths) {
-            out.append("| ");
-            Str.pad(out, w, '-');
-            out.append(' ');
-        }
-        out.append("|\n");
+
     }
 
     @Override
@@ -61,14 +48,19 @@ public class MarkdownTableWriter implements ITableWriter {
 
     @Override
     public void endRow() {
-        out.append("|\n");
+        out.append('\n');
     }
 
     @Override
     public void writeCell(String what) {
-        out.append("| ");
+        out.append(' ');
         Str.padLeft(what, widths[columnIdx], ' ', out);
         out.append(' ');
         ++columnIdx;
+    }
+
+    @Override
+    public String getTable() {
+        return out.toString();
     }
 }
