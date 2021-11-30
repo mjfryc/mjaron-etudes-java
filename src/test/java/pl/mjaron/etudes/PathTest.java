@@ -31,4 +31,9 @@ class PathTest {
         assertEquals("", Path.extension("/my/path/to/file"));
         assertEquals("", Path.extension("/my/path/to/file."));
     }
+
+    @Test
+    void filename() {
+        assertEquals("abc.txt", Path.filename("/c/mixed/path/separators\\abc.txt"));
+    }
 }

@@ -44,4 +44,9 @@ class StrTest {
     void padRight() {
         assertEquals("3  ", Str.padRight("3", 3));
     }
+
+    @Test
+    void lastIndexAnyOf() {
+        assertEquals(5, Str.lastIndexAnyOf("geolocation", "xyc"));
+    }
 }

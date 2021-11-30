@@ -127,4 +127,15 @@ public abstract class Str {
             out.append(ch);
         }
     }
+
+    public static int lastIndexAnyOf(final String what, final String chars) {
+        for (int idx = what.length() - 1; idx >= 0; --idx) {
+            for (int ch = 0; ch < chars.length(); ++ch) {
+                if (what.charAt(idx) == chars.charAt(ch)) {
+                    return idx;
+                }
+            }
+        }
+        return -1;
+    }
 }

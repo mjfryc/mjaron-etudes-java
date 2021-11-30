@@ -19,6 +19,8 @@
 
 package pl.mjaron.etudes;
 
+import java.io.File;
+
 public abstract class Path {
 
     public static String extension(final String path) {
@@ -29,4 +31,31 @@ public abstract class Path {
         return path.substring(dot + 1);
     }
 
+    public static String filename(final String path, final char separator) {
+        final int separatorIdx = path.lastIndexOf(separator);
+        if (separatorIdx <= 0) {
+            return path;
+        }
+        if (separatorIdx + 1 == path.length()) {
+            return "";
+        }
+        return path.substring(separatorIdx + 1);
+    }
+
+    public static String filename(final String path, final String separators) {
+        final int separatorIdx = Str.lastIndexAnyOf(path, separators);
+        if (separatorIdx <= 0) {
+            return path;
+        }
+        if (separatorIdx + 1 == path.length()) {
+            return "";
+        }
+        return path.substring(separatorIdx + 1);
+    }
+
+    public static final String COMMON_SEPARATORS = "/\\";
+
+    public static String filename(final String path) {
+        return filename(path, COMMON_SEPARATORS);
+    }
 }
