@@ -20,7 +20,7 @@
 import java.io.File
 
 plugins {
-    id 'java'
+    id 'java-library'
     id 'maven-publish'
 }
 
@@ -71,8 +71,11 @@ version "0.1.2"
 println("Project version determined: $version")
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 repositories {
