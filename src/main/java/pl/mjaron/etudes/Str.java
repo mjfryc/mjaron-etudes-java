@@ -27,6 +27,35 @@ import java.util.Locale;
 public abstract class Str {
 
     /**
+     * Tells whether String is empty.
+     *
+     * @param what Given String or null.
+     * @return True when <code>what</code> String is null or empty (length is 0).
+     */
+    public static boolean isEmpty(final String what) {
+        return (what == null || what.isEmpty());
+    }
+
+    /**
+     * Tells whether String contains any characters.
+     *
+     * @param what Given String or null.
+     * @return True when String is not null and contains any characters.
+     */
+    public static boolean notEmpty(final String what) {
+        return !isEmpty(what);
+    }
+
+    /**
+     * @param what        Given String.
+     * @param alternative Alternative String, used when <code>what</code> is null or empty.
+     * @return <code>alternative</code> String when <code>what</code> String is null or empty.
+     */
+    public static String ifEmpty(final String what, final String alternative) {
+        return (isEmpty(what)) ? alternative : what;
+    }
+
+    /**
      * @param what Any nullable String.
      * @return String object given in parameter or empty String it
      */
@@ -65,7 +94,7 @@ public abstract class Str {
     }
 
     public static String capitalize(final String what, final java.util.Locale locale) {
-        if (what == null || what.isEmpty()) {
+        if (isEmpty(what)) {
             return what;
         }
         if (!Character.isLowerCase(what.charAt(0))) {
@@ -83,7 +112,7 @@ public abstract class Str {
      */
     public static void padLeft(final String what, final int size, final char ch, final StringBuilder out) {
         int missing = size - what.length();
-        while(missing > 0) {
+        while (missing > 0) {
             out.append(ch);
             --missing;
         }
@@ -106,7 +135,7 @@ public abstract class Str {
     public static void padRight(final String what, final int size, final char ch, final StringBuilder out) {
         out.append(what);
         int missing = size - what.length();
-        while(missing > 0) {
+        while (missing > 0) {
             out.append(ch);
             --missing;
         }
@@ -123,7 +152,7 @@ public abstract class Str {
     }
 
     public static void pad(final StringBuilder out, int size, final char ch) {
-        for (;size > 0; --size) {
+        for (; size > 0; --size) {
             out.append(ch);
         }
     }

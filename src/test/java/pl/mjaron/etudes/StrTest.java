@@ -49,4 +49,27 @@ class StrTest {
     void lastIndexAnyOf() {
         assertEquals(5, Str.lastIndexAnyOf("geolocation", "xyc"));
     }
+
+    @Test
+    @SuppressWarnings("ConstantConditions")
+    void isEmpty() {
+        assertTrue(Str.isEmpty(null));
+        assertTrue(Str.isEmpty(""));
+        assertFalse(Str.isEmpty("a"));
+    }
+
+    @Test
+    @SuppressWarnings("ConstantConditions")
+    void notEmpty() {
+        assertFalse(Str.notEmpty(null));
+        assertFalse(Str.notEmpty(""));
+        assertTrue(Str.notEmpty("a"));
+    }
+
+    @Test
+    void ifEmpty() {
+        assertEquals("a", Str.ifEmpty("a", "b"));
+        assertEquals("b", Str.ifEmpty("", "b"));
+        assertEquals("b", Str.ifEmpty(null, "b"));
+    }
 }
