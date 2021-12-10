@@ -136,7 +136,7 @@ public abstract class Obj {
     }
 
     /**
-     * Prints data object as a table, e.g:<br/> <br/>
+     * Prints data object as a table, e.g:
      *
      * <pre>
      * | name | legsCount | lazy | topSpeed |

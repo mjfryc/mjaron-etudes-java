@@ -93,6 +93,13 @@ public abstract class Str {
         return count;
     }
 
+    /**
+     * E.g: change "capitalize" to "Capitalize".
+     *
+     * @param what   Given String.
+     * @param locale Locale settings.
+     * @return Capitalized String.
+     */
     public static String capitalize(final String what, final java.util.Locale locale) {
         if (isEmpty(what)) {
             return what;
@@ -103,12 +110,23 @@ public abstract class Str {
         return what.substring(0, 1).toUpperCase(locale) + what.substring(1);
     }
 
+    /**
+     * E.g: change "capitalize" to "Capitalize" with default Locale settings.
+     *
+     * @param what Given String.
+     * @return Capitalized String.
+     */
     public static String capitalize(final String what) {
         return capitalize(what, Locale.ROOT);
     }
 
     /**
-     * Add fill string with given character from left side.
+     * Fills String with given character from left side.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @param ch   Character used to fill padding gap.
+     * @param out  Output where result String will be written.
      */
     public static void padLeft(final String what, final int size, final char ch, final StringBuilder out) {
         int missing = size - what.length();
@@ -119,18 +137,38 @@ public abstract class Str {
         out.append(what);
     }
 
+    /**
+     * Fills String with given character from left side.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @param ch   Character used to fill padding gap.
+     * @return Padded String.
+     */
     public static String padLeft(final String what, final int size, final char ch) {
         final StringBuilder out = new StringBuilder();
         padLeft(what, size, ch, out);
         return out.toString();
     }
 
+    /**
+     * Fills String with spaces from left side.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @return Padded String.
+     */
     public static String padLeft(final String what, final int size) {
         return padLeft(what, size, ' ');
     }
 
     /**
-     * Add fill string with given character from right side.
+     * Fills String with given character from right side.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @param ch   Character used to fill padding gap.
+     * @param out  Output where result String will be written.
      */
     public static void padRight(final String what, final int size, final char ch, final StringBuilder out) {
         out.append(what);
@@ -141,22 +179,51 @@ public abstract class Str {
         }
     }
 
+    /**
+     * Fills String with given character from right side.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @param ch   Character used to fill padding gap.
+     * @return Padded String.
+     */
     public static String padRight(final String what, final int size, final char ch) {
         final StringBuilder out = new StringBuilder();
         padRight(what, size, ch, out);
         return out.toString();
     }
 
+    /**
+     * Fills String with spaces from right side.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @return Padded String.
+     */
     public static String padRight(final String what, final int size) {
         return padRight(what, size, ' ');
     }
 
+    /**
+     * Append given count of characters to StringBuilder.
+     *
+     * @param out  StringBuilder instance.
+     * @param size Characters count.
+     * @param ch   Character used to append.
+     */
     public static void pad(final StringBuilder out, int size, final char ch) {
         for (; size > 0; --size) {
             out.append(ch);
         }
     }
 
+    /**
+     * Find last index of given characters.
+     *
+     * @param what  String where looking for last occurrence.
+     * @param chars Set of characters.
+     * @return Last occurrence of any character from <code>chars</code> set.
+     */
     public static int lastIndexAnyOf(final String what, final String chars) {
         for (int idx = what.length() - 1; idx >= 0; --idx) {
             for (int ch = 0; ch < chars.length(); ++ch) {
