@@ -1,5 +1,7 @@
 package pl.mjaron.etudes.table;
 
+@Deprecated
+// StaticTable is not ready yet...
 public class StaticTable {
 
     public final int rows;
