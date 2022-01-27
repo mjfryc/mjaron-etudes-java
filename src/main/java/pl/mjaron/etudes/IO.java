@@ -85,8 +85,10 @@ public class IO {
     /**
      * Copy any {@link java.io.InputStream} to {@link java.io.OutputStream}.
      *
-     * @param inputStream  Any {@link java.io.InputStream}. User is responsible to close this stream when no longer used.
-     * @param outputStream Any {@link java.io.OutputStream}. User is responsible to close this stream when no longer used.
+     * @param inputStream  Any {@link java.io.InputStream}. User is responsible to close this stream when no longer
+     *                     used.
+     * @param outputStream Any {@link java.io.OutputStream}. User is responsible to close this stream when no longer
+     *                     used.
      * @param bufferSize   Size of buffer used while reading / writing.
      * @throws IOException On any read / write error.
      */
@@ -115,7 +117,8 @@ public class IO {
     /**
      * Reads all content from any {@link java.io.InputStream}.
      *
-     * @param inputStream {@link java.io.InputStream} used to read data. Finally, it is closed even an exception is thrown.
+     * @param inputStream {@link java.io.InputStream} used to read data. Finally, it is closed even an exception is
+     *                    thrown.
      * @return All bytes of given <code>inputStream</code>.
      * @throws RuntimeException on any IO operation error.
      */
@@ -136,5 +139,70 @@ public class IO {
 
     public static String readAllString(final File targetFile) {
         return new String(readAllBytes(targetFile), Charset.defaultCharset());
+    }
+
+    /**
+     * Cleans content of a directory but doesn't delete itself.
+     *
+     * @param directory Any file which is a directory. Other files will be ignored.
+     * @throws RuntimeException when cannot delete a file or directory.
+     */
+    public static void cleanDirectory(final File directory) {
+        final File[] children = directory.listFiles();
+        if (children == null) {
+            return;
+        }
+        for (final File entry : children) {
+            if (entry.isDirectory()) {
+                cleanDirectory(entry);
+            }
+            if (!entry.delete()) {
+                throw new RuntimeException("Failed to delete file: [" + entry.getAbsolutePath() + "].");
+            }
+        }
+    }
+
+    /**
+     * Cleans content of a directory but doesn't delete itself.
+     *
+     * @param directory Any file path which is a directory. Other files will be ignored.
+     * @throws RuntimeException when cannot delete a file or directory.
+     */
+    public static void cleanDirectory(final String directory) {
+        cleanDirectory(new File(directory));
+    }
+
+    /**
+     * Delete file or directory, even if directory is not empty.
+     *
+     * @param file File which will be deleted.
+     */
+    public static void delete(final File file) {
+        if (file.isDirectory()) {
+            cleanDirectory(file);
+        }
+        if (!file.delete()) {
+            throw new RuntimeException("Failed to delete file: [" + file.getAbsolutePath() + "].");
+        }
+    }
+
+    /**
+     * Creates a directories pointed by path.
+     *
+     * @param destination destination directory.
+     * @return destination directory.
+     * @throws RuntimeException when failed to create path.
+     */
+    public static File mkdirs(final File destination) {
+        if (!destination.mkdirs()) {
+            if (!destination.exists()) {
+                throw new RuntimeException("Failed to create directories: [" + destination.getAbsolutePath() + "].");
+            }
+        }
+        return destination;
+    }
+
+    public static File mkdirs(final String destination) {
+        return mkdirs(new File(destination));
     }
 }
