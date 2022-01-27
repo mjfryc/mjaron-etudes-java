@@ -67,7 +67,7 @@ def detectVersionTag() {
 }
 
 group 'pl.mjaron'
-version "0.1.2"
+version "0.1.4"
 println("Project version determined: $version")
 
 java {
