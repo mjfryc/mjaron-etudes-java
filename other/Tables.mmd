@@ -1,0 +1,27 @@
+classDiagram
+class ITableSource {
+    <<interface>>
+    hasHeaders()
+    getColumnsCount()
+    getHeaders()
+    iterator()
+}
+
+class BeanTableSource
+
+ITableSource <|..BeanTableSource
+
+class ITableWriter {
+    <<interface>>
+    beginHeader();
+    endHeader();
+    beginRow();
+    endRow();
+    writeCell(text);
+}
+
+class MarkdownTableWriter
+ITableWriter <|..MarkdownTableWriter
+
+class BlankTableWriter
+ITableWriter <|..BlankTableWriter

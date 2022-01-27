@@ -85,6 +85,75 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
+//apply plugin: pl.mjaron.gradle.MjTemplate
+
+//mjTemplate {
+//    custom {
+//        srcBase = 'src/main/java-templates'
+//        dstBase =  buildDir.path + '/generated/'
+//        job('pl.mjaron.sample.MyClass.java', "MyClass.java").param("<PARAM_1>", "plugin world!")
+//    }
+
+//    java {
+//        job("MyClass.java").param("<PARAM_1>", "plugin world!!")
+//    }
+//
+//    java {
+//        job("MyClass.java").param("<PARAM_1>", "plugin world!!!").dst("ryba.java")
+//    }
+//}
+
+apply plugin: pl.mjaron.gradle2.MjTemplate
+mjt {
+    custom("ala") {
+        src = "/dev/ryba/"
+        dst = "/dev/ogon"
+        template("komary") {
+            engine = "ryba"
+        }
+        template("komary") {
+            engine = "krowa"
+        }
+    }
+    custom("ala") {
+        template("komary") {
+            engine = "zajac"
+        }
+    }
+    java {
+        template("MyClass.java.template") {
+            engine = "kruk"
+        }
+    }
+}
+//sourceSets {
+//    main {
+//        java {
+//            srcDir buildDir.toString() + "/generated/sourceTemplate/java"
+//        }
+//    }
+//}
+
+//tasks.withType(JavaCompile) {
+//    compileTask -> compileTask.dependsOn mjaronSourceTemplate
+//}
+
+
+
+
+
+abstract class GreetingTask extends DefaultTask {
+    @TaskAction
+    def greet() {
+        println 'hello from GreetingTask'
+    }
+}
+tasks.register('ryba', GreetingTask)
+
+
+
+
+
 test {
     useJUnitPlatform()
 
