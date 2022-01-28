@@ -234,4 +234,8 @@ public abstract class Str {
         }
         return -1;
     }
+
+    public static int lastIndexOf(final String what, final char ch) {
+        return what.lastIndexOf(ch);
+    }
 }

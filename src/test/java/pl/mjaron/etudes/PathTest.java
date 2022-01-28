@@ -30,10 +30,43 @@ class PathTest {
         assertEquals("txt", Path.extension("/my/path/to/file.txt"));
         assertEquals("", Path.extension("/my/path/to/file"));
         assertEquals("", Path.extension("/my/path/to/file."));
+        assertEquals("txt", Path.extension("/my/path/to,file.txt", ','));
+    }
+
+    @Test
+    void noExtension() {
+        assertEquals("/my/path/to/file", Path.noExtension("/my/path/to/file.txt"));
+        assertEquals("/my/path/to/file", Path.noExtension("/my/path/to/file"));
+        assertEquals("/my/path/to/file", Path.noExtension("/my/path/to/file."));
+        assertEquals(",my,path,to,file", Path.noExtension(",my,path,to,file.txt", ','));
     }
 
     @Test
     void filename() {
         assertEquals("abc.txt", Path.filename("/c/mixed/path/separators\\abc.txt"));
+        assertEquals("c.txt", Path.filename("a/b/c.txt"));
+        assertEquals("a.txt", Path.filename("a.txt"));
+        assertEquals("c", Path.filename("a/b/c"));
+        assertEquals("", Path.filename("a/b/c/"));
+        assertEquals("c.txt", Path.filename("a/b,c.txt", ','));
+    }
+
+    @Test
+    void noEndSeparator() {
+        assertEquals("/a/b/c", Path.noEndSeparator("/a/b/c/"));
+        assertEquals("/a/b/c", Path.noEndSeparator("/a/b/c"));
+        assertEquals("", Path.noEndSeparator("/"));
+        assertEquals("", Path.noEndSeparator(""));
+        assertEquals("/a/b,c", Path.noEndSeparator("/a/b,c,", ','));
+    }
+
+    @Test
+    void parent() {
+        assertEquals("/a/b/c", Path.parent("/a/b/c/"));
+        assertEquals("/a/b", Path.parent("/a/b/c"));
+        assertEquals("", Path.parent("/"));
+        assertEquals("", Path.parent(""));
+        assertEquals("a,b", Path.parent("a,b,c", ","));
+        assertEquals("a,b", Path.parent("a,b,c", ','));
     }
 }
