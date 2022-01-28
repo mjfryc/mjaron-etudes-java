@@ -76,11 +76,11 @@ public abstract class Path {
     /**
      * Provides filename extension without a dot, e.g:
      * <pre>
-     *     a.txt -> txt
-     *     a.    -> ""
-     *     a     ->
-     *     ""    -> ""
-     *     a.b/c -> ""
+     *     a.txt --&gt; txt
+     *     a.    --&gt; ""
+     *     a     --&gt;
+     *     ""    --&gt; ""
+     *     a.b/c --&gt; ""
      * </pre>
      *
      * @param path Given path.
@@ -185,10 +185,10 @@ public abstract class Path {
     /**
      * Provides parent path, e.g:
      * <pre>
-     *     /a/b  -> /a
-     *     /a/b/ -> /a/b
-     *     /     -> "" (empty)
-     *     ""    -> ""
+     *     /a/b  --&gt; /a
+     *     /a/b/ --&gt; /a/b
+     *     /     --&gt; "" (empty)
+     *     ""    --&gt; ""
      * </pre>
      *
      * @param path       Initial path.
