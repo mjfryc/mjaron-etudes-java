@@ -23,17 +23,11 @@ plugins {
     id 'signing'
 }
 
-group 'pl.mjaron'
-version "0.1.10"
-println("Project version determined: $version")
+def PROJECT_SIGNATURE = 'mjaron-etudes-java'
+println("Build file execution: $PROJECT_SIGNATURE")
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
-    }
-    withSourcesJar()
-    withJavadocJar()
-}
+group 'io.github.mjfryc'
+version "0.1.11"
 
 repositories {
     mavenCentral()
@@ -45,6 +39,14 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+    withSourcesJar()
+    withJavadocJar()
+}
+
 test {
     useJUnitPlatform()
 
@@ -54,11 +56,41 @@ test {
     }
 }
 
+project.plugins.withType(MavenPublishPlugin).all {
+    PublishingExtension publishing = project.extensions.getByType(PublishingExtension)
+    publishing.publications.withType(MavenPublication).all { mavenPublication ->
+        mavenPublication.pom {
+            name = "${project.group}:${project.name}"
+            description = name
+            url = "https://github.com/mjfryc/$PROJECT_SIGNATURE"
+            licenses {
+                license {
+                    name = "MIT License"
+                    url = "https://raw.githubusercontent.com/mjfryc/$PROJECT_SIGNATURE/main/LICENSE"
+                }
+            }
+            developers {
+                developer {
+                    id = "mjfryc"
+                    name = "Michał Jaroń"
+                    email = "m.jaron@protonmail.com"
+                }
+            }
+            scm {
+                connection = "scm:git:https://github.com/mjfryc/$PROJECT_SIGNATURE"
+                developerConnection = "scm:git:git@github.com:mjfryc/${PROJECT_SIGNATURE}.git"
+                url = "https://github.com/mjfryc/$PROJECT_SIGNATURE"
+            }
+        }
+    }
+}
+
 // Source: https://docs.github.com/en/actions/guides/publishing-java-packages-with-gradle
 // Source: https://github.com/rwinch/gradle-publish-ossrh-sample
 // Source: https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
 // Source: https://github.com/rwinch/gradle-publish-ossrh-sample
 publishing {
+    println("Publishing: Package version: $version")
     repositories {
         maven {
             name = "OSSRH"
@@ -70,7 +102,7 @@ publishing {
         }
         maven {
             name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/mjfryc/mjaron-etudes-java"
+            url = "https://maven.pkg.github.com/mjfryc/${PROJECT_SIGNATURE}"
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
