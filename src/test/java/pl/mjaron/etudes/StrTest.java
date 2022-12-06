@@ -72,4 +72,22 @@ class StrTest {
         assertEquals("b", Str.ifEmpty("", "b"));
         assertEquals("b", Str.ifEmpty(null, "b"));
     }
+
+    @Test
+    void hexInt() {
+        final int[] arr = {0xAF, 0x01, 0x00, 0xF0};
+        assertEquals("AF 01 00 F0", Str.hex(arr));
+    }
+
+    @Test
+    void hexByte() {
+        final byte[] arr = {(byte)0xAF, (byte)0x01, (byte)0x00, (byte)0xF0};
+        assertEquals("AF 01 00 F0", Str.hex(arr));
+    }
+
+    @Test
+    void hexByteMultiLine() {
+        final byte[] arr = {(byte)0xAF, (byte)0x01, (byte)0x00, (byte)0xF0};
+        assertEquals("AF 01\n00 F0", Str.hex(arr, 0, arr.length, 2, " "));
+    }
 }
