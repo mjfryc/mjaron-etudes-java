@@ -235,6 +235,13 @@ public abstract class Str {
         return -1;
     }
 
+    /**
+     * Delegates to {@link String#lastIndexOf(int)}
+     *
+     * @param what String instance.
+     * @param ch   Single character.
+     * @return Last occurrence of given character or -1.
+     */
     public static int lastIndexOf(final String what, final char ch) {
         return what.lastIndexOf(ch);
     }
@@ -249,6 +256,7 @@ public abstract class Str {
      * @param bytesPerLine  If positive, output HEX bytes will be grouped into separated lies. When negative, all bytes
      *                      will be represented in single line.
      * @param byteSeparator String used to separate bytes. Usually single space is good separator.
+     * @since 0.1.7
      */
     public static void hex(final StringBuilder str, final byte[] arr, final int arrBegin, final int arrEnd, final int bytesPerLine, final String byteSeparator) {
         for (int i = arrBegin, index = 0; i < arrEnd; ++i, ++index) {
@@ -267,6 +275,7 @@ public abstract class Str {
      * @param bytesPerLine  If positive, output HEX bytes will be grouped into separated lies. When negative, all bytes
      *                      will be represented in single line.
      * @param byteSeparator String used to separate bytes. Usually single space is good separator.
+     * @since 0.1.7
      */
     public static void hex(final StringBuilder str, final int[] arr, final int arrBegin, final int arrEnd, final int bytesPerLine, final String byteSeparator) {
         for (int i = arrBegin, index = 0; i < arrEnd; ++i, ++index) {
@@ -285,6 +294,7 @@ public abstract class Str {
      *                      will be represented in single line.
      * @param byteSeparator String used to separate bytes. Usually single space is good separator.
      * @return Hex-formatted String.
+     * @since 0.1.7
      */
     public static String hex(final byte[] arr, final int arrBegin, final int arrEnd, final int bytesPerLine, final String byteSeparator) {
         StringBuilder str = impl.hexPrepareStringBuilder(arrBegin, arrEnd, bytesPerLine, byteSeparator);
@@ -302,6 +312,7 @@ public abstract class Str {
      *                      will be represented in single line.
      * @param byteSeparator String used to separate bytes. Usually single space is good separator.
      * @return Hex-formatted String.
+     * @since 0.1.7
      */
     public static String hex(final int[] arr, final int arrBegin, final int arrEnd, final int bytesPerLine, final String byteSeparator) {
         StringBuilder str = impl.hexPrepareStringBuilder(arrBegin, arrEnd, bytesPerLine, byteSeparator);
@@ -314,6 +325,7 @@ public abstract class Str {
      *
      * @param arr Array from where bytes are read.
      * @return Hex-formatted String.
+     * @since 0.1.7
      */
     public static String hex(final byte[] arr) {
         return hex(arr, 0, arr.length, 64, " ");
@@ -324,6 +336,7 @@ public abstract class Str {
      *
      * @param arr Array from where bytes are read.
      * @return Hex-formatted String.
+     * @since 0.1.7
      */
     public static String hex(final int[] arr) {
         return hex(arr, 0, arr.length, 64, " ");
@@ -331,6 +344,8 @@ public abstract class Str {
 
     /**
      * Implementation details.
+     *
+     * @since 0.1.7
      */
     public static abstract class impl {
         /**
@@ -342,6 +357,7 @@ public abstract class Str {
          * @param bytesPerLine  How many bytes in single line. Negative or 0 means that all bytes should be in single
          *                      line.
          * @param byteSeparator How to separate bytes.
+         * @since 0.1.7
          */
         public static void hexEntryImpl(final StringBuilder str, final byte b, final int index, final int bytesPerLine, final String byteSeparator) {
             if (index != 0) {
@@ -362,6 +378,7 @@ public abstract class Str {
          * @param bytesPerLine  How many bytes per line.
          * @param byteSeparator How bytes are separated.
          * @return StringBuilder instance initialized with good capacity.
+         * @since 0.1.7
          */
         public static StringBuilder hexPrepareStringBuilder(final int arrBegin, final int arrEnd, final int bytesPerLine, final String byteSeparator) {
             final int bytesCount = arrEnd - arrBegin;
