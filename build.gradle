@@ -23,7 +23,7 @@ plugins {
 }
 
 group 'pl.mjaron'
-version "0.1.8"
+version "0.1.9"
 println("Project version determined: $version")
 
 java {
