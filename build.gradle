@@ -17,57 +17,13 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.io.File
-
 plugins {
     id 'java-library'
     id 'maven-publish'
 }
 
-// Not used because when used as a gradle source repository points to wrong git version.
-@Deprecated
-def detectVersionTag() {
-    /// @return Last tag or null
-    def getLastTag = {
-        def procAllTags = new ProcessBuilder('git', 'tag', '--sort=creatordate').start()
-        def allTags = new String(procAllTags.getInputStream().readAllBytes())
-
-        def allTagsByLine = allTags.split('\n')
-        for (int i = allTagsByLine.size() - 1; i >= 0; --i) {
-            def iLine = allTagsByLine[i] as String
-            def iTrimmedLine = iLine.trim()
-            if (!iTrimmedLine.isEmpty()) {
-                return iTrimmedLine;
-            }
-        }
-        return null
-    }
-
-    /// Fetches tags from origin
-    def gitFetchTags = {
-        def procFetchRun = new ProcessBuilder('git', 'fetch', '--tags').start()
-
-        if (procFetchRun.waitFor() != 0) {
-            throw new RuntimeException("Git fetch has failed with: [" + procFetchRun.exitValue() + "], error stream: " + new String(procFetchRun.getErrorStream().readAllBytes()))
-        }
-        println("Git fetch has finished with 0.")
-    }
-
-    def lastTagA = getLastTag()
-    if (lastTagA != null) {
-        return lastTagA
-    }
-    println("No tags found. Trying to fetch tags.")
-    gitFetchTags()
-    def lastTagB = getLastTag()
-    if (lastTagB != null) {
-        return lastTagB
-    }
-    throw new RuntimeException("Failed to read last tag, even after fetching tags.")
-}
-
 group 'pl.mjaron'
-version "0.1.7"
+version "0.1.8"
 println("Project version determined: $version")
 
 java {
@@ -98,8 +54,19 @@ test {
 }
 
 // Source: https://docs.github.com/en/actions/guides/publishing-java-packages-with-gradle
+// Source: https://github.com/rwinch/gradle-publish-ossrh-sample
+// Source: https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
+// Source: https://github.com/rwinch/gradle-publish-ossrh-sample
 publishing {
     repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
         maven {
             name = "GitHubPackages"
             url = "https://maven.pkg.github.com/mjfryc/mjaron-etudes-java"
@@ -109,7 +76,6 @@ publishing {
             }
         }
     }
-
     publications {
         gpr(MavenPublication) {
             from(components.java)
@@ -117,3 +83,24 @@ publishing {
     }
 }
 
+def hasSigningKey = System.getenv("GPG_PASSWORD") != null && System.getenv("GPG_PRIVATE_KEY") != null
+if (hasSigningKey) {
+    System.out.println("GPG key and password found. Signing maven publications.")
+    doSign(project)
+} else {
+    System.out.println("GPG key or password not found. Signing is skipped.")
+}
+
+void doSign(Project project) {
+    println("Signing publications. All etries:")
+    publishing.publications.all {
+        println("    Publication: " + it.name)
+    }
+    project.signing {
+        required { project.gradle.taskGraph.hasTask("required") }
+        def signingKey = System.getenv("GPG_PRIVATE_KEY")
+        def signingPassword = System.getenv("GPG_PASSWORD")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.gpr
+    }
+}
