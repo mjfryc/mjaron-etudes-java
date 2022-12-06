@@ -20,10 +20,11 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
 }
 
 group 'pl.mjaron'
-version "0.1.9"
+version "0.1.10"
 println("Project version determined: $version")
 
 java {
