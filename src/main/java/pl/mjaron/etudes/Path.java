@@ -149,7 +149,8 @@ public abstract class Path {
     }
 
     /**
-     * Similar to https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FilenameUtils.html#getName-java.lang.String-
+     * Similar to
+     * https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FilenameUtils.html#getName-java.lang.String-
      *
      * @param path String stored as path. Cannot be null.
      * @return Filename without parent path.

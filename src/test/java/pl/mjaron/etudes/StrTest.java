@@ -81,13 +81,21 @@ class StrTest {
 
     @Test
     void hexByte() {
-        final byte[] arr = {(byte)0xAF, (byte)0x01, (byte)0x00, (byte)0xF0};
+        final byte[] arr = {(byte) 0xAF, (byte) 0x01, (byte) 0x00, (byte) 0xF0};
         assertEquals("AF 01 00 F0", Str.hex(arr));
     }
 
     @Test
     void hexByteMultiLine() {
-        final byte[] arr = {(byte)0xAF, (byte)0x01, (byte)0x00, (byte)0xF0};
+        final byte[] arr = {(byte) 0xAF, (byte) 0x01, (byte) 0x00, (byte) 0xF0};
         assertEquals("AF 01\n00 F0", Str.hex(arr, 0, arr.length, 2, " "));
+    }
+
+    @Test
+    void hexStrToByteArr() {
+        final byte[] expectedArray = {(byte) 0xAF, (byte) 0x01, (byte) 0x00, (byte) 0xF0};
+        final String hStr = "AF0100F0";
+        final byte[] arr = Str.hex(hStr);
+        assertArrayEquals(expectedArray, arr);
     }
 }

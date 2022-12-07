@@ -247,6 +247,23 @@ public abstract class Str {
     }
 
     /**
+     * Tells how many characters has graphical representation.
+     *
+     * @param str String to check.
+     * @return Number of characters with graphical representation.
+     * @see Ch#isGraph(char)
+     */
+    public static int isGraphCount(final String str) {
+        int hCount = 0;
+        for (int i = 0; i < str.length(); ++i) {
+            if (Ch.isGraph(str.charAt(i))) {
+                ++hCount;
+            }
+        }
+        return hCount;
+    }
+
+    /**
      * Converts the byte array to HEX-string representing bytes as Hexadecimal digits.
      *
      * @param str           StringBuilder where to write the String.
@@ -340,6 +357,34 @@ public abstract class Str {
      */
     public static String hex(final int[] arr) {
         return hex(arr, 0, arr.length, 64, " ");
+    }
+
+    /**
+     * Converts hex String to byte array.
+     *
+     * @param str hex-formatted string.
+     * @return Byte array.
+     */
+    public static byte[] hex(final String str) {
+        int hCount = isGraphCount(str) / 2;
+        byte[] arr = new byte[hCount];
+        boolean isHighNibble = true;
+        byte b = 0; // Byte value.
+        int a = 0; // Index of arr.
+        for (int i = 0; i < str.length(); ++i) {
+            if (Ch.isGraph(str.charAt(i))) {
+                if (isHighNibble) {
+                    b = (byte) (Ch.toHexValue(str.charAt(i)) << 4);
+                    isHighNibble = false;
+                } else {
+                    b |= Ch.toHexValue(str.charAt(i));
+                    arr[a] = b;
+                    ++a;
+                    isHighNibble = true;
+                }
+            }
+        }
+        return arr;
     }
 
     /**
