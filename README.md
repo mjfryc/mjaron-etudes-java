@@ -10,6 +10,16 @@ _Pianists practice etudes, programmers also!_
 
 ## How to integrate with Gradle
 
+### From Maven Central
+
+<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.1.11/jar>
+
+```gradle
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.1.11'
+```
+
+### As local `jar` file
+
 * Download latest release
     * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
     * To `[gradle's root directory]/libs/`
