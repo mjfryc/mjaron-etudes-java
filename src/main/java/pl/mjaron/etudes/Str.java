@@ -27,6 +27,19 @@ import java.util.Locale;
 public abstract class Str {
 
     /**
+     * Determines how many HEX-string bytes to dump in single line.
+     *
+     * @see #hex(int[])
+     * @see #hex(byte[])
+     */
+    public static final int STR_HEX_DEFAULT_BYTES_PER_LINE = 64;
+
+    /**
+     * Determines default byte separator when converting byte array to HEX-string.
+     */
+    public static final String STR_HEX_DEFAULT_BYTE_SEPARATOR = " ";
+
+    /**
      * Tells whether String is empty.
      *
      * @param what Given String or null.
@@ -338,6 +351,38 @@ public abstract class Str {
     }
 
     /**
+     * Converts the byte array to HEX-string representing bytes as Hexadecimal digits. Uses default count of bytes per
+     * line and default byte separator.
+     *
+     * @param arr      Array from where bytes are read.
+     * @param arrBegin Index pointing where to start array reading.
+     * @param arrEnd   Index where to stop array reading. It is first not read index.
+     * @return Hex-formatted String.
+     * @see #STR_HEX_DEFAULT_BYTES_PER_LINE
+     * @see #STR_HEX_DEFAULT_BYTE_SEPARATOR
+     * @since 0.1.12
+     */
+    public static String hex(final int[] arr, final int arrBegin, final int arrEnd) {
+        return hex(arr, arrBegin, arrEnd, STR_HEX_DEFAULT_BYTES_PER_LINE, STR_HEX_DEFAULT_BYTE_SEPARATOR);
+    }
+
+    /**
+     * Converts the byte array to HEX-string representing bytes as Hexadecimal digits. Uses default count of bytes per
+     * line and default byte separator.
+     *
+     * @param arr      Array from where bytes are read.
+     * @param arrBegin Index pointing where to start array reading.
+     * @param arrEnd   Index where to stop array reading. It is first not read index.
+     * @return Hex-formatted String.
+     * @see #STR_HEX_DEFAULT_BYTES_PER_LINE
+     * @see #STR_HEX_DEFAULT_BYTE_SEPARATOR
+     * @since 0.1.12
+     */
+    public static String hex(final byte[] arr, final int arrBegin, final int arrEnd) {
+        return hex(arr, arrBegin, arrEnd, STR_HEX_DEFAULT_BYTES_PER_LINE, STR_HEX_DEFAULT_BYTE_SEPARATOR);
+    }
+
+    /**
      * Converts the byte array to HEX-string representing bytes as Hexadecimal digits.
      *
      * @param arr Array from where bytes are read.
@@ -345,7 +390,7 @@ public abstract class Str {
      * @since 0.1.7
      */
     public static String hex(final byte[] arr) {
-        return hex(arr, 0, arr.length, 64, " ");
+        return hex(arr, 0, arr.length, STR_HEX_DEFAULT_BYTES_PER_LINE, STR_HEX_DEFAULT_BYTE_SEPARATOR);
     }
 
     /**
@@ -356,7 +401,7 @@ public abstract class Str {
      * @since 0.1.7
      */
     public static String hex(final int[] arr) {
-        return hex(arr, 0, arr.length, 64, " ");
+        return hex(arr, 0, arr.length, STR_HEX_DEFAULT_BYTES_PER_LINE, STR_HEX_DEFAULT_BYTE_SEPARATOR);
     }
 
     /**

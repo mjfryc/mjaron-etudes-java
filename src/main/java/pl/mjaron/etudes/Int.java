@@ -28,7 +28,7 @@ public class Int {
      * @return Value in range <code>0..15</code> representing high four bits of given byte.
      */
     public static int getHNibble(final byte what) {
-        return what >>> 4;
+        return (what >>> 4) & 0x0F;
     }
 
     /**
@@ -38,7 +38,7 @@ public class Int {
      * @return Value in range <code>0..15</code> representing high four bits of given byte.
      */
     public static int getHNibble(final int what) {
-        return (what & 0xF0) >>> 4;
+        return (what >>> 4) & 0x0F;
     }
 
     /**
@@ -49,6 +49,12 @@ public class Int {
      * @return Updated value in range <code>0..255</code>.
      */
     public static int setHNibble(final byte what, final int value) {
+        final int lowNibble = what & 0x0F;
+        final int highNibble = (value & 0x0F) << 4;
+        return lowNibble | highNibble;
+    }
+
+    public static int setHNibble(final int what, final int value) {
         final int lowNibble = what & 0x0F;
         final int highNibble = (value & 0x0F) << 4;
         return lowNibble | highNibble;
@@ -97,5 +103,59 @@ public class Int {
      */
     public static int getNthUByteLE(final int number, final int byteNumber) {
         return (number >> (byteNumber * 8)) & 0xFF;
+    }
+
+    /**
+     * Converts Integer to big-endian byte array where arr[0] is the most significant byte and arr[3] is the least
+     * significant byte.
+     *
+     * @param what 32-bit number which will be stored as four 8-bit bytes.
+     * @param arr  Array where results will be stored.
+     */
+    public static void toByteArrayBE(final int what, byte[] arr) {
+        arr[0] = (byte) ((what & 0xFF000000) >> 24);
+        arr[1] = (byte) ((what & 0x00FF0000) >> 16);
+        arr[2] = (byte) ((what & 0x0000FF00) >> 8);
+        arr[3] = (byte) ((what & 0x000000FF));
+    }
+
+    /**
+     * Converts Integer to big-endian byte array where arr[0] is the most significant byte and arr[3] is the least
+     * significant byte.
+     *
+     * @param what 32-bit number which will be stored as four 8-bit bytes.
+     * @return Array where results will be stored.
+     */
+    public static byte[] toByteArrayBE(int what) {
+        byte[] result = new byte[4];
+        toByteArrayBE(what, result);
+        return result;
+    }
+
+    /**
+     * Converts Integer to little-endian byte array where arr[0] is the least significant byte and arr[3] is the most
+     * significant byte.
+     *
+     * @param what 32-bit number which will be stored as four 8-bit bytes.
+     * @param arr  Array where results will be stored.
+     */
+    public static void toByteArrayLE(final int what, byte[] arr) {
+        arr[0] = (byte) ((what & 0x000000FF));
+        arr[1] = (byte) ((what & 0x0000FF00) >> 8);
+        arr[2] = (byte) ((what & 0x00FF0000) >> 16);
+        arr[3] = (byte) ((what & 0xFF000000) >> 24);
+    }
+
+    /**
+     * Converts Integer to little-endian byte array where arr[0] is the least significant byte and arr[3] is the most
+     * significant byte.
+     *
+     * @param what 32-bit number which will be stored as four 8-bit bytes.
+     * @return Array where results will be stored.
+     */
+    public static byte[] toByteArrayLE(int what) {
+        byte[] result = new byte[4];
+        toByteArrayLE(what, result);
+        return result;
     }
 }

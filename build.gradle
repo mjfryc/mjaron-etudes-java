@@ -27,7 +27,7 @@ def PROJECT_SIGNATURE = 'mjaron-etudes-java'
 println("Build file execution: $PROJECT_SIGNATURE")
 
 group 'io.github.mjfryc'
-version "0.1.11"
+version "0.1.12"
 
 repositories {
     mavenCentral()

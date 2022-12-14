@@ -98,4 +98,20 @@ class StrTest {
         final byte[] arr = Str.hex(hStr);
         assertArrayEquals(expectedArray, arr);
     }
+
+    @Test
+    void hexStrToByteArr2() {
+        final byte[] arr = {(byte) 0xAF, (byte) 0x01, (byte) 0xC0, (byte) 0xF0};
+        final String expectedHStr = "01 C0";
+        final String hStr = Str.hex(arr, 1, 3);
+        assertEquals(expectedHStr, hStr);
+    }
+
+    @Test
+    void hexStrToByteArr3() {
+        final int[] arr = {0xAF, 0x01, 0xC0, 0xF0};
+        final String expectedHStr = "01 C0";
+        final String hStr = Str.hex(arr, 1, 3);
+        assertEquals(expectedHStr, hStr);
+    }
 }
