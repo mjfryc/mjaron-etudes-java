@@ -23,6 +23,10 @@ package pl.mjaron.etudes.table;
  * Abstract operations required to write table.
  */
 public interface ITableWriter {
+
+    void beginTable(ITableSource source);
+    void endTable();
+
     void beginHeader();
     void endHeader();
     void beginRow();
@@ -36,6 +40,7 @@ public interface ITableWriter {
     }
 
     static void writeOperation(final ITableSource source, final ITableWriter writer) {
+        writer.beginTable(source);
         if (source.hasHeaders()) {
             writer.beginHeader();
             for (final String header : source.getHeaders()) {
@@ -51,5 +56,6 @@ public interface ITableWriter {
             }
             writer.endRow();
         }
+        writer.endTable();
     }
 }

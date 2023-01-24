@@ -24,11 +24,25 @@ import pl.mjaron.etudes.Str;
 public class BlankTableWriter implements ITableWriter {
 
     private final StringBuilder out = new StringBuilder();
-    private final int[] widths;
+    private int[] widths = null;
     private int columnIdx = 0;
+
+    public BlankTableWriter() {
+    }
 
     public BlankTableWriter(final int[] widths) {
         this.widths = widths;
+    }
+
+    @Override
+    public void beginTable(ITableSource source) {
+        if (this.widths == null) {
+            this.widths = TableColumnsWidthDetector.compute(source);
+        }
+    }
+
+    @Override
+    public void endTable() {
     }
 
     @Override

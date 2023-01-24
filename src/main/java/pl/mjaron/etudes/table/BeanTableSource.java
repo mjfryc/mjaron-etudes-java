@@ -28,9 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Creates table source from java bean.
+ * Creates table source from the java bean. Each table row describes single object instance. Each table column describes
+ * object field value.
  *
- * @param <BeanT> Bean type.
+ * @param <BeanT> Bean class type.
  */
 public class BeanTableSource<BeanT> implements ITableSource {
 
@@ -39,6 +40,23 @@ public class BeanTableSource<BeanT> implements ITableSource {
     final private Field[] tFields;
     final private List<String> headers;
 
+    /**
+     * Initializes the object which is ready to iterate.
+     *
+     * <pre>
+     * {@code
+     *     List<MyClass> objects = ...
+     *
+     *     |MyClass.field0              |MyClass.field1              |...
+     *     |----------------------------|----------------------------|...
+     *     |objects[0].field0.toString()|objects[0].field1.toString()|...
+     *     |objects[1].field0.toString()|objects[1].field1.toString()|...
+     * }
+     * </pre>
+     *
+     * @param values Any iterable object or container which stores the series of objects.
+     * @param tClass Class of the iterated object.
+     */
     public BeanTableSource(final Iterable<BeanT> values, final Class<BeanT> tClass) {
         this.tClass = tClass;
         this.values = values;
@@ -61,6 +79,11 @@ public class BeanTableSource<BeanT> implements ITableSource {
         return new RowsIterator<>(tClass, tFields, values);
     }
 
+    /**
+     * Iterates the table rows. Single row represents single object instance.
+     *
+     * @param <BeanT> Type of the object.
+     */
     private static class RowsIterator<BeanT> implements Iterator<Iterable<String>> {
 
         final Iterator<BeanT> beanIterator;
@@ -78,6 +101,11 @@ public class BeanTableSource<BeanT> implements ITableSource {
             return beanIterator.hasNext();
         }
 
+        /**
+         * Prepares next table row. Iterating returned row allows obtaining row's cell values.
+         *
+         * @return Next table row.
+         */
         @Override
         public Iterable<String> next() {
             final BeanT bean = beanIterator.next();

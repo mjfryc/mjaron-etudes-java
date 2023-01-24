@@ -27,8 +27,11 @@ import pl.mjaron.etudes.Str;
 public class MarkdownTableWriter implements ITableWriter {
 
     private final StringBuilder out = new StringBuilder();
-    private final int[] widths;
+    private int[] widths = null;
     private int columnIdx = 0;
+
+    public MarkdownTableWriter() {
+    }
 
     public MarkdownTableWriter(final int[] widths) {
         this.widths = widths;
@@ -37,6 +40,17 @@ public class MarkdownTableWriter implements ITableWriter {
     @Override
     public String getTable() {
         return out.toString();
+    }
+
+    @Override
+    public void beginTable(ITableSource source) {
+        if (this.widths == null) {
+            this.widths = TableColumnsWidthDetector.compute(source);
+        }
+    }
+
+    @Override
+    public void endTable() {
     }
 
     @Override

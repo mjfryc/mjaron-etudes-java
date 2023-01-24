@@ -150,8 +150,9 @@ public abstract class Obj {
      * @return Markdown table.
      */
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
-        final BeanTableSource<T> source = new BeanTableSource<>(iterable, tClass);
-        return asTable(source, new MarkdownTableWriter(TableColumnsWidthDetector.compute(source)));
+        final BeanTableSource<T> tableSource = new BeanTableSource<>(iterable, tClass);
+        final MarkdownTableWriter tableWriter = new MarkdownTableWriter();
+        return asTable(tableSource, tableWriter);
     }
 
     /**

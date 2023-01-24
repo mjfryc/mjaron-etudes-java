@@ -19,9 +19,19 @@
 
 package pl.mjaron.etudes.table;
 
+/**
+ * Determines the widths of table columns.
+ */
 public abstract class TableColumnsWidthDetector {
 
-    private static void apply(final int[] widths, final Iterable<String> series) {
+    /**
+     * Updates the column widths (character counts) when current width values are bigger than already stored max column
+     * widths.
+     *
+     * @param widths array of maximum column widths.
+     * @param series Single row (record) of data. Used to check the cell width.
+     */
+    private static void applyRow(final int[] widths, final Iterable<String> series) {
         int i = 0;
         for (final String entry : series) {
             final int oldEntryWidth = widths[i];
@@ -31,13 +41,19 @@ public abstract class TableColumnsWidthDetector {
         }
     }
 
+    /**
+     * Detects the maximum values of each column's cell width.
+     *
+     * @param source Input table.
+     * @return Array of max widths of corresponding columns.
+     */
     public static int[] compute(final ITableSource source) {
         final int[] widths = new int[source.getColumnsCount()];
         if (source.hasHeaders()) {
-            apply(widths, source.getHeaders());
+            applyRow(widths, source.getHeaders());
         }
         for (final Iterable<String> row : source) {
-            apply(widths, row);
+            applyRow(widths, row);
         }
         return widths;
     }
