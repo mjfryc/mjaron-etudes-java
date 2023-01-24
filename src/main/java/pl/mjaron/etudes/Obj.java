@@ -57,11 +57,12 @@ public abstract class Obj {
 
     /**
      * Allows to visit all values of Java Bean object.
-     * @param what Object reference.
-     * @param tClass Class of object.
-     * @param fields Fields of object class.
+     *
+     * @param what    Object reference.
+     * @param tClass  Class of object.
+     * @param fields  Fields of object class.
      * @param visitor visitor instance.
-     * @param <T> Type of object.
+     * @param <T>     Type of object.
      */
     public static <T> void visitFieldValues(final T what, final Class<T> tClass, final Field[] fields, final IFieldVisitor visitor) {
         for (final Field field : fields) {
@@ -145,9 +146,10 @@ public abstract class Obj {
      * </pre>
      *
      * @param iterable Any iterable collection.
-     * @param tClass Class of iterated entries.
-     * @param <T> Type of iterated entries.
+     * @param tClass   Class of iterated entries.
+     * @param <T>      Type of iterated entries.
      * @return Markdown table.
+     * @deprecated Use {@link Table#render(Iterable, Class)}
      */
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
         final BeanTableSource<T> tableSource = new BeanTableSource<>(iterable, tClass);
@@ -157,14 +159,15 @@ public abstract class Obj {
 
     /**
      * Read from table source and write to table writer.
-     * @param source Table source.
-     * @param writer Table destination.
+     *
+     * @param source    Table source.
+     * @param writer    Table destination.
      * @param <SourceT> Type of table source.
      * @param <WriterT> Type of table destination.
      * @return Table written as a String.
+     * @deprecated Use {@link Table#renderWith(ITableSource, ITableWriter)}
      */
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
-        source.readTo(writer);
-        return writer.getTable();
+        return Table.renderWith(source, writer);
     }
 }

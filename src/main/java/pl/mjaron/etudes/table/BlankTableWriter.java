@@ -52,7 +52,7 @@ public class BlankTableWriter implements ITableWriter {
 
     @Override
     public void endHeader() {
-
+        out.append("\n");
     }
 
     @Override
