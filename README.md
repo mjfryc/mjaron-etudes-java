@@ -25,7 +25,7 @@ implementation 'io.github.mjfryc:mjaron-etudes-java:0.1.12'
 * Download latest release
     * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
     * To `[gradle's root directory]/libs/`
-    * E.g: `my-project/libs/mjaron-etudes-java-0.0.11.jar`
+    * E.g: `my-project/libs/mjaron-etudes-java-0.1.12.jar`
 * In any Gradle subproject which needs this library, put following content:
     * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.1.12.jar')`
 * Now import package and use it, e.g:
