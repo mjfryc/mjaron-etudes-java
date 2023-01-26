@@ -61,7 +61,7 @@ public class BeanTableSource<BeanT> implements ITableSource {
         this.tClass = tClass;
         this.values = values;
         this.tFields = Obj.getFields(this.tClass);
-        this.headers = Obj.getFieldNames(this.tClass, tFields);
+        this.headers = Obj.getFieldNames(tFields);
     }
 
     @Override
@@ -110,12 +110,7 @@ public class BeanTableSource<BeanT> implements ITableSource {
         public Iterable<String> next() {
             final BeanT bean = beanIterator.next();
             List<String> stringSeries = new ArrayList<>(tFields.length);
-            Obj.visitFieldValues(bean, this.tClass, this.tFields, new Obj.IFieldVisitor() {
-                @Override
-                public void visit(final String name, final Object value) {
-                    stringSeries.add(Str.orEmpty(value));
-                }
-            });
+            Obj.visitFieldValues(bean, this.tClass, this.tFields, (name, value) -> stringSeries.add(Str.orEmpty(value)));
             return stringSeries;
         }
     }

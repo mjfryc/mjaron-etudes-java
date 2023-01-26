@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 /**
  * Allows getting current iterated element with {@link #curr()} method.
  *
- * @param <T>
+ * @param <T> Iterated element type
  */
 public class IteratorWrapper<T> implements Iterator<T> {
 

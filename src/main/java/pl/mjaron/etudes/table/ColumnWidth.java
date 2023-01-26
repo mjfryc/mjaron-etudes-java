@@ -1,5 +1,5 @@
 /*
- * Copyright  2021  Michał Jaroń <m.jaron@protonmail.com>
+ * Copyright  2023  Michał Jaroń <m.jaron@protonmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -19,62 +19,42 @@
 
 package pl.mjaron.etudes.table;
 
-import pl.mjaron.etudes.Str;
+public class ColumnWidth {
 
-public class BlankTableWriter implements ITableWriter {
+    private static final ColumnWidth COMPUTE_INSTANCE = new ColumnWidth(null, true);
+    private static final ColumnWidth DIVERGENT_INSTANCE = new ColumnWidth(null, false);
 
-    private final StringBuilder out = new StringBuilder();
-    private int[] widths = null;
-    private int columnIdx = 0;
+    /**
+     * Arbitrary widths.
+     */
+    public final int[] widths;
 
-    public BlankTableWriter() {
-    }
+    /**
+     * Compute widths.
+     */
+    public final boolean compute;
 
-    public BlankTableWriter(final int[] widths) {
+    public ColumnWidth(final int[] widths, final boolean compute) {
         this.widths = widths;
+        this.compute = compute;
     }
 
-    @Override
-    public void beginTable(ITableSource source, int[] widths) {
-        if (widths != null) {
-            this.widths = widths;
+    public static ColumnWidth defaultOr(final ColumnWidth orValue) {
+        if (orValue != null) {
+            return orValue;
         }
+        return aligned();
     }
 
-    @Override
-    public void endTable() {
+    public static ColumnWidth arbitrary(final int[] widths) {
+        return new ColumnWidth(widths, false);
     }
 
-    @Override
-    public void beginHeader() {
-
+    public static ColumnWidth aligned() {
+        return COMPUTE_INSTANCE;
     }
 
-    @Override
-    public void endHeader() {
-        out.append("\n");
-    }
-
-    @Override
-    public void beginRow() {
-        columnIdx = 0;
-    }
-
-    @Override
-    public void endRow() {
-        out.append('\n');
-    }
-
-    @Override
-    public void writeCell(String what) {
-        out.append(' ');
-        Str.padLeft(what, widths[columnIdx], ' ', out);
-        out.append(' ');
-        ++columnIdx;
-    }
-
-    @Override
-    public String getTable() {
-        return out.toString();
+    public static ColumnWidth divergent() {
+        return DIVERGENT_INSTANCE;
     }
 }

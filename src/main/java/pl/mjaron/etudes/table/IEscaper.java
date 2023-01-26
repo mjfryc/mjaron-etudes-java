@@ -17,36 +17,28 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes;
+package pl.mjaron.etudes.table;
 
-import org.junit.jupiter.api.Test;
-import pl.mjaron.etudes.table.BlankTableWriter;
-import pl.mjaron.etudes.table.RenderOptions;
+/**
+ * Converts strings by replacing special characters.
+ *
+ * @since 0.1.12
+ */
+public interface IEscaper {
 
-class Cat {
-    String name = "Tom";
-    int age = 2;
+    /**
+     * Converts given {@link String} by replacing special characters
+     *
+     * @param what {@link String} to escape
+     * @return Escaped {@link String}
+     * @since 0.1.12
+     */
+    String escape(String what);
 
-    Cat() {
-    }
-
-    Cat(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-}
-
-class TableTest {
-
-    @Test
-    void render() {
-        final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5)};
-        System.out.println(Table.render(cats, Cat.class, RenderOptions.make().withMarkdownEscaper().withColumnsAligned()));
-
-        String table = Table.render(cats, Cat.class, RenderOptions.make().withColumnsAligned());
-        System.out.println(table);
-
-        System.out.println(Table.render(cats, Cat.class, new BlankTableWriter()));
+    static IEscaper dummyOr(final IEscaper what) {
+        if (what == null) {
+            return DummyEscaper.getInstance();
+        }
+        return what;
     }
 }
-

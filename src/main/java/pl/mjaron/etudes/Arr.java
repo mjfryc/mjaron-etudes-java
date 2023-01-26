@@ -139,4 +139,20 @@ public abstract class Arr {
         System.arraycopy(other, 0, newArray, array.length, other.length);
         return newArray;
     }
+
+    public static <T> boolean containsReference(final T[] arr, final T elem) {
+        for (final T entry : arr) {
+            if (entry == elem) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean contains(final char[] arr, final char elem) {
+        for (final char entry : arr)
+            if (entry == elem)
+                return true;
+        return false;
+    }
 }

@@ -61,15 +61,18 @@ class ObjTest {
     }
 
     @Test
-    void asTable() {
+    void asTable0() {
         final Cat cat = sampleCat();
-        List<Cat> cats = Arrays.asList(cat, otherCat());
-        final String table = Obj.asTable(cats, Cat.class);
+        final String table = Table.render(Arrays.asList(cat, otherCat()), Cat.class, new MarkdownTableWriter());
         System.out.println(table);
+    }
 
+    @Test
+    void asTable1() {
         final int[][] arr = {{0, 1, 2}, {3, 499, 5}, {6, 7, 8}};
         final ITableSource source = new ListTableSource<>(StringSeriesList.from(arr));
-        final String arrTable = Obj.asTable(source , new BlankTableWriter(TableColumnsWidthDetector.compute(source)));
+        final String arrTable = Obj.asTable(source, new BlankTableWriter());
+        //final String arrTable = Obj.asTable(source, new MarkdownTableWriter());
         System.out.println("Numbers array:\n" + arrTable);
     }
 

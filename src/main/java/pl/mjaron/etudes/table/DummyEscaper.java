@@ -1,5 +1,5 @@
 /*
- * Copyright  2021  Michał Jaroń <m.jaron@protonmail.com>
+ * Copyright  2023  Michał Jaroń <m.jaron@protonmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -19,62 +19,15 @@
 
 package pl.mjaron.etudes.table;
 
-import pl.mjaron.etudes.Str;
-
-public class BlankTableWriter implements ITableWriter {
-
-    private final StringBuilder out = new StringBuilder();
-    private int[] widths = null;
-    private int columnIdx = 0;
-
-    public BlankTableWriter() {
-    }
-
-    public BlankTableWriter(final int[] widths) {
-        this.widths = widths;
-    }
-
+public class DummyEscaper implements IEscaper {
     @Override
-    public void beginTable(ITableSource source, int[] widths) {
-        if (widths != null) {
-            this.widths = widths;
-        }
+    public String escape(String what) {
+        return what;
     }
 
-    @Override
-    public void endTable() {
-    }
+    private static final DummyEscaper instance = new DummyEscaper();
 
-    @Override
-    public void beginHeader() {
-
-    }
-
-    @Override
-    public void endHeader() {
-        out.append("\n");
-    }
-
-    @Override
-    public void beginRow() {
-        columnIdx = 0;
-    }
-
-    @Override
-    public void endRow() {
-        out.append('\n');
-    }
-
-    @Override
-    public void writeCell(String what) {
-        out.append(' ');
-        Str.padLeft(what, widths[columnIdx], ' ', out);
-        out.append(' ');
-        ++columnIdx;
-    }
-
-    @Override
-    public String getTable() {
-        return out.toString();
+    public static DummyEscaper getInstance() {
+        return instance;
     }
 }

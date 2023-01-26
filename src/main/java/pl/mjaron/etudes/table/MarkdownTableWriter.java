@@ -28,6 +28,7 @@ public class MarkdownTableWriter implements ITableWriter {
 
     private final StringBuilder out = new StringBuilder();
     private int[] widths = null;
+
     private int columnIdx = 0;
 
     public MarkdownTableWriter() {
@@ -37,15 +38,30 @@ public class MarkdownTableWriter implements ITableWriter {
         this.widths = widths;
     }
 
+    /**
+     * Set column widths.
+     *
+     * @param widths Array with column widths.
+     * @return This reference.
+     */
+    public MarkdownTableWriter setWidths(int[] widths) {
+        this.widths = widths;
+        return this;
+    }
+
+    public int[] getWidths() {
+        return widths;
+    }
+
     @Override
     public String getTable() {
         return out.toString();
     }
 
     @Override
-    public void beginTable(ITableSource source) {
-        if (this.widths == null) {
-            this.widths = TableColumnsWidthDetector.compute(source);
+    public void beginTable(ITableSource source, int[] widths) {
+        if (widths != null) {
+            this.widths = widths;
         }
     }
 
@@ -79,7 +95,7 @@ public class MarkdownTableWriter implements ITableWriter {
     }
 
     @Override
-    public void writeCell(String what) {
+    public void writeCell(final String what) {
         out.append("| ");
         Str.padLeft(what, widths[columnIdx], ' ', out);
         out.append(' ');

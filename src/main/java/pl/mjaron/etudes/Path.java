@@ -83,7 +83,8 @@ public abstract class Path {
      *     a.b/c --&gt; ""
      * </pre>
      *
-     * @param path Given path.
+     * @param path       Given path.
+     * @param separators Path node separators
      * @return Extension without a dot.
      */
     public static String extension(final String path, final String separators) {

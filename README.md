@@ -1,6 +1,7 @@
 # mjaron-etudes-java
 
-Utils compatible with Java 1.8 or higher.
+Library for printing Java object lists as Markdown-formatted table.
+Utils compatible with Java 1.8.
 
 [![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
 [![Publish package to GitHub Packages](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml)
@@ -29,9 +30,15 @@ implementation 'io.github.mjfryc:mjaron-etudes-java:0.1.11'
 * Now import package and use it, e.g:
     * `import pl.mjaron.etudes.Obj;`
 
-## Object utils
+## Table generation utils
 
 ### Printing object list as a Markdown table
+
+```java
+Cat cat = sampleCat();
+String table = Table.render(Arrays.asList(cat, otherCat()), Cat.class);
+System.out.println(table);
+```
 
 ```
 | name | legsCount |  lazy | topSpeed |
@@ -40,11 +47,47 @@ implementation 'io.github.mjfryc:mjaron-etudes-java:0.1.11'
 |  Bob |         5 | false |     75.0 |
 ```
 
+### Table generation customization
+
+Optionally, Markdown special characters may be escaped:
+
 ```java
-final Cat cat = sampleCat();
-final String table = Obj.asTable(List.of(cat, otherCat()), Cat.class);
+String table = Table.render(cats, Cat.class,
+    RenderOptions.make().withMarkdownEscaper().withColumnsAligned());
 System.out.println(table);
 ```
+
+So now all special characters are escaped by HTML number syntax, there is following raw text:
+    
+    |              name | age |
+    | ----------------- | --- |
+    |               Tom |   2 |
+    | &#95;Michael&#95; |   5 |
+
+Rendered by Markdown:
+
+|              name | age |
+| ----------------- | --- |
+|               Tom |   2 |
+| &#95;Michael&#95; |   5 |
+
+Without a `MarkdownEscaper`, cells will be rendered 'as is', which can cause a bad rendering:
+
+```java
+String table = Table.render(cats, Cat.class,
+    RenderOptions.make().withColumnsAligned());
+System.out.println(table);
+```
+|      name | age |
+| --------- | --- |
+|       Tom |   2 |
+| _Michael_ |   5 |
+
+### Markdown custom escaper - @TODO
+
+@TODO Implement escaper which escapes only when prepended with (eg.) backslash `&#92;`.
+
+## Object utils
 
 ### Getting object values
 

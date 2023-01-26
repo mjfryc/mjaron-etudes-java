@@ -21,8 +21,7 @@ package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ArrTest {
 
@@ -56,5 +55,21 @@ class ArrTest {
         boolean[] b = new boolean[]{};
         boolean[] c = Arr.add(a, b);
         assertArrayEquals(c, new boolean[]{false});
+    }
+
+    @SuppressWarnings("WrapperTypeMayBePrimitive")
+    @Test
+    void containsReference() {
+        final Integer i0 = 0;
+        final Integer i1 = 1;
+        final Integer i2 = 2;
+        final Integer i3 = 3;
+        final Integer i4 = 4;
+        final Integer[] arr = new Integer[]{i1, i2, i3};
+        assertTrue(Arr.containsReference(arr, i1));
+        assertFalse(Arr.containsReference(arr, i4));
+
+        final Integer[] emptyArr = new Integer[0];
+        assertFalse(Arr.containsReference(arr, i0));
     }
 }

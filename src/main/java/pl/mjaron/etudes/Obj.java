@@ -35,7 +35,7 @@ public abstract class Obj {
         return tClass.getDeclaredFields();
     }
 
-    public static <T> List<String> getFieldNames(final Class<T> tClass, final Field[] fields) {
+    public static <T> List<String> getFieldNames(final Field[] fields) {
         List<String> names = new ArrayList<>(fields.length);
         for (final Field entry : fields) {
             names.add(entry.getName());
@@ -45,7 +45,7 @@ public abstract class Obj {
 
     public static <T> List<String> getFieldNames(final Class<T> tClass) {
         final Field[] fields = getFields(tClass);
-        return getFieldNames(tClass, fields);
+        return getFieldNames(fields);
     }
 
     /**
@@ -85,22 +85,17 @@ public abstract class Obj {
                     try {
                         getter = tClass.getMethod("is" + fieldNameCapitalized);
                     } catch (final NoSuchMethodException e2) {
-                        throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
-                                "], of type: [" + field.getType() + "]: Field is not public and there is no get"
-                                + fieldNameCapitalized + "() + nor is" + fieldNameCapitalized + "() method accessible.", e2);
+                        throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: Field is not public and there is no get" + fieldNameCapitalized + "() + nor is" + fieldNameCapitalized + "() method accessible.", e2);
                     }
                 } else {
-                    throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
-                            "], of type: [" + field.getType() + "]: Field is not public and there is no get"
-                            + fieldNameCapitalized + "() method accessible.", e1);
+                    throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: Field is not public and there is no get" + fieldNameCapitalized + "() method accessible.", e1);
                 }
             }
             try {
                 final Object getterResult = getter.invoke(what);
                 visitor.visit(field.getName(), getterResult);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
-                        "], of type: [" + field.getType() + "]: invocation of getter has failed.", e);
+                throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: invocation of getter has failed.", e);
             }
         }
     }
@@ -149,12 +144,10 @@ public abstract class Obj {
      * @param tClass   Class of iterated entries.
      * @param <T>      Type of iterated entries.
      * @return Markdown table.
-     * @deprecated Use {@link Table#render(Iterable, Class)}
+     * @deprecated Use {@link Table#render(Iterable, Class, RenderOptions)}
      */
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
-        final BeanTableSource<T> tableSource = new BeanTableSource<>(iterable, tClass);
-        final MarkdownTableWriter tableWriter = new MarkdownTableWriter();
-        return asTable(tableSource, tableWriter);
+        return Table.renderWith(new BeanTableSource<>(iterable, tClass), new MarkdownTableWriter(), RenderOptions.MARKDOWN_ESCAPER);
     }
 
     /**
@@ -165,9 +158,9 @@ public abstract class Obj {
      * @param <SourceT> Type of table source.
      * @param <WriterT> Type of table destination.
      * @return Table written as a String.
-     * @deprecated Use {@link Table#renderWith(ITableSource, ITableWriter)}
+     * @deprecated Use {@link Table#renderWith(ITableSource, ITableWriter, RenderOptions)}
      */
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
-        return Table.renderWith(source, writer);
+        return Table.renderWith(source, writer, RenderOptions.FIXED_WIDTH);
     }
 }

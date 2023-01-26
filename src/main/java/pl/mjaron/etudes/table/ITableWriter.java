@@ -24,27 +24,41 @@ package pl.mjaron.etudes.table;
  */
 public interface ITableWriter {
 
-    void beginTable(ITableSource source);
+    void beginTable(ITableSource source, int[] widths);
+
     void endTable();
 
     void beginHeader();
+
     void endHeader();
+
     void beginRow();
+
     void endRow();
+
     void writeCell(final String what);
 
     String getTable();
 
-    default void writeFrom(final ITableSource source) {
-        writeOperation(source, this);
+    default void writeFrom(final ITableSource source, final RenderOptions options) {
+        writeOperation(source, this, options);
     }
 
-    static void writeOperation(final ITableSource source, final ITableWriter writer) {
-        writer.beginTable(source);
+    static void writeOperation(final ITableSource source, final ITableWriter writer, final RenderOptions options) {
+        final IEscaper finalEscaper = IEscaper.dummyOr(options.getEscaper());
+        final ColumnWidth finalColumnWidth = ColumnWidth.defaultOr(options.getColumnWidth());
+        final int[] widths;
+        if (finalColumnWidth.compute) {
+            widths = TableColumnsWidthDetector.compute(source, finalEscaper);
+        } else {
+            widths = null;
+        }
+
+        writer.beginTable(source, widths);
         if (source.hasHeaders()) {
             writer.beginHeader();
             for (final String header : source.getHeaders()) {
-                writer.writeCell(header);
+                writer.writeCell(finalEscaper.escape(header));
             }
             writer.endHeader();
         }
@@ -52,7 +66,7 @@ public interface ITableWriter {
         for (final Iterable<String> row : source) {
             writer.beginRow();
             for (final String cell : row) {
-                writer.writeCell(cell);
+                writer.writeCell(finalEscaper.escape(cell));
             }
             writer.endRow();
         }

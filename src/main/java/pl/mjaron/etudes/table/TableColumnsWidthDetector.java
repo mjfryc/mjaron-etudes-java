@@ -31,30 +31,36 @@ public abstract class TableColumnsWidthDetector {
      * @param widths array of maximum column widths.
      * @param series Single row (record) of data. Used to check the cell width.
      */
-    private static void applyRow(final int[] widths, final Iterable<String> series) {
+    private static void applyRow(final int[] widths, final Iterable<String> series, final IEscaper escaper) {
         int i = 0;
         for (final String entry : series) {
             final int oldEntryWidth = widths[i];
-            final int newEntryWidth = Integer.max(oldEntryWidth, entry.length());
+            final int newEntryWidth = Integer.max(oldEntryWidth, escaper.escape(entry).length());
             widths[i] = newEntryWidth;
             ++i;
         }
     }
 
     /**
-     * Detects the maximum values of each column's cell width.
+     * Detects the maximum values of each column's cell width
      *
-     * @param source Input table.
-     * @return Array of max widths of corresponding columns.
+     * @param escaper {@link IEscaper} instance or null if it is not necessary
+     * @param source  Input table
+     * @return Array of max widths of corresponding columns
      */
-    public static int[] compute(final ITableSource source) {
+    public static int[] compute(final ITableSource source, final IEscaper escaper) {
+        final IEscaper finalEscaper = IEscaper.dummyOr(escaper);
         final int[] widths = new int[source.getColumnsCount()];
         if (source.hasHeaders()) {
-            applyRow(widths, source.getHeaders());
+            applyRow(widths, source.getHeaders(), finalEscaper);
         }
         for (final Iterable<String> row : source) {
-            applyRow(widths, row);
+            applyRow(widths, row, finalEscaper);
         }
         return widths;
+    }
+
+    public static int[] compute(final ITableSource source) {
+        return compute(source, null);
     }
 }
