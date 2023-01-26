@@ -86,7 +86,7 @@ System.out.println(table);
 
 ### Markdown custom escaper - @TODO
 
-@TODO Implement escaper which escapes only when prepended with (eg.) backslash `&#92;`.
+@TODO Implement escaper which escapes only when preceded by (eg.) backslash `&#92;`.
 
 ## Object utils
 
