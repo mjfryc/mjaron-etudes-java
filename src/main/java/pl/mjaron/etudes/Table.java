@@ -39,16 +39,15 @@ public abstract class Table {
      * Read from table source and write to table writer.
      *
      * @param source    Table source.
-     * @param writer    Table destination.
      * @param options   Rendering options
      * @param <SourceT> Type of table source.
      * @param <WriterT> Type of table destination.
      * @return Table rendered as text
      * @since 0.1.12
      */
-    public static <SourceT extends ITableSource, WriterT extends ITableWriter> String renderWith(final SourceT source, final WriterT writer, final RenderOptions options) {
-        source.readTo(writer, options);
-        return writer.getTable();
+    public static <SourceT extends ITableSource, WriterT extends ITableWriter> String renderWith(final SourceT source, final RenderOptions options) {
+        source.readTo(options);
+        return options.getWriter().getTable();
     }
 
     /**
@@ -56,14 +55,13 @@ public abstract class Table {
      *
      * @param iterable Any iterable
      * @param tClass   Element class
-     * @param writer   Writer implementation instance
      * @param options  Rendering options
      * @param <T>      Element type
      * @return Table rendered as text
      * @since 0.1.12
      */
-    public static <T> String render(final Iterable<T> iterable, final Class<T> tClass, final ITableWriter writer, final RenderOptions options) {
-        return renderWith(new BeanTableSource<>(iterable, tClass), writer, options);
+    public static <T> String render(final Iterable<T> iterable, final Class<T> tClass, final RenderOptions options) {
+        return renderWith(new BeanTableSource<>(iterable, tClass), options);
     }
 
     /**
@@ -77,27 +75,7 @@ public abstract class Table {
      * @since 0.1.12
      */
     public static <T> String render(final Iterable<T> iterable, final Class<T> tClass, final ITableWriter writer) {
-        return render(iterable, tClass, writer, RenderOptions.DEFAULT);
-    }
-
-    /**
-     * Prints iterable as a table, e.g:
-     *
-     * <pre>
-     * | name | legsCount | lazy | topSpeed |
-     * | ---- | --------- | ---- | -------- |
-     * | John |         4 | true |    35.24 |
-     * </pre>
-     *
-     * @param iterable Any iterable collection
-     * @param tClass   Class of iterated entries
-     * @param <T>      Type of iterated entries
-     * @param options  Rendering options
-     * @return Markdown table.
-     * @since 0.1.12
-     */
-    public static <T> String render(final Iterable<T> iterable, final Class<T> tClass, final RenderOptions options) {
-        return render(iterable, tClass, new MarkdownTableWriter(), options);
+        return render(iterable, tClass, RenderOptions.make().withWriter(writer));
     }
 
     /**
@@ -110,36 +88,7 @@ public abstract class Table {
      * @since 0.1.12
      */
     public static <T> String render(final Iterable<T> iterable, final Class<T> tClass) {
-        return render(iterable, tClass, new MarkdownTableWriter(), RenderOptions.DEFAULT);
-    }
-
-    /**
-     * Creates table from any array.
-     *
-     * @param array   Any array
-     * @param tClass  Element class
-     * @param writer  Writer implementation instance
-     * @param options Rendering options
-     * @param <T>     Element type
-     * @return Table rendered as text
-     * @since 0.1.12
-     */
-    public static <T> String render(final T[] array, final Class<T> tClass, final ITableWriter writer, final RenderOptions options) {
-        return render(Arrays.asList(array), tClass, writer, options);
-    }
-
-    /**
-     * Creates table from any array.
-     *
-     * @param array  Any array
-     * @param tClass Element class
-     * @param writer Writer implementation instance
-     * @param <T>    Element type
-     * @return Table rendered as text
-     * @since 0.1.12
-     */
-    public static <T> String render(final T[] array, final Class<T> tClass, final ITableWriter writer) {
-        return render(array, tClass, writer, RenderOptions.DEFAULT);
+        return render(iterable, tClass, RenderOptions.make());
     }
 
     /**
@@ -153,7 +102,21 @@ public abstract class Table {
      * @since 0.1.12
      */
     public static <T> String render(final T[] array, final Class<T> tClass, final RenderOptions options) {
-        return render(array, tClass, new MarkdownTableWriter(), options);
+        return render(Arrays.asList(array), tClass, options);
+    }
+
+    /**
+     * Creates table from any array.
+     *
+     * @param array  Any array
+     * @param tClass Element class
+     * @param writer Writer implementation instance
+     * @param <T>    Element type
+     * @return Table rendered as text
+     * @since 0.1.12
+     */
+    public static <T> String render(final T[] array, final Class<T> tClass, final ITableWriter writer) {
+        return render(array, tClass, RenderOptions.make().withWriter(writer));
     }
 
     /**
@@ -166,6 +129,6 @@ public abstract class Table {
      * @since 0.1.12
      */
     public static <T> String render(final T[] array, final Class<T> tClass) {
-        return render(array, tClass, new MarkdownTableWriter(), RenderOptions.DEFAULT);
+        return render(array, tClass, RenderOptions.make());
     }
 }

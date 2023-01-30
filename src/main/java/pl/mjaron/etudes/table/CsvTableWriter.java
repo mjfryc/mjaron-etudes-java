@@ -19,42 +19,55 @@
 
 package pl.mjaron.etudes.table;
 
-public class ColumnWidth {
+public class CsvTableWriter implements ITableWriter {
 
-    private static final ColumnWidth COMPUTE_INSTANCE = new ColumnWidth(null, true);
-    private static final ColumnWidth DIVERGENT_INSTANCE = new ColumnWidth(null, false);
-
-    /**
-     * Arbitrary widths.
-     */
-    public final int[] widths;
+    private final StringBuilder out = new StringBuilder();
 
     /**
-     * Compute widths.
+     * Determines if first cell in row.
      */
-    public final boolean compute;
+    private boolean firstCell = true;
 
-    public ColumnWidth(final int[] widths, final boolean compute) {
-        this.widths = widths;
-        this.compute = compute;
+    @Override
+    public void beginTable(ITableSource source, RenderOptions options) {
     }
 
-    public static ColumnWidth defaultOr(final ColumnWidth orValue) {
-        if (orValue != null) {
-            return orValue;
+    @Override
+    public void endTable() {
+    }
+
+    @Override
+    public void beginHeader() {
+        firstCell = true;
+    }
+
+    @Override
+    public void endHeader() {
+        out.append('\n');
+    }
+
+    @Override
+    public void beginRow() {
+        firstCell = true;
+    }
+
+    @Override
+    public void endRow() {
+        out.append('\n');
+    }
+
+    @Override
+    public void writeCell(String what) {
+        if (firstCell) {
+            firstCell = false;
+        } else {
+            out.append(',');
         }
-        return aligned();
+        out.append(what);
     }
 
-    public static ColumnWidth arbitrary(final int[] widths) {
-        return new ColumnWidth(widths, false);
-    }
-
-    public static ColumnWidth aligned() {
-        return COMPUTE_INSTANCE;
-    }
-
-    public static ColumnWidth divergent() {
-        return DIVERGENT_INSTANCE;
+    @Override
+    public String getTable() {
+        return out.toString();
     }
 }

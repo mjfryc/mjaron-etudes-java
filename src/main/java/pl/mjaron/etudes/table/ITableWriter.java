@@ -24,7 +24,7 @@ package pl.mjaron.etudes.table;
  */
 public interface ITableWriter {
 
-    void beginTable(ITableSource source, int[] widths);
+    void beginTable(ITableSource source, RenderOptions options);
 
     void endTable();
 
@@ -40,21 +40,15 @@ public interface ITableWriter {
 
     String getTable();
 
-    default void writeFrom(final ITableSource source, final RenderOptions options) {
-        writeOperation(source, this, options);
-    }
-
-    static void writeOperation(final ITableSource source, final ITableWriter writer, final RenderOptions options) {
+    static void writeOperation(final ITableSource source, final RenderOptions options) {
         final IEscaper finalEscaper = IEscaper.dummyOr(options.getEscaper());
-        final ColumnWidth finalColumnWidth = ColumnWidth.defaultOr(options.getColumnWidth());
-        final int[] widths;
-        if (finalColumnWidth.compute) {
-            widths = TableColumnsWidthDetector.compute(source, finalEscaper);
-        } else {
-            widths = null;
+        if (options.isComputeColumnWidths()) {
+            final int[] widths = TableColumnsWidthDetector.compute(source, finalEscaper);
+            options.withArbitraryColumnWidths(widths);
         }
 
-        writer.beginTable(source, widths);
+        final ITableWriter writer = options.getWriter();
+        writer.beginTable(source, options);
         if (source.hasHeaders()) {
             writer.beginHeader();
             for (final String header : source.getHeaders()) {

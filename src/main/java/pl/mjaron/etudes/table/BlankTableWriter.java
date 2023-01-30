@@ -23,22 +23,18 @@ import pl.mjaron.etudes.Str;
 
 public class BlankTableWriter implements ITableWriter {
 
+    RenderOptions options = null;
+
     private final StringBuilder out = new StringBuilder();
-    private int[] widths = null;
+
     private int columnIdx = 0;
 
     public BlankTableWriter() {
     }
 
-    public BlankTableWriter(final int[] widths) {
-        this.widths = widths;
-    }
-
     @Override
-    public void beginTable(ITableSource source, int[] widths) {
-        if (widths != null) {
-            this.widths = widths;
-        }
+    public void beginTable(ITableSource source, RenderOptions options) {
+        this.options = options;
     }
 
     @Override
@@ -47,12 +43,11 @@ public class BlankTableWriter implements ITableWriter {
 
     @Override
     public void beginHeader() {
-
     }
 
     @Override
     public void endHeader() {
-        out.append("\n");
+        out.append('\n');
     }
 
     @Override
@@ -68,7 +63,11 @@ public class BlankTableWriter implements ITableWriter {
     @Override
     public void writeCell(String what) {
         out.append(' ');
-        Str.padLeft(what, widths[columnIdx], ' ', out);
+        if (options.hasColumnWidths()) {
+            Str.padLeft(what, options.getColumnWidths()[columnIdx], ' ', out);
+        } else {
+            out.append(what);
+        }
         out.append(' ');
         ++columnIdx;
     }

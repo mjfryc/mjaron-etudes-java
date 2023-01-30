@@ -26,53 +26,87 @@ package pl.mjaron.etudes.table;
  */
 public class RenderOptions {
 
-    public static final RenderOptions FIXED_WIDTH = new RenderOptions(null, ColumnWidth.aligned());
-
-    public static final RenderOptions MARKDOWN_ESCAPER = new RenderOptions(MarkdownEscaper.getDefaultInstance(), ColumnWidth.aligned());
-
-    public static final RenderOptions DEFAULT = FIXED_WIDTH;
-
-    public static RenderOptions make() {
-        return new RenderOptions(null, ColumnWidth.aligned());
+    public static RenderOptions makeMarkdown() {
+        return new RenderOptions(new MarkdownTableWriter(), MarkdownEscaper.getDefaultInstance(), null, true);
     }
 
-    private IEscaper escaper;
+    public static RenderOptions make() {
+        return new RenderOptions(new MarkdownTableWriter(), null, null, true);
+    }
 
-    private ColumnWidth columnWidth;
+    private ITableWriter writer = null;
+
+    private IEscaper escaper = null;
+
+    private int[] columnWidths = null;
+
+    private boolean computeColumnWidths = true;
 
     public RenderOptions() {
     }
 
-    public RenderOptions(IEscaper escaper, ColumnWidth columnWidth) {
+    public RenderOptions(ITableWriter writer, IEscaper escaper, int[] columnWidths, boolean computeColumnWidths) {
+        this.writer = writer;
         this.escaper = escaper;
-        this.columnWidth = columnWidth;
+        this.columnWidths = columnWidths;
+        this.computeColumnWidths = computeColumnWidths;
     }
 
-    public IEscaper getEscaper() {
-        return escaper;
+    public ITableWriter getWriter() {
+        if (writer == null) {
+            writer = new MarkdownTableWriter(); // Markdown table writer by default.
+        }
+        return writer;
     }
 
-    public RenderOptions setEscaper(IEscaper escaper) {
-        this.escaper = escaper;
+    public RenderOptions withWriter(ITableWriter writer) {
+        this.writer = writer;
         return this;
     }
 
-    public ColumnWidth getColumnWidth() {
-        return columnWidth;
+    public IEscaper getEscaper() {
+        if (escaper == null) {
+            escaper = DummyEscaper.getInstance();
+        }
+        return escaper;
     }
 
-    public RenderOptions setColumnWidth(ColumnWidth columnWidth) {
-        this.columnWidth = columnWidth;
+    public RenderOptions withEscaper(IEscaper escaper) {
+        this.escaper = escaper;
         return this;
     }
 
     public RenderOptions withMarkdownEscaper() {
-        this.escaper = MarkdownEscaper.getDefaultInstance();
+        return withEscaper(MarkdownEscaper.getDefaultInstance());
+    }
+
+    public int[] getColumnWidths() {
+        return columnWidths;
+    }
+
+    public boolean hasColumnWidths() {
+        return columnWidths != null;
+    }
+
+    public boolean isComputeColumnWidths() {
+        return computeColumnWidths;
+    }
+
+    public RenderOptions withArbitraryColumnWidths(int[] columnWidths) {
+        this.columnWidths = columnWidths;
+        this.computeColumnWidths = false;
         return this;
     }
 
-    public RenderOptions withColumnsAligned() {
-        this.columnWidth = ColumnWidth.aligned();
+    public RenderOptions withAlignedColumnWidths() {
+        this.columnWidths = null;
+        this.computeColumnWidths = true;
+        return this;
+    }
+
+    public RenderOptions withUnalignedColumnWidths() {
+        this.columnWidths = null;
+        this.computeColumnWidths = false;
         return this;
     }
 }

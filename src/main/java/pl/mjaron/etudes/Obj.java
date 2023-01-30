@@ -147,7 +147,7 @@ public abstract class Obj {
      * @deprecated Use {@link Table#render(Iterable, Class, RenderOptions)}
      */
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
-        return Table.renderWith(new BeanTableSource<>(iterable, tClass), new MarkdownTableWriter(), RenderOptions.MARKDOWN_ESCAPER);
+        return Table.renderWith(new BeanTableSource<>(iterable, tClass), RenderOptions.make());
     }
 
     /**
@@ -158,9 +158,9 @@ public abstract class Obj {
      * @param <SourceT> Type of table source.
      * @param <WriterT> Type of table destination.
      * @return Table written as a String.
-     * @deprecated Use {@link Table#renderWith(ITableSource, ITableWriter, RenderOptions)}
+     * @deprecated Use {@link Table#renderWith(ITableSource, RenderOptions)}
      */
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
-        return Table.renderWith(source, writer, RenderOptions.FIXED_WIDTH);
+        return Table.renderWith(source, RenderOptions.make());
     }
 }

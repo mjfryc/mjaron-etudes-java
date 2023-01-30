@@ -21,6 +21,7 @@ package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
 import pl.mjaron.etudes.table.BlankTableWriter;
+import pl.mjaron.etudes.table.CsvTableWriter;
 import pl.mjaron.etudes.table.RenderOptions;
 
 class Cat {
@@ -41,12 +42,14 @@ class TableTest {
     @Test
     void render() {
         final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5)};
-        System.out.println(Table.render(cats, Cat.class, RenderOptions.make().withMarkdownEscaper().withColumnsAligned()));
+        System.out.println(Table.render(cats, Cat.class, RenderOptions.make().withMarkdownEscaper().withAlignedColumnWidths()));
 
-        String table = Table.render(cats, Cat.class, RenderOptions.make().withColumnsAligned());
+        String table = Table.render(cats, Cat.class, RenderOptions.make().withAlignedColumnWidths());
         System.out.println(table);
 
         System.out.println(Table.render(cats, Cat.class, new BlankTableWriter()));
+
+        System.out.println(Table.render(cats, Cat.class, new CsvTableWriter()));
     }
 }
 

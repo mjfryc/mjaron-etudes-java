@@ -26,31 +26,13 @@ import pl.mjaron.etudes.Str;
  */
 public class MarkdownTableWriter implements ITableWriter {
 
+    RenderOptions options = null;
+
     private final StringBuilder out = new StringBuilder();
-    private int[] widths = null;
 
     private int columnIdx = 0;
 
     public MarkdownTableWriter() {
-    }
-
-    public MarkdownTableWriter(final int[] widths) {
-        this.widths = widths;
-    }
-
-    /**
-     * Set column widths.
-     *
-     * @param widths Array with column widths.
-     * @return This reference.
-     */
-    public MarkdownTableWriter setWidths(int[] widths) {
-        this.widths = widths;
-        return this;
-    }
-
-    public int[] getWidths() {
-        return widths;
     }
 
     @Override
@@ -59,10 +41,8 @@ public class MarkdownTableWriter implements ITableWriter {
     }
 
     @Override
-    public void beginTable(ITableSource source, int[] widths) {
-        if (widths != null) {
-            this.widths = widths;
-        }
+    public void beginTable(ITableSource source, RenderOptions options) {
+        this.options = options;
     }
 
     @Override
@@ -76,7 +56,7 @@ public class MarkdownTableWriter implements ITableWriter {
     @Override
     public void endHeader() {
         out.append("|\n");
-        for (Integer w : widths) {
+        for (final int w : options.getColumnWidths()) {
             out.append("| ");
             Str.pad(out, w, '-');
             out.append(' ');
@@ -97,7 +77,12 @@ public class MarkdownTableWriter implements ITableWriter {
     @Override
     public void writeCell(final String what) {
         out.append("| ");
-        Str.padLeft(what, widths[columnIdx], ' ', out);
+        if (options.hasColumnWidths()) {
+            Str.padLeft(what, options.getColumnWidths()[columnIdx], ' ', out);
+        }
+        else {
+            out.append(what);
+        }
         out.append(' ');
         ++columnIdx;
     }
