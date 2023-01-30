@@ -49,7 +49,7 @@ class TableTest {
 
         System.out.println(Table.render(cats, Cat.class, new BlankTableWriter()));
 
-        System.out.println(Table.render(cats, Cat.class, new CsvTableWriter()));
+        System.out.println(Table.render(cats, Cat.class, new CsvTableWriter(';')));
     }
 }
 

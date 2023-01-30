@@ -21,12 +21,27 @@ package pl.mjaron.etudes.table;
 
 public class CsvTableWriter implements ITableWriter {
 
+    public static final char DEFAULT_DELIMITER = ',';
+
+    private char delimiter = DEFAULT_DELIMITER;
+
     private final StringBuilder out = new StringBuilder();
 
     /**
      * Determines if first cell in row.
      */
     private boolean firstCell = true;
+
+    public CsvTableWriter() {
+    }
+
+    public CsvTableWriter(char delimiter) {
+        this.delimiter = delimiter;
+    }
+
+    public char getDelimiter() {
+        return delimiter;
+    }
 
     @Override
     public void beginTable(ITableSource source, RenderOptions options) {
@@ -61,7 +76,7 @@ public class CsvTableWriter implements ITableWriter {
         if (firstCell) {
             firstCell = false;
         } else {
-            out.append(',');
+            out.append(delimiter);
         }
         out.append(what);
     }
