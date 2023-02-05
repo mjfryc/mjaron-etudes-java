@@ -17,57 +17,36 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes;
+
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
 
 /**
- * Csv specification: <a href="https://www.rfc-editor.org/rfc/rfc4180">https://www.rfc-editor.org/rfc/rfc4180</a>
+ * {@link Appendable} interface without exceptions in method signatures.
  */
-public class CsvTableWriter implements ITableWriter {
+public interface PureAppendable extends Appendable {
 
-    public static final String DEFAULT_DELIMITER = ",";
+    Appendable append(CharSequence csq);
 
-    private RenderContext context = null;
+    Appendable append(CharSequence csq, int start, int end);
 
-    @Override
-    public String getDefaultDelimiter() {
-        return DEFAULT_DELIMITER;
+    Appendable append(char c);
+
+    static WrappingPureAppendable from(Appendable appendable) {
+        return WrappingPureAppendable.from(appendable);
     }
 
-    @Override
-    public boolean getDefaultComputeColumnWidths() {
-        return false;
+    static WrappingPureAppendable from(PrintStream printStream) {
+        return WrappingPureAppendable.from(printStream);
     }
 
-    @Override
-    public void beginTable(RenderContext options) {
-        this.context = options;
+    static OutputStreamPureAppendable from(OutputStream outputStream) {
+        return OutputStreamPureAppendable.from(outputStream);
     }
 
-    @Override
-    public void endTable() {
-    }
-
-    @Override
-    public void beginHeader() {
-    }
-
-    @Override
-    public void endHeader() {
-        context.appendLine();
-    }
-
-    @Override
-    public void beginRow() {
-    }
-
-    @Override
-    public void endRow() {
-        context.appendLine();
-    }
-
-    @Override
-    public void writeCell(String what) {
-        context.appendIfNotFirstColumn(context.getCellDelimiter());
-        context.appendPadded(what);
+    static OutputStreamPureAppendable from(OutputStream outputStream, Charset charset) {
+        return OutputStreamPureAppendable.from(outputStream, charset);
     }
 }

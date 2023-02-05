@@ -144,10 +144,10 @@ public abstract class Obj {
      * @param tClass   Class of iterated entries.
      * @param <T>      Type of iterated entries.
      * @return Markdown table.
-     * @deprecated Use {@link Table#render(Iterable, Class, RenderOptions)}
+     * @deprecated Use {@link Table#render(Iterable, Class, RenderContext)}
      */
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
-        return Table.renderWith(new BeanTableSource<>(iterable, tClass), RenderOptions.make());
+        return Table.toString(new BeanTableSource<>(iterable, tClass), RenderContext.make());
     }
 
     /**
@@ -158,9 +158,9 @@ public abstract class Obj {
      * @param <SourceT> Type of table source.
      * @param <WriterT> Type of table destination.
      * @return Table written as a String.
-     * @deprecated Use {@link Table#renderWith(ITableSource, RenderOptions)}
+     * @deprecated Use {@link Table#renderWith(ITableSource, RenderContext)}
      */
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
-        return Table.renderWith(source, RenderOptions.make());
+        return Table.toString(source, RenderContext.make());
     }
 }

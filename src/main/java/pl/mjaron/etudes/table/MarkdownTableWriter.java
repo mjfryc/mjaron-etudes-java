@@ -26,23 +26,19 @@ import pl.mjaron.etudes.Str;
  */
 public class MarkdownTableWriter implements ITableWriter {
 
-    RenderOptions options = null;
-
-    private final StringBuilder out = new StringBuilder();
-
-    private int columnIdx = 0;
+    RenderContext context = null;
 
     public MarkdownTableWriter() {
     }
 
     @Override
-    public String getTable() {
-        return out.toString();
+    public boolean getDefaultComputeColumnWidths() {
+        return true;
     }
 
     @Override
-    public void beginTable(ITableSource source, RenderOptions options) {
-        this.options = options;
+    public void beginTable(RenderContext options) {
+        this.context = options;
     }
 
     @Override
@@ -55,35 +51,37 @@ public class MarkdownTableWriter implements ITableWriter {
 
     @Override
     public void endHeader() {
-        out.append("|\n");
-        for (final int w : options.getColumnWidths()) {
-            out.append("| ");
-            Str.pad(out, w, '-');
-            out.append(' ');
+        context.append("|");
+        context.appendLine();
+        if (context.hasColumnWidths()) {
+            for (final int w : context.getColumnWidths()) {
+                context.append("| ");
+                Str.pad(context.out(), w, '-');
+                context.append(' ');
+            }
+        } else {
+            for (int i = 0; i < context.getColumnsCount(); ++i) {
+                context.append("| ---- ");
+            }
         }
-        out.append("|\n");
+        context.append("|");
+        context.appendLine();
     }
 
     @Override
     public void beginRow() {
-        columnIdx = 0;
     }
 
     @Override
     public void endRow() {
-        out.append("|\n");
+        context.append("|");
+        context.appendLine();
     }
 
     @Override
     public void writeCell(final String what) {
-        out.append("| ");
-        if (options.hasColumnWidths()) {
-            Str.padLeft(what, options.getColumnWidths()[columnIdx], ' ', out);
-        }
-        else {
-            out.append(what);
-        }
-        out.append(' ');
-        ++columnIdx;
+        context.append("| ");
+        context.appendPadded(what, ' ');
+        context.append(' ');
     }
 }

@@ -22,7 +22,9 @@ package pl.mjaron.etudes;
 import org.junit.jupiter.api.Test;
 import pl.mjaron.etudes.table.BlankTableWriter;
 import pl.mjaron.etudes.table.CsvTableWriter;
-import pl.mjaron.etudes.table.RenderOptions;
+import pl.mjaron.etudes.table.RenderContext;
+
+import java.nio.charset.Charset;
 
 class Cat {
     String name = "Tom";
@@ -41,15 +43,19 @@ class TableTest {
 
     @Test
     void render() {
+
+        System.out.println("Default charset is: " + Charset.defaultCharset().name());
+
         final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5)};
-        System.out.println(Table.render(cats, Cat.class, RenderOptions.make().withMarkdownEscaper().withAlignedColumnWidths()));
+        Table.render(cats, Cat.class, RenderContext.make().withMarkdownEscaper().withAlignedColumnWidths());
 
-        String table = Table.render(cats, Cat.class, RenderOptions.make().withAlignedColumnWidths());
-        System.out.println(table);
+        Table.render(cats, Cat.class, RenderContext.make().withAlignedColumnWidths(false));
 
-        System.out.println(Table.render(cats, Cat.class, new BlankTableWriter()));
+        Table.render(cats, Cat.class, new BlankTableWriter());
 
-        System.out.println(Table.render(cats, Cat.class, new CsvTableWriter(';')));
+        Table.render(cats, Cat.class, new CsvTableWriter());
+
+        System.out.println(Table.toString(cats, Cat.class, RenderContext.make().withAlignedColumnWidths().withCsvWriter()));
     }
 }
 

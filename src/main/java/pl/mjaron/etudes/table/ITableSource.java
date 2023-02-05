@@ -46,7 +46,8 @@ public interface ITableSource extends Iterable<Iterable<String>> {
         return getHeaders() != null;
     }
 
-    default void readTo(final RenderOptions options) {
-        ITableWriter.writeOperation(this, options);
+    default void readTo(final RenderContext options) {
+        options.setSource(this);
+        RenderOperation.execute(options);
     }
 }

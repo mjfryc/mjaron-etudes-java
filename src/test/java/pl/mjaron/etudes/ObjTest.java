@@ -63,7 +63,7 @@ class ObjTest {
     @Test
     void asTable0() {
         final Cat cat = sampleCat();
-        final String table = Table.render(Arrays.asList(cat, otherCat()), Cat.class, new MarkdownTableWriter());
+        final String table = Table.toString(Arrays.asList(cat, otherCat()), Cat.class, new MarkdownTableWriter());
         System.out.println(table);
     }
 

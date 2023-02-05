@@ -33,12 +33,17 @@ implementation 'io.github.mjfryc:mjaron-etudes-java:0.1.12'
 
 ## Table generation utils
 
-### Printing object list as a Markdown table
+### Printing object list as a Markdown / CSV / custom table
 
 ```java
 Cat cat = sampleCat();
-String table = Table.render(Arrays.asList(cat, otherCat()), Cat.class);
-System.out.println(table);
+Table.render(Arrays.asList(cat, otherCat()), Cat.class);
+
+// Or
+Table.render(Arrays.asList(cat, otherCat()), Cat.class, RenderContext.make().to(System.out));
+
+// Or
+System.out.println(Table.toString(Arrays.asList(cat, otherCat()), Cat.class));
 ```
 
 ```
@@ -50,12 +55,11 @@ System.out.println(table);
 
 ### Table generation customization
 
-Optionally, Markdown special characters may be escaped:
+#### Escaping markdown special characters:
 
 ```java
-String table = Table.render(cats, Cat.class,
-    RenderOptions.make().withMarkdownEscaper().withColumnsAligned());
-System.out.println(table);
+Table.render(cats, Cat.class,
+    RenderContext.make().withMarkdownEscaper());
 ```
 
 So now all special characters are escaped by HTML number syntax, there is following raw text:
@@ -75,18 +79,18 @@ Rendered by Markdown:
 Without a `MarkdownEscaper`, cells will be rendered 'as is', which can cause a bad rendering:
 
 ```java
-String table = Table.render(cats, Cat.class,
-    RenderOptions.make().withColumnsAligned());
-System.out.println(table);
+Table.render(cats, Cat.class);
 ```
 |      name | age |
 | --------- | --- |
 |       Tom |   2 |
 | _Michael_ |   5 |
 
-### Markdown custom escaper - @TODO
+#### Markdown custom escaper - @TODO
 
 @TODO Implement escaper which escapes only when preceded by (eg.) backslash `&#92;`.
+
+### Escaping CSV characters
 
 ## Object utils
 
