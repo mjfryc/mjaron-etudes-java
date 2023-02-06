@@ -19,6 +19,7 @@
 
 package pl.mjaron.etudes;
 
+import org.jetbrains.annotations.Contract;
 import pl.mjaron.etudes.table.*;
 
 import java.lang.reflect.Field;
@@ -35,14 +36,15 @@ public abstract class Obj {
         return tClass.getDeclaredFields();
     }
 
-    public static <T> List<String> getFieldNames(final Field[] fields) {
-        List<String> names = new ArrayList<>(fields.length);
+    public static List<String> getFieldNames(final Field[] fields) {
+        final List<String> names = new ArrayList<>(fields.length);
         for (final Field entry : fields) {
             names.add(entry.getName());
         }
         return names;
     }
 
+    @SuppressWarnings("unused")
     public static <T> List<String> getFieldNames(final Class<T> tClass) {
         final Field[] fields = getFields(tClass);
         return getFieldNames(fields);
@@ -122,6 +124,7 @@ public abstract class Obj {
         return map;
     }
 
+    @SuppressWarnings("unused")
     public static <T> Map<String, String> getFieldValuesAsStrings(final T what) {
         final Map<String, Object> fieldObjects = getFieldValues(what);
         final Map<String, String> fieldStrings = new HashMap<>();
@@ -144,10 +147,11 @@ public abstract class Obj {
      * @param tClass   Class of iterated entries.
      * @param <T>      Type of iterated entries.
      * @return Markdown table.
-     * @deprecated Use {@link Table#render(Iterable, Class, RenderOptions)}
+     * @deprecated Use {@link Table#render(Iterable, Class)}
      */
+    @Contract(pure = true)
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
-        return Table.renderWith(new BeanTableSource<>(iterable, tClass), RenderOptions.make());
+        return Table.render(iterable, tClass).runString();
     }
 
     /**
@@ -158,9 +162,10 @@ public abstract class Obj {
      * @param <SourceT> Type of table source.
      * @param <WriterT> Type of table destination.
      * @return Table written as a String.
-     * @deprecated Use {@link Table#renderWith(ITableSource, RenderOptions)}
+     * @deprecated Use {@link Table#render(ITableSource)}
      */
+    @Contract(pure = true)
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
-        return Table.renderWith(source, RenderOptions.make());
+        return Table.render(source).withWriter(writer).runString();
     }
 }

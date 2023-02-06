@@ -49,18 +49,17 @@ public abstract class TableColumnsWidthDetector {
      * @return Array of max widths of corresponding columns
      */
     public static int[] compute(final ITableSource source, final IEscaper escaper) {
-        final IEscaper finalEscaper = IEscaper.dummyOr(escaper);
         final int[] widths = new int[source.getColumnsCount()];
         if (source.hasHeaders()) {
-            applyRow(widths, source.getHeaders(), finalEscaper);
+            applyRow(widths, source.getHeaders(), escaper);
         }
         for (final Iterable<String> row : source) {
-            applyRow(widths, row, finalEscaper);
+            applyRow(widths, row, escaper);
         }
         return widths;
     }
 
     public static int[] compute(final ITableSource source) {
-        return compute(source, null);
+        return compute(source, DummyEscaper.getInstance());
     }
 }

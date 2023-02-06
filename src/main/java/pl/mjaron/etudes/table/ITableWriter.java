@@ -19,12 +19,28 @@
 
 package pl.mjaron.etudes.table;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Abstract operations required to write table.
  */
 public interface ITableWriter {
 
-    void beginTable(ITableSource source, RenderOptions options);
+    /**
+     * Provides default cell delimiter if delimiter option is used or null if not used.
+     *
+     * @return Default delimiter or null.
+     */
+    @Nullable
+    default String getDefaultDelimiter() {
+        return null;
+    }
+
+    default boolean getDefaultAlignedColumnWidths() {
+        return false;
+    }
+
+    void beginTable(RenderContext options);
 
     void endTable();
 
@@ -37,33 +53,4 @@ public interface ITableWriter {
     void endRow();
 
     void writeCell(final String what);
-
-    String getTable();
-
-    static void writeOperation(final ITableSource source, final RenderOptions options) {
-        final IEscaper finalEscaper = IEscaper.dummyOr(options.getEscaper());
-        if (options.isComputeColumnWidths()) {
-            final int[] widths = TableColumnsWidthDetector.compute(source, finalEscaper);
-            options.withArbitraryColumnWidths(widths);
-        }
-
-        final ITableWriter writer = options.getWriter();
-        writer.beginTable(source, options);
-        if (source.hasHeaders()) {
-            writer.beginHeader();
-            for (final String header : source.getHeaders()) {
-                writer.writeCell(finalEscaper.escape(header));
-            }
-            writer.endHeader();
-        }
-
-        for (final Iterable<String> row : source) {
-            writer.beginRow();
-            for (final String cell : row) {
-                writer.writeCell(finalEscaper.escape(cell));
-            }
-            writer.endRow();
-        }
-        writer.endTable();
-    }
 }

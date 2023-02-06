@@ -17,57 +17,50 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes;
 
-/**
- * Csv specification: <a href="https://www.rfc-editor.org/rfc/rfc4180">https://www.rfc-editor.org/rfc/rfc4180</a>
- */
-public class CsvTableWriter implements ITableWriter {
+import java.io.IOException;
 
-    public static final String DEFAULT_DELIMITER = ",";
 
-    private RenderContext context = null;
+public class WrappingPureAppendable implements PureAppendable {
 
-    @Override
-    public String getDefaultDelimiter() {
-        return DEFAULT_DELIMITER;
+    private final Appendable appendable;
+
+    public WrappingPureAppendable(Appendable appendable) {
+        this.appendable = appendable;
+    }
+
+    public static WrappingPureAppendable from(Appendable appendable) {
+        return new WrappingPureAppendable(appendable);
     }
 
     @Override
-    public boolean getDefaultAlignedColumnWidths() {
-        return false;
+    public Appendable append(CharSequence csq) {
+        try {
+            appendable.append(csq);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to append char sequence.", e);
+        }
+        return this;
     }
 
     @Override
-    public void beginTable(RenderContext options) {
-        this.context = options;
+    public Appendable append(CharSequence csq, int start, int end) {
+        try {
+            appendable.append(csq, start, end);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to append char sequence with given range.", e);
+        }
+        return this;
     }
 
     @Override
-    public void endTable() {
-    }
-
-    @Override
-    public void beginHeader() {
-    }
-
-    @Override
-    public void endHeader() {
-        context.appendLine();
-    }
-
-    @Override
-    public void beginRow() {
-    }
-
-    @Override
-    public void endRow() {
-        context.appendLine();
-    }
-
-    @Override
-    public void writeCell(String what) {
-        context.appendIfNotFirstColumn(context.getCellDelimiter());
-        context.appendPadded(what);
+    public Appendable append(char c) {
+        try {
+            appendable.append(c);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to append char.", e);
+        }
+        return this;
     }
 }

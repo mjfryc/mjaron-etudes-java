@@ -19,46 +19,34 @@
 
 package pl.mjaron.etudes;
 
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 
-class Cat {
-    String name = "Tom";
-    int age = 2;
+/**
+ * {@link Appendable} interface without exceptions in method signatures.
+ */
+public interface PureAppendable extends Appendable {
 
-    Cat() {
+    Appendable append(CharSequence csq);
+
+    Appendable append(CharSequence csq, int start, int end);
+
+    Appendable append(char c);
+
+    static WrappingPureAppendable from(Appendable appendable) {
+        return WrappingPureAppendable.from(appendable);
     }
 
-    Cat(String name, int age) {
-        this.name = name;
-        this.age = age;
+    static WrappingPureAppendable from(PrintStream printStream) {
+        return WrappingPureAppendable.from(printStream);
     }
-}
 
-class TableTest {
+    static OutputStreamPureAppendable from(OutputStream outputStream) {
+        return OutputStreamPureAppendable.from(outputStream);
+    }
 
-    @Test
-    void render() {
-
-
-        System.out.println("Default charset is: " + Charset.defaultCharset().name());
-
-        final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5), new Cat("My nickname is \"ABC\"", 10), new Cat("Next\r\nline", 11)};
-        Table.render(cats, Cat.class).withMarkdownEscaper().withAlignedColumnWidths().run();
-
-        Table.render(cats, Cat.class).withAlignedColumnWidths(false).run();
-
-        Table.render(cats, Cat.class).withBlankTableWriter().run();
-
-        Table.render(cats, Cat.class).withCsvWriter().run();
-
-        String rendered = Table.render(cats, Cat.class).withAlignedColumnWidths().withCsvWriter().withLineBreakCRLF().runString();
-        System.out.println(rendered);
-
-        System.out.println("All options demo.");
-        Table.render(cats, Cat.class).withCsvWriter().withCsvEscaper().withAlignedColumnWidths(false).withCellDelimiter(';').withLineBreakCRLF().toFile("build/sample.csv").run();
+    static OutputStreamPureAppendable from(OutputStream outputStream, Charset charset) {
+        return OutputStreamPureAppendable.from(outputStream, charset);
     }
 }
-

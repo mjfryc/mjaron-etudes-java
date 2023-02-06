@@ -19,6 +19,7 @@
 
 package pl.mjaron.etudes;
 
+import org.jetbrains.annotations.Contract;
 import pl.mjaron.etudes.table.*;
 
 import java.util.Arrays;
@@ -32,103 +33,53 @@ import java.util.Arrays;
  * | ---- | --------- | ---- | -------- |
  * | John |         4 | true |    35.24 |
  * </pre>
+ *
+ * @since 0.2.0
  */
 public abstract class Table {
 
     /**
-     * Read from table source and write to table writer.
+     * Used to generate the table. Creates the table {@link RenderContext} from any {@link ITableSource}.
      *
-     * @param source    Table source.
-     * @param options   Rendering options
-     * @param <SourceT> Type of table source.
-     * @param <WriterT> Type of table destination.
-     * @return Table rendered as text
-     * @since 0.1.12
+     * @param source The {@link ITableSource} which provides table headers and data.
+     * @return New instance of {@link RenderContext}.
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
+     * @since 0.2.0
      */
-    public static <SourceT extends ITableSource, WriterT extends ITableWriter> String renderWith(final SourceT source, final RenderOptions options) {
-        source.readTo(options);
-        return options.getWriter().getTable();
+    @Contract(pure = true)
+    public static RenderContext render(final ITableSource source) {
+        RenderContext context = RenderContext.make();
+        context.setSource(source);
+        return context;
     }
 
     /**
-     * Creates table from any iterable.
-     *
-     * @param iterable Any iterable
-     * @param tClass   Element class
-     * @param options  Rendering options
-     * @param <T>      Element type
-     * @return Table rendered as text
-     * @since 0.1.12
-     */
-    public static <T> String render(final Iterable<T> iterable, final Class<T> tClass, final RenderOptions options) {
-        return renderWith(new BeanTableSource<>(iterable, tClass), options);
-    }
-
-    /**
-     * Creates table from any iterable.
-     *
-     * @param iterable Any iterable
-     * @param tClass   Element class
-     * @param writer   Writer implementation instance
-     * @param <T>      Element type
-     * @return Table rendered as text
-     * @since 0.1.12
-     */
-    public static <T> String render(final Iterable<T> iterable, final Class<T> tClass, final ITableWriter writer) {
-        return render(iterable, tClass, RenderOptions.make().withWriter(writer));
-    }
-
-    /**
-     * Creates table from any iterable.
+     * Used to generate the table. Creates the table {@link RenderContext} from any {@link Iterable}.
      *
      * @param iterable Any iterable
      * @param tClass   Element class
      * @param <T>      Element type
-     * @return Table rendered as text
-     * @since 0.1.12
+     * @return New instance of {@link RenderContext}.
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
+     * @since 0.2.0
      */
-    public static <T> String render(final Iterable<T> iterable, final Class<T> tClass) {
-        return render(iterable, tClass, RenderOptions.make());
+    @Contract(pure = true)
+    public static <T> RenderContext render(final Iterable<T> iterable, final Class<T> tClass) {
+        return render(new BeanTableSource<>(iterable, tClass));
     }
 
     /**
-     * Creates table from any array.
-     *
-     * @param array   Any array
-     * @param tClass  Element class
-     * @param options Rendering options
-     * @param <T>     Element type
-     * @return Table rendered as text
-     * @since 0.1.12
-     */
-    public static <T> String render(final T[] array, final Class<T> tClass, final RenderOptions options) {
-        return render(Arrays.asList(array), tClass, options);
-    }
-
-    /**
-     * Creates table from any array.
-     *
-     * @param array  Any array
-     * @param tClass Element class
-     * @param writer Writer implementation instance
-     * @param <T>    Element type
-     * @return Table rendered as text
-     * @since 0.1.12
-     */
-    public static <T> String render(final T[] array, final Class<T> tClass, final ITableWriter writer) {
-        return render(array, tClass, RenderOptions.make().withWriter(writer));
-    }
-
-    /**
-     * Creates table from any array.
+     * Used to generate the table. Creates the table {@link RenderContext} from any array.
      *
      * @param array  Any array
      * @param tClass Element class
      * @param <T>    Element type
-     * @return Table rendered as text
-     * @since 0.1.12
+     * @return New instance of {@link RenderContext}.
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
+     * @since 0.2.0
      */
-    public static <T> String render(final T[] array, final Class<T> tClass) {
-        return render(array, tClass, RenderOptions.make());
+    @Contract(pure = true)
+    public static <T> RenderContext render(final T[] array, final Class<T> tClass) {
+        return render(Arrays.asList(array), tClass);
     }
 }

@@ -19,6 +19,7 @@
 
 package pl.mjaron.etudes;
 
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -38,6 +39,40 @@ public abstract class Str {
      * Determines default byte separator when converting byte array to HEX-string.
      */
     public static final String STR_HEX_DEFAULT_BYTE_SEPARATOR = " ";
+    /**
+     * Line separator: {@code CR LF} - {@code "\r\n"} - {@code 0x0D0A}. This is the default Windows line separator.
+     */
+    public static final String CRLF = "\r\n";
+
+    /**
+     * Line separator: {@code CR} - {@code "\r"}  - {@code 0x0D}. This is the default line separator in Mac OS before
+     * X.
+     *
+     * @since 0.2.0
+     */
+    public static final String CR = "\r";
+
+    /**
+     * Line separator: {@code LF} - {@code "\n"} - {@code 0x0A}. This is the default Linux line separator.
+     *
+     * @since 0.2.0
+     */
+    public static final String LF = "\n";
+
+    /**
+     * Line separator: {@code CR} - {@code '\r'} - {@code 0x0D}. This is the default line separator in Mac OS before X.
+     *
+     * @since 0.2.0
+     */
+    public static final char CR_H = '\r';
+
+    /**
+     * Line separator: {@code LF} - {@code '\n'} - {@code 0x0A}. This is the default Linux line separator.
+     *
+     * @since 0.2.0
+     */
+    public static final char LF_H = '\n';
+
 
     /**
      * Tells whether String is empty.
@@ -107,6 +142,35 @@ public abstract class Str {
     }
 
     /**
+     * Tells whether given string contains another string.
+     *
+     * @param str  {@link String} used to check if contains at least single occurrence of another {@link String}.
+     * @param what {@link String} used to check if it is contained by another {@link String}.
+     * @return true If {@code str} contains at least single occurrence of {@code what}.
+     * @since 0.2.0
+     */
+    public static boolean contains(final String str, final String what) {
+        return str.contains(what);
+    }
+
+    /**
+     * Tells whether given {@link String} contains at least single occurrence of given {@code char}.
+     *
+     * @param str  {@link String} used to check if contains another string.
+     * @param what {@code char} used to check if it is contained by another string.
+     * @return true If {@code str} contains at least single occurrence of {@code what}.
+     * @since 0.2.0
+     */
+    public static boolean contains(final String str, final char what) {
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == what) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * E.g: change "capitalize" to "Capitalize".
      *
      * @param what   Given String.
@@ -140,14 +204,19 @@ public abstract class Str {
      * @param size Width of desired String.
      * @param ch   Character used to fill padding gap.
      * @param out  Output where result String will be written.
+     * @throws RuntimeException on {@link Appendable#append} failure.
      */
-    public static void padLeft(final String what, final int size, final char ch, final StringBuilder out) {
-        int missing = size - what.length();
-        while (missing > 0) {
-            out.append(ch);
-            --missing;
+    public static void padLeft(final String what, final int size, final char ch, final Appendable out) {
+        try {
+            int missing = size - what.length();
+            while (missing > 0) {
+                out.append(ch);
+                --missing;
+            }
+            out.append(what);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to append String.", e);
         }
-        out.append(what);
     }
 
     /**
@@ -182,13 +251,18 @@ public abstract class Str {
      * @param size Width of desired String.
      * @param ch   Character used to fill padding gap.
      * @param out  Output where result String will be written.
+     * @throws RuntimeException on {@link Appendable#append} failure.
      */
-    public static void padRight(final String what, final int size, final char ch, final StringBuilder out) {
-        out.append(what);
-        int missing = size - what.length();
-        while (missing > 0) {
-            out.append(ch);
-            --missing;
+    public static void padRight(final String what, final int size, final char ch, final Appendable out) {
+        try {
+            out.append(what);
+            int missing = size - what.length();
+            while (missing > 0) {
+                out.append(ch);
+                --missing;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to append String.", e);
         }
     }
 
@@ -220,13 +294,17 @@ public abstract class Str {
     /**
      * Append given count of characters to StringBuilder.
      *
-     * @param out  StringBuilder instance.
+     * @param out  {@link Appendable} instance.
      * @param size Characters count.
      * @param ch   Character used to append.
      */
-    public static void pad(final StringBuilder out, int size, final char ch) {
-        for (; size > 0; --size) {
-            out.append(ch);
+    public static void pad(final Appendable out, int size, final char ch) {
+        try {
+            for (; size > 0; --size) {
+                out.append(ch);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to append character " + size + " times.", e);
         }
     }
 

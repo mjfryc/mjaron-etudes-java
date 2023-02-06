@@ -26,6 +26,9 @@ package pl.mjaron.etudes.table;
  */
 public interface IEscaper {
 
+    default void beginTable(RenderContext options) {
+    }
+
     /**
      * Converts given {@link String} by replacing special characters
      *
