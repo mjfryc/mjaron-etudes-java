@@ -19,6 +19,7 @@
 
 package pl.mjaron.etudes;
 
+import org.jetbrains.annotations.Contract;
 import pl.mjaron.etudes.table.*;
 
 import java.util.Arrays;
@@ -32,195 +33,53 @@ import java.util.Arrays;
  * | ---- | --------- | ---- | -------- |
  * | John |         4 | true |    35.24 |
  * </pre>
+ *
+ * @since 0.2.0
  */
 public abstract class Table {
 
     /**
-     * Read from table source and write to table writer.
+     * Used to generate the table. Creates the table {@link RenderContext} from any {@link ITableSource}.
      *
-     * @param source    Table source.
-     * @param options   Rendering options
-     * @param <SourceT> Type of table source.
+     * @param source The {@link ITableSource} which provides table headers and data.
+     * @return New instance of {@link RenderContext}.
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
      * @since 0.2.0
      */
-    public static <SourceT extends ITableSource> void renderWith(final SourceT source, final RenderContext options) {
-        source.readTo(options);
+    @Contract(pure = true)
+    public static RenderContext render(final ITableSource source) {
+        RenderContext context = RenderContext.make();
+        context.setSource(source);
+        return context;
     }
 
     /**
-     * Creates table from any iterable.
-     *
-     * @param iterable Any iterable
-     * @param tClass   Element class
-     * @param options  Rendering options
-     * @param <T>      Element type
-     * @since 0.2.0
-     */
-    public static <T> void render(final Iterable<T> iterable, final Class<T> tClass, final RenderContext options) {
-        renderWith(new BeanTableSource<>(iterable, tClass), options);
-    }
-
-    /**
-     * Creates table from any iterable.
-     *
-     * @param iterable Any iterable
-     * @param tClass   Element class
-     * @param writer   Writer implementation instance
-     * @param <T>      Element type
-     * @since 0.2.0
-     */
-    public static <T> void render(final Iterable<T> iterable, final Class<T> tClass, final ITableWriter writer) {
-        render(iterable, tClass, RenderContext.make().withWriter(writer));
-    }
-
-    /**
-     * Creates table from any iterable.
+     * Used to generate the table. Creates the table {@link RenderContext} from any {@link Iterable}.
      *
      * @param iterable Any iterable
      * @param tClass   Element class
      * @param <T>      Element type
+     * @return New instance of {@link RenderContext}.
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
      * @since 0.2.0
      */
-    public static <T> void render(final Iterable<T> iterable, final Class<T> tClass) {
-        render(iterable, tClass, RenderContext.make());
+    @Contract(pure = true)
+    public static <T> RenderContext render(final Iterable<T> iterable, final Class<T> tClass) {
+        return render(new BeanTableSource<>(iterable, tClass));
     }
 
     /**
-     * Creates table from any array.
-     *
-     * @param array   Any array
-     * @param tClass  Element class
-     * @param options Rendering options
-     * @param <T>     Element type
-     * @since 0.2.0
-     */
-    public static <T> void render(final T[] array, final Class<T> tClass, final RenderContext options) {
-        render(Arrays.asList(array), tClass, options);
-    }
-
-    /**
-     * Creates table from any array.
-     *
-     * @param array  Any array
-     * @param tClass Element class
-     * @param writer Writer implementation instance
-     * @param <T>    Element type
-     * @since 0.2.0
-     */
-    public static <T> void render(final T[] array, final Class<T> tClass, final ITableWriter writer) {
-        render(array, tClass, RenderContext.make().withWriter(writer));
-    }
-
-    /**
-     * Creates table from any array.
+     * Used to generate the table. Creates the table {@link RenderContext} from any array.
      *
      * @param array  Any array
      * @param tClass Element class
      * @param <T>    Element type
+     * @return New instance of {@link RenderContext}.
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
      * @since 0.2.0
      */
-    public static <T> void render(final T[] array, final Class<T> tClass) {
-        render(array, tClass, RenderContext.make());
-    }
-
-    /**
-     * Creates {@link String} with rendered table.
-     *
-     * @param source    Table source.
-     * @param options   Rendering options.
-     * @param <SourceT> Source type.
-     * @return {@link String} containing rendered table.
-     * @since 0.2.0
-     */
-    public static <SourceT extends ITableSource> String toString(final SourceT source, final RenderContext options) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (options.out() != null) {
-            throw new IllegalArgumentException("Cannot render to String: Invalid render context: Appender already set with " + RenderContext.class.getSimpleName() + "::to(...) method.");
-        }
-        options.to(stringBuilder);
-        source.readTo(options);
-        return stringBuilder.toString();
-    }
-
-    /**
-     * Creates {@link String} with rendered table.
-     *
-     * @param iterable Any iterable type. Each iteration describes single table row.
-     * @param tClass   Iterable entry class.
-     * @param options  Rendering options.
-     * @param <T>      Iterable entry type.
-     * @return {@link String} containing rendered table.
-     * @since 0.2.0
-     */
-    public static <T> String toString(final Iterable<T> iterable, final Class<T> tClass, final RenderContext options) {
-        return toString(new BeanTableSource<>(iterable, tClass), options);
-    }
-
-    /**
-     * Creates {@link String} with rendered table.
-     *
-     * @param iterable Any iterable type. Each iteration describes single table row.
-     * @param tClass   Iterable entry class.
-     * @param writer   Writer used for table rendering.
-     * @param <T>      Iterable entry type.
-     * @return {@link String} containing rendered table.
-     * @since 0.2.0
-     */
-    public static <T> String toString(final Iterable<T> iterable, final Class<T> tClass, final ITableWriter writer) {
-        return toString(iterable, tClass, RenderContext.make().withWriter(writer));
-    }
-
-    /**
-     * Creates {@link String} with rendered Markdown table.
-     *
-     * @param iterable Any iterable type. Each iteration describes single table row.
-     * @param tClass   Iterable entry class.
-     * @param <T>      Iterable entry type.
-     * @return {@link String} containing rendered table.
-     * @since 0.2.0
-     */
-    public static <T> String toString(final Iterable<T> iterable, final Class<T> tClass) {
-        return toString(iterable, tClass, RenderContext.make());
-    }
-
-    /**
-     * Creates {@link String} with rendered table.
-     *
-     * @param array   Any array type. Each iteration describes single table row.
-     * @param tClass  Array entry class.
-     * @param options Rendering options.
-     * @param <T>     Array entry type.
-     * @return {@link String} containing rendered table.
-     * @since 0.2.0
-     */
-    public static <T> String toString(final T[] array, final Class<T> tClass, final RenderContext options) {
-        return toString(Arrays.asList(array), tClass, options);
-    }
-
-    /**
-     * Creates {@link String} with rendered table.
-     *
-     * @param array  Any array type. Each iteration describes single table row.
-     * @param tClass Array entry class.
-     * @param writer Writer used to render the table.
-     * @param <T>    Array entry type.
-     * @return {@link String} containing rendered table.
-     * @since 0.2.0
-     */
-    public static <T> String toString(final T[] array, final Class<T> tClass, final ITableWriter writer) {
-        return toString(array, tClass, RenderContext.make().withWriter(writer));
-    }
-
-    /**
-     * Creates {@link String} with rendered Markdown table.
-     *
-     * @param array  Any array type. Each iteration describes single table row.
-     * @param tClass Array entry class.
-     * @param <T>    Array entry type.
-     * @return {@link String} containing rendered table.
-     * @since 0.2.0
-     */
-    public static <T> String toString(final T[] array, final Class<T> tClass) {
-        return toString(array, tClass, RenderContext.make());
+    @Contract(pure = true)
+    public static <T> RenderContext render(final T[] array, final Class<T> tClass) {
+        return render(Arrays.asList(array), tClass);
     }
 }

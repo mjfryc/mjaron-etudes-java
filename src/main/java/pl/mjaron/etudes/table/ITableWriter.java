@@ -36,7 +36,7 @@ public interface ITableWriter {
         return null;
     }
 
-    default boolean getDefaultComputeColumnWidths() {
+    default boolean getDefaultAlignedColumnWidths() {
         return false;
     }
 

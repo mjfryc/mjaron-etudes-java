@@ -32,7 +32,7 @@ public class MarkdownTableWriter implements ITableWriter {
     }
 
     @Override
-    public boolean getDefaultComputeColumnWidths() {
+    public boolean getDefaultAlignedColumnWidths() {
         return true;
     }
 

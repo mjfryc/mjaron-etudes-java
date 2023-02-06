@@ -34,7 +34,7 @@ public class CsvTableWriter implements ITableWriter {
     }
 
     @Override
-    public boolean getDefaultComputeColumnWidths() {
+    public boolean getDefaultAlignedColumnWidths() {
         return false;
     }
 

@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import pl.mjaron.etudes.table.*;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,7 +62,7 @@ class ObjTest {
     @Test
     void asTable0() {
         final Cat cat = sampleCat();
-        final String table = Table.toString(Arrays.asList(cat, otherCat()), Cat.class, new MarkdownTableWriter());
+        final String table = Table.render(Arrays.asList(cat, otherCat()), Cat.class).runString();
         System.out.println(table);
     }
 

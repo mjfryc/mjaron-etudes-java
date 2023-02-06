@@ -19,55 +19,77 @@
 
 package pl.mjaron.etudes.table;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 public abstract class RenderOperation {
 
     public static void execute(final RenderContext context) {
-        if (context.getSource() == null) {
-            throw new NullPointerException("Cannot write table without table source.");
-        }
-        if (context.out() == null) {
-            context.to(System.out);
-        }
-        if (context.getEscaper() == null) {
-            context.withEscaper(DummyEscaper.getInstance());
-        }
-        if (context.isComputeColumnWidths() == null) {
-            if (context.getWriter().getDefaultComputeColumnWidths()) {
-                context.withAlignedColumnWidths();
-            } else {
-                context.withoutAlignedColumnWidths();
+        OutputStream internalOutputStream = null;
+        try {
+            if (context.getSource() == null) {
+                throw new NullPointerException("Cannot write table without table source.");
+            }
+            if (context.getOutFile() != null) {
+                //noinspection IOStreamConstructor
+                internalOutputStream = new FileOutputStream(context.getOutFile());
+                context.to(internalOutputStream);
+            }
+            if (context.out() == null) {
+                context.to(System.out);
+            }
+            if (context.getEscaper() == null) {
+                context.withEscaper(DummyEscaper.getInstance());
+            }
+            if (context.isComputeColumnWidths() == null) {
+                if (context.getWriter().getDefaultAlignedColumnWidths()) {
+                    context.withAlignedColumnWidths();
+                } else {
+                    context.withoutAlignedColumnWidths();
+                }
+            }
+            if (context.isComputeColumnWidths()) {
+                final int[] widths = TableColumnsWidthDetector.compute(context.getSource(), context.getEscaper());
+                context.withArbitraryColumnWidths(widths);
+            }
+            final ITableWriter writer = context.getWriter();
+
+            if (context.getCellDelimiter() == null && writer.getDefaultDelimiter() != null) {
+                context.withCellDelimiter(writer.getDefaultDelimiter());
+            }
+            context.getEscaper().beginTable(context);
+            writer.beginTable(context);
+            if (context.getSource().hasHeaders()) {
+                writer.beginHeader();
+                context.columnIdx = 0;
+                for (final String header : context.getSource().getHeaders()) {
+                    writer.writeCell(context.getEscaper().escape(header));
+                    ++context.columnIdx;
+                }
+                writer.endHeader();
+            }
+
+            for (final Iterable<String> row : context.getSource()) {
+                writer.beginRow();
+                context.columnIdx = 0;
+                for (final String cell : row) {
+                    writer.writeCell(context.getEscaper().escape(cell));
+                    ++context.columnIdx;
+                }
+                writer.endRow();
+            }
+            writer.endTable();
+        } catch (Exception e) {
+            throw new RuntimeException("Render operation failed.", e);
+        } finally {
+            if (internalOutputStream != null) {
+                try {
+                    internalOutputStream.close();
+                } catch (final IOException ignored) {
+                }
             }
         }
-        if (context.isComputeColumnWidths()) {
-            final int[] widths = TableColumnsWidthDetector.compute(context.getSource(), context.getEscaper());
-            context.withArbitraryColumnWidths(widths);
-        }
-        final ITableWriter writer = context.getWriter();
-
-        if (context.getCellDelimiter() == null && writer.getDefaultDelimiter() != null) {
-            context.withCellDelimiter(writer.getDefaultDelimiter());
-        }
-
-        writer.beginTable(context);
-        if (context.getSource().hasHeaders()) {
-            writer.beginHeader();
-            context.columnIdx = 0;
-            for (final String header : context.getSource().getHeaders()) {
-                writer.writeCell(context.getEscaper().escape(header));
-                ++context.columnIdx;
-            }
-            writer.endHeader();
-        }
-
-        for (final Iterable<String> row : context.getSource()) {
-            writer.beginRow();
-            context.columnIdx = 0;
-            for (final String cell : row) {
-                writer.writeCell(context.getEscaper().escape(cell));
-                ++context.columnIdx;
-            }
-            writer.endRow();
-        }
-        writer.endTable();
     }
 }

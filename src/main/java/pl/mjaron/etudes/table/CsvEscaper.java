@@ -19,6 +19,7 @@
 
 package pl.mjaron.etudes.table;
 
+import org.jetbrains.annotations.Contract;
 import pl.mjaron.etudes.Str;
 
 /**
@@ -38,15 +39,19 @@ import pl.mjaron.etudes.Str;
  * <pre>
  * "aaa","b""bb","ccc"
  * </pre>
+ *
+ * @since 0.2.0
  */
 public class CsvEscaper implements IEscaper {
 
     private String delimiter = CsvTableWriter.DEFAULT_DELIMITER;
+    private String lineBreak = Str.CRLF;
 
     public boolean needsEscape(String what) {
-        return what.contains(Str.CRLF) || what.contains("\"") || what.contains(delimiter);
+        return Str.contains(what, Str.CR_H) || Str.contains(what, Str.LF_H) || what.contains(delimiter) || what.contains("\"") || what.contains(lineBreak);
     }
 
+    @Contract(pure = true)
     public String doEscape(String what) {
         return "\"" + what.replace("\"", "\"\"") + "\"";
     }
@@ -56,12 +61,16 @@ public class CsvEscaper implements IEscaper {
         if (renderContext.getCellDelimiter() != null) {
             delimiter = renderContext.getCellDelimiter();
         }
+        if (renderContext.getLineBreak() != null) {
+            lineBreak = renderContext.getLineBreak();
+        }
     }
 
+    @Contract(pure = true)
     @Override
     public String escape(String what) {
         if (needsEscape(what)) {
-            doEscape(what);
+            return doEscape(what);
         }
         return what;
     }

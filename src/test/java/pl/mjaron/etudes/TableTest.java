@@ -20,10 +20,8 @@
 package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
-import pl.mjaron.etudes.table.BlankTableWriter;
-import pl.mjaron.etudes.table.CsvTableWriter;
-import pl.mjaron.etudes.table.RenderContext;
 
+import java.io.File;
 import java.nio.charset.Charset;
 
 class Cat {
@@ -44,18 +42,23 @@ class TableTest {
     @Test
     void render() {
 
+
         System.out.println("Default charset is: " + Charset.defaultCharset().name());
 
-        final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5)};
-        Table.render(cats, Cat.class, RenderContext.make().withMarkdownEscaper().withAlignedColumnWidths());
+        final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5), new Cat("My nickname is \"ABC\"", 10), new Cat("Next\r\nline", 11)};
+        Table.render(cats, Cat.class).withMarkdownEscaper().withAlignedColumnWidths().run();
 
-        Table.render(cats, Cat.class, RenderContext.make().withAlignedColumnWidths(false));
+        Table.render(cats, Cat.class).withAlignedColumnWidths(false).run();
 
-        Table.render(cats, Cat.class, new BlankTableWriter());
+        Table.render(cats, Cat.class).withBlankTableWriter().run();
 
-        Table.render(cats, Cat.class, new CsvTableWriter());
+        Table.render(cats, Cat.class).withCsvWriter().run();
 
-        System.out.println(Table.toString(cats, Cat.class, RenderContext.make().withAlignedColumnWidths().withCsvWriter()));
+        String rendered = Table.render(cats, Cat.class).withAlignedColumnWidths().withCsvWriter().withLineBreakCRLF().runString();
+        System.out.println(rendered);
+
+        System.out.println("All options demo.");
+        Table.render(cats, Cat.class).withCsvWriter().withCsvEscaper().withAlignedColumnWidths(false).withCellDelimiter(';').withLineBreakCRLF().toFile("build/sample.csv").run();
     }
 }
 

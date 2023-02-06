@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import pl.mjaron.etudes.PureAppendable;
 import pl.mjaron.etudes.Str;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
@@ -47,6 +48,12 @@ public class RenderContext {
      */
     private PureAppendable out = null;
 
+    /**
+     * Use output file by path instead of PureAppendable. {@link RenderOperation} will be responsible for closing
+     * temporary {@link java.io.FileOutputStream}.
+     */
+    private File outFile = null;
+
     private IEscaper escaper = null;
 
     private int[] columnWidths = null;
@@ -63,8 +70,6 @@ public class RenderContext {
     private String cellDelimiter = null;
 
     private String lineBreak = System.lineSeparator();
-
-    private boolean lastLineBreak = true;
 
     /**
      * Updated internally by {@link RenderOperation} when visiting related cells.
@@ -145,6 +150,23 @@ public class RenderContext {
     }
 
     /**
+     * Set the render output to the file.
+     *
+     * @param file Destination file.
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext to(File file) {
+        this.out = null;
+        this.outFile = file;
+        return this;
+    }
+
+    public RenderContext toFile(String path) {
+        return this.to(new File(path));
+    }
+
+    /**
      * Provides {@link ITableWriter} used for table rendering.
      *
      * @return {@link ITableWriter} used for table rendering.
@@ -190,6 +212,16 @@ public class RenderContext {
     }
 
     /**
+     * Use {@link BlankTableWriter} for render operation.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext withBlankTableWriter() {
+        return this.withWriter(new BlankTableWriter());
+    }
+
+    /**
      * Provides the {@link IEscaper} used for rendering operation.
      *
      * @return {@link IEscaper} used for rendering operation.
@@ -211,8 +243,24 @@ public class RenderContext {
         return this;
     }
 
+    /**
+     * Sets the {@link MarkdownEscaper} used for special characters escaping.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
     public RenderContext withMarkdownEscaper() {
         return withEscaper(MarkdownEscaper.getDefaultInstance());
+    }
+
+    /**
+     * Sets the {@link CsvEscaper} used for special characters escaping.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext withCsvEscaper() {
+        return this.withEscaper(new CsvEscaper());
     }
 
     public int[] getColumnWidths() {
@@ -237,19 +285,49 @@ public class RenderContext {
         return this;
     }
 
+    /**
+     * Aligns the columns, so each row has the same column width. When not set, the
+     * {@link ITableWriter#getDefaultAlignedColumnWidths()} value will be used.
+     * <p>
+     * When true, it may break the .CSV format compatibility with some applications like Only Office.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
     public RenderContext withAlignedColumnWidths() {
         this.columnWidths = null;
         this.computeColumnWidths = true;
         return this;
     }
 
-    public RenderContext withAlignedColumnWidths(boolean alignedColumnWidths) {
-        if (alignedColumnWidths) {
+    /**
+     * <ul>
+     * <li>If {@code true}, aligns the columns, so each row has the same column width. It may break the .CSV format compatibility
+     * with some applications like Only Office.</li>
+     * <li>If {@code false}, columns will not be aligned.</li>
+     * <li>If {@code null}, the {@link ITableWriter#getDefaultAlignedColumnWidths()} value will be used by {@link RenderOperation}.</li>
+     * </ul>
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext withAlignedColumnWidths(final Boolean alignedColumnWidths) {
+        if (alignedColumnWidths == null) {
+            this.columnWidths = null;
+            this.computeColumnWidths = null;
+        }
+        if (Boolean.TRUE.equals(alignedColumnWidths)) {
             return withAlignedColumnWidths();
         }
         return withoutAlignedColumnWidths();
     }
 
+    /**
+     * Columns will not be aligned.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
     public RenderContext withoutAlignedColumnWidths() {
         this.columnWidths = null;
         this.computeColumnWidths = false;
@@ -269,10 +347,35 @@ public class RenderContext {
         return this;
     }
 
+    /**
+     * Allows setting custom cell delimiter if related {@link ITableWriter} and optionally {@link IEscaper} supports it.
+     * Usually used with the CSV format.
+     *
+     * @param what Custom delimiter.
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext withCellDelimiter(char what) {
+        this.cellDelimiter = String.valueOf(what);
+        return this;
+    }
+
+    /**
+     * Use the cell delimiter provided by {@link ITableWriter#getDefaultDelimiter()}.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
     public RenderContext withDefaultCellDelimiter() {
         return withCellDelimiter(null);
     }
 
+    /**
+     * Sets empty cell delimiter, so values will not be disjointed.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
     public RenderContext withoutCellDelimiter() {
         return withCellDelimiter("");
     }
@@ -288,26 +391,71 @@ public class RenderContext {
         return this.cellDelimiter;
     }
 
+    /**
+     * Use custom line break.
+     *
+     * @param lineBreak Line break.
+     * @return This reference.
+     * @since 0.2.0
+     */
     public RenderContext withLineBreak(String lineBreak) {
         this.lineBreak = lineBreak;
         return this;
+    }
+
+    /**
+     * Using {@code LF} - {@code "\n"} as a new line separator. This is Linux default line separator.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext withLineBreakLF() {
+        return this.withLineBreak("\n");
+    }
+
+    /**
+     * Using {@code CR LF} - {@code "\r\n"} as a new line separator. This is Windows default line separator.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext withLineBreakCRLF() {
+        return this.withLineBreak(Str.CRLF);
+    }
+
+    /**
+     * Using {@code CR} - {@code "\r"} as a new line separator. This is the default line separator in Mac OS before X.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext withLineBreakCR() {
+        return this.withLineBreak("\r");
     }
 
     public String getLineBreak() {
         return lineBreak;
     }
 
-    public RenderContext withLastLineBreak(boolean lastLineBreak) {
-        this.lastLineBreak = lastLineBreak;
-        return this;
-    }
-
-    public boolean getLastLineBreak() {
-        return lastLineBreak;
-    }
-
+    /**
+     * Used by {@link ITableWriter} during {@link RenderOperation#execute(RenderContext)}.
+     *
+     * @return Any {@link PureAppendable} used to render the table.
+     * @since 0.2.0
+     */
     public PureAppendable out() {
         return this.out;
+    }
+
+    /**
+     * Provides the output file if it set.
+     *
+     * @return {@link File} where rendered table will be written or {@code null} if the file is not set.
+     * @since 0.2.0
+     */
+    @Nullable
+    public File getOutFile() {
+        return this.outFile;
     }
 
     public void append(String what) {
@@ -352,5 +500,30 @@ public class RenderContext {
 
     public void setSource(ITableSource source) {
         this.source = source;
+    }
+
+    /**
+     * Performs rendering.
+     *
+     * @since 0.2.0
+     */
+    public void run() {
+        RenderOperation.execute(this);
+    }
+
+    /**
+     * Performs rendering.
+     *
+     * @return {@link String} containing rendered table.
+     * @since 0.2.0
+     */
+    public String runString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (this.out() != null) {
+            throw new IllegalArgumentException("Cannot render to String: Invalid render context: Appender already set with " + RenderContext.class.getSimpleName() + "::to(...) method.");
+        }
+        this.to(stringBuilder);
+        RenderOperation.execute(this);
+        return stringBuilder.toString();
     }
 }
