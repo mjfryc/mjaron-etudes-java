@@ -60,7 +60,7 @@ class Sample {
         Table.render(cats, Cat.class).run();
 
         // Or
-        final String catsTableString = Table.render(cats, Cat.class).runToString();
+        final String catsTableString = Table.render(cats, Cat.class).runString();
         System.out.println(catsTableString);
 
         // Verbose options demo
