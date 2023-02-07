@@ -201,7 +201,7 @@ sequenceDiagram
  end
  Rendering operation ->> ITableWriter: endRow()
  end
- Rendering operation ->> IEscaper: endTable(renderingContext)
+ Rendering operation ->> ITableWriter: endTable(renderingContext)
  Rendering operation-->>-User: rendered table
 ```
 
