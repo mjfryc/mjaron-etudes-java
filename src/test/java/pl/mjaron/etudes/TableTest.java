@@ -21,7 +21,6 @@ package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.nio.charset.Charset;
 
 class Cat {
@@ -54,7 +53,7 @@ class TableTest {
 
         Table.render(cats, Cat.class).withCsvWriter().run();
 
-        String rendered = Table.render(cats, Cat.class).withAlignedColumnWidths().withCsvWriter().withLineBreakCRLF().runString();
+        String rendered = Table.render(cats, Cat.class).withAlignedColumnWidths().withCsvWriter().withLineBreakCRLF().runToString();
         System.out.println(rendered);
 
         System.out.println("All options demo.");

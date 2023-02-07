@@ -62,7 +62,7 @@ class ObjTest {
     @Test
     void asTable0() {
         final Cat cat = sampleCat();
-        final String table = Table.render(Arrays.asList(cat, otherCat()), Cat.class).runString();
+        final String table = Table.render(Arrays.asList(cat, otherCat()), Cat.class).runToString();
         System.out.println(table);
     }
 

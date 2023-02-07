@@ -151,7 +151,7 @@ public abstract class Obj {
      */
     @Contract(pure = true)
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
-        return Table.render(iterable, tClass).runString();
+        return Table.render(iterable, tClass).runToString();
     }
 
     /**
@@ -166,6 +166,6 @@ public abstract class Obj {
      */
     @Contract(pure = true)
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
-        return Table.render(source).withWriter(writer).runString();
+        return Table.render(source).withWriter(writer).runToString();
     }
 }

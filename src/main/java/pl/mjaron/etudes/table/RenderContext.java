@@ -19,6 +19,8 @@
 
 package pl.mjaron.etudes.table;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.mjaron.etudes.PureAppendable;
 import pl.mjaron.etudes.Str;
@@ -279,6 +281,17 @@ public class RenderContext {
         return computeColumnWidths;
     }
 
+    /**
+     * Allows specifying each column width.
+     *
+     * @param columnWidths Array of widths where nth value indicates the nth column width (minimal count of
+     *                     characters).
+     * @return This reference.
+     * @see #withAlignedColumnWidths()
+     * @see #withAlignedColumnWidths(Boolean)
+     * @see #withoutAlignedColumnWidths()
+     * @since 0.2.0
+     */
     public RenderContext withArbitraryColumnWidths(int[] columnWidths) {
         this.columnWidths = columnWidths;
         this.computeColumnWidths = false;
@@ -308,6 +321,8 @@ public class RenderContext {
      * <li>If {@code null}, the {@link ITableWriter#getDefaultAlignedColumnWidths()} value will be used by {@link RenderOperation}.</li>
      * </ul>
      *
+     * @param alignedColumnWidths Should column widths be aligned or not. Pass {@code null} to use the
+     *                            {@link ITableWriter} default value.
      * @return This reference.
      * @since 0.2.0
      */
@@ -459,6 +474,8 @@ public class RenderContext {
         return withCsvWriter().withCsvEscaper().withLineBreakCRLF();
     }
 
+    @Contract(pure = true)
+    @NotNull
     public String getLineBreak() {
         return lineBreak;
     }
@@ -469,6 +486,8 @@ public class RenderContext {
      * @return Any {@link PureAppendable} used to render the table.
      * @since 0.2.0
      */
+    @Contract(pure = true)
+    @Nullable
     public PureAppendable out() {
         return this.out;
     }
@@ -479,6 +498,7 @@ public class RenderContext {
      * @return {@link File} where rendered table will be written or {@code null} if the file is not set.
      * @since 0.2.0
      */
+    @Contract(pure = true)
     @Nullable
     public File getOutFile() {
         return this.outFile;
@@ -496,14 +516,6 @@ public class RenderContext {
         append(getLineBreak());
     }
 
-    public void appendPadded(String what, char fillChar) {
-        if (this.hasColumnWidths()) {
-            Str.padLeft(what, this.getColumnWidths()[columnIdx], ' ', this.out());
-        } else {
-            this.append(what);
-        }
-    }
-
     public void appendIfNotFirstColumn(String what) {
         if (columnIdx != 0) {
             this.append(what);
@@ -516,14 +528,48 @@ public class RenderContext {
         }
     }
 
+    /**
+     * Pads given String by filling with given character and next appends to rendered table output.
+     *
+     * @param what     String to append.
+     * @param fillChar Character to fill the String during padding.
+     * @since 0.2.0
+     */
+    public void appendPadded(String what, final char fillChar) {
+        if (this.hasColumnWidths()) {
+            Str.padLeft(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+        } else {
+            this.append(what);
+        }
+    }
+
+    /**
+     * Pads given String by filling with space character and next appends to rendered table output.
+     *
+     * @param what String to append.
+     * @since 0.2.0
+     */
     public void appendPadded(String what) {
         this.appendPadded(what, ' ');
     }
 
+    /**
+     * Getter of {@link ITableSource} used to read the table data.
+     *
+     * @return {@link ITableSource} used to read the table data.
+     * @since 0.2.0
+     */
+    @Contract(pure = true)
     public ITableSource getSource() {
         return source;
     }
 
+    /**
+     * Setter of {@link ITableSource} used to read the table data.
+     *
+     * @param source {@link ITableSource} used to read the table data.
+     * @since 0.2.0
+     */
     public void setSource(ITableSource source) {
         this.source = source;
     }
@@ -531,6 +577,7 @@ public class RenderContext {
     /**
      * Performs rendering.
      *
+     * @see #runToString()
      * @since 0.2.0
      */
     public void run() {
@@ -538,12 +585,14 @@ public class RenderContext {
     }
 
     /**
-     * Performs rendering.
+     * Performs rendering and returns the result to the {@link String}.
      *
      * @return {@link String} containing rendered table.
-     * @since 0.2.0
+     * @see #run()
+     * @since 0.2.1
      */
-    public String runString() {
+    @Contract(pure = true)
+    public String runToString() {
         StringBuilder stringBuilder = new StringBuilder();
         if (this.out() != null) {
             throw new IllegalArgumentException("Cannot render to String: Invalid render context: Appender already set with " + RenderContext.class.getSimpleName() + "::to(...) method.");
@@ -551,5 +600,19 @@ public class RenderContext {
         this.to(stringBuilder);
         RenderOperation.execute(this);
         return stringBuilder.toString();
+    }
+
+    /**
+     * Performs rendering and returns the result to the {@link String}.
+     *
+     * @return {@link String} containing rendered table.
+     * @see #runToString()
+     * @since 0.2.0
+     * @deprecated Use {@link #runToString()}
+     */
+    @Deprecated
+    @Contract(pure = true)
+    public String runString() {
+        return this.runToString();
     }
 }

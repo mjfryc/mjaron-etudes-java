@@ -43,7 +43,7 @@ public abstract class Table {
      *
      * @param source The {@link ITableSource} which provides table headers and data.
      * @return New instance of {@link RenderContext}.
-     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runToString()} to generate the table.</p>
      * @since 0.2.0
      */
     @Contract(pure = true)
@@ -60,7 +60,7 @@ public abstract class Table {
      * @param tClass   Element class
      * @param <T>      Element type
      * @return New instance of {@link RenderContext}.
-     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runToString()} to generate the table.</p>
      * @since 0.2.0
      */
     @Contract(pure = true)
@@ -75,7 +75,7 @@ public abstract class Table {
      * @param tClass Element class
      * @param <T>    Element type
      * @return New instance of {@link RenderContext}.
-     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runString()} to generate the table.</p>
+     * <p>Call the {@link RenderContext#run()} or {@link RenderContext#runToString()} to generate the table.</p>
      * @since 0.2.0
      */
     @Contract(pure = true)
