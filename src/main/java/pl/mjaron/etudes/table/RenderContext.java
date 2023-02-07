@@ -410,7 +410,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     public RenderContext withLineBreakLF() {
-        return this.withLineBreak("\n");
+        return this.withLineBreak(Str.LF);
     }
 
     /**
@@ -430,7 +430,33 @@ public class RenderContext {
      * @since 0.2.0
      */
     public RenderContext withLineBreakCR() {
-        return this.withLineBreak("\r");
+        return this.withLineBreak(Str.CR);
+    }
+
+    /**
+     * Use predefined Markdown configuration, shortcut of:
+     * <pre>{@code
+     *     withMarkdownWriter().withMarkdownEscaper();
+     * }</pre>
+     *
+     * @return This reference.
+     * @since 0.2.1
+     */
+    public RenderContext markdown() {
+        return withMarkdownWriter().withMarkdownEscaper();
+    }
+
+    /**
+     * Use predefined CSV configuration, shortcut of:
+     * <pre>{@code
+     *     withCsvWriter().withCsvEscaper().withLineBreakCRLF();
+     * }</pre>
+     *
+     * @return This reference.
+     * @since 0.2.1
+     */
+    public RenderContext csv() {
+        return withCsvWriter().withCsvEscaper().withLineBreakCRLF();
     }
 
     public String getLineBreak() {
