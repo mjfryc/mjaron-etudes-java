@@ -157,6 +157,54 @@ class Sample {
 }
 ```
 
+### Table generation sequence
+
+The table is generated in the following sequence:
+
+```mermaid
+sequenceDiagram
+ User->>+Rendering operation: render
+ Rendering operation ->> Rendering context: isComputeColumnWidths()? [null | true | false]
+ opt computeColumnWidths == null
+ Rendering operation ->> ITableWriter: get default value of computing column widths [true | false]
+ Rendering operation ->> Rendering context: Update compute column widths value
+ end
+
+ opt computeColumnWidths == true
+ Rendering operation ->> TableColumnsWidthDetector: compute column widths
+ end
+
+ Rendering operation ->> Rendering context: getCellDelimiter()
+ Rendering operation ->> ITableWriter: getDefaultDelimiter()
+
+ opt rendering context hasn't cell delimiter but ITableWriter provides default delimiter
+ Rendering operation ->> Rendering context: Update the cell delimiter from ITableWriter
+ end
+
+ Rendering operation ->> IEscaper: beginTable(renderingContext)
+ Rendering operation ->> ITableWriter: beginTable(renderingContext)
+
+ opt ITableSource.hasHeaders() == true
+ Rendering operation ->> ITableWriter: beginHeader()
+ loop For each headerCell
+ Rendering operation ->> IEscaper: escape(headerCell)
+ Rendering operation ->> ITableWriter: writeCell(escapedHeaderCell)
+ end
+ Rendering operation ->> ITableWriter: endHeader()
+ end
+
+ loop For each row
+ Rendering operation ->> ITableWriter: beginRow()
+ loop For each cell
+ Rendering operation ->> IEscaper: escape(cell)
+ Rendering operation ->> ITableWriter: writeCell(escapedCell)
+ end
+ Rendering operation ->> ITableWriter: endRow()
+ end
+ Rendering operation ->> IEscaper: endTable(renderingContext)
+ Rendering operation-->>-User: rendered table
+```
+
 ## Array utils
 
 ### Joining arrays, adding elements
