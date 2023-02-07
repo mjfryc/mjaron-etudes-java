@@ -14,10 +14,10 @@ _Pianists practice etudes, programmers also!_
 
 ### From Maven Central
 
-<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.1.12/jar>
+<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.2.0/jar>
 
 ```gradle
-implementation 'io.github.mjfryc:mjaron-etudes-java:0.1.12'
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.0'
 ```
 
 ### As local `jar` file
@@ -25,9 +25,9 @@ implementation 'io.github.mjfryc:mjaron-etudes-java:0.1.12'
 * Download the latest release
     * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
     * To `[gradle's root directory]/libs/`
-    * E.g: `my-project/libs/mjaron-etudes-java-0.1.12.jar`
+    * E.g: `my-project/libs/mjaron-etudes-java-0.2.0.jar`
 * In any Gradle subproject which needs this library, put following content:
-    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.1.12.jar')`
+    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.2.0.jar')`
 * Now import package and use it, e.g:
     * `import pl.mjaron.etudes.Obj;`
 
