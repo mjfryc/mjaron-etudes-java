@@ -171,6 +171,23 @@ public abstract class Str {
     }
 
     /**
+     * Tells whether given {@link String} contains any character of given {@code char[]}.
+     *
+     * @param str  {@link String} used to check if contains another string.
+     * @param what {@code char} array used to check if any of chars is contained by string.
+     * @return true If {@code str} contains at least single occurrence of {@code what}.
+     * @since 0.2.0
+     */
+    public static boolean contains(final String str, final char... what) {
+        for (final char ch : what) {
+            if (Str.contains(str, ch)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * E.g: change "capitalize" to "Capitalize".
      *
      * @param what   Given String.

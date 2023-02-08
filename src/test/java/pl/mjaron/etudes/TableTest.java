@@ -56,8 +56,10 @@ class TableTest {
         String rendered = Table.render(cats, Cat.class).withAlignedColumnWidths().withCsvWriter().withLineBreakCRLF().runToString();
         System.out.println(rendered);
 
-        System.out.println("All options demo.");
-        Table.render(cats, Cat.class).withCsvWriter().withCsvEscaper().withAlignedColumnWidths(false).withCellDelimiter(';').withLineBreakCRLF().toFile("build/sample.csv").run();
+        //System.out.println("All options demo.");
+        //Table.render(cats, Cat.class).withCsvWriter().withCsvEscaper().withAlignedColumnWidths(false).withCellDelimiter(';').withLineBreakCRLF().toFile("build/sample.csv").run();
+
+        Table.render(cats, Cat.class).html().run();
     }
 }
 

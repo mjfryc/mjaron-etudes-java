@@ -62,6 +62,7 @@ public abstract class RenderOperation {
             context.getEscaper().beginTable(context);
             writer.beginTable(context);
             if (context.getSource().hasHeaders()) {
+                context.headerState = true;
                 writer.beginHeader();
                 context.columnIdx = 0;
                 for (final String header : context.getSource().getHeaders()) {
@@ -69,6 +70,7 @@ public abstract class RenderOperation {
                     ++context.columnIdx;
                 }
                 writer.endHeader();
+                context.headerState = false;
             }
 
             for (final Iterable<String> row : context.getSource()) {

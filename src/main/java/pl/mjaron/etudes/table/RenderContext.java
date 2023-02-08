@@ -78,6 +78,8 @@ public class RenderContext {
      */
     public int columnIdx = 0;
 
+    public boolean headerState = false;
+
     public RenderContext() {
     }
 
@@ -214,6 +216,16 @@ public class RenderContext {
     }
 
     /**
+     * Use {@link HtmlTableWriter} for render operation.
+     *
+     * @return This reference.
+     * @since 0.2.0
+     */
+    public RenderContext withHtmlWriter() {
+        return this.withWriter(new HtmlTableWriter());
+    }
+
+    /**
      * Use {@link BlankTableWriter} for render operation.
      *
      * @return This reference.
@@ -249,6 +261,8 @@ public class RenderContext {
      * Sets the {@link MarkdownEscaper} used for special characters escaping.
      *
      * @return This reference.
+     * @see #markdown()
+     * @see MarkdownEscaper
      * @since 0.2.0
      */
     public RenderContext withMarkdownEscaper() {
@@ -259,10 +273,24 @@ public class RenderContext {
      * Sets the {@link CsvEscaper} used for special characters escaping.
      *
      * @return This reference.
+     * @see #csv()
+     * @see CsvEscaper
      * @since 0.2.0
      */
     public RenderContext withCsvEscaper() {
         return this.withEscaper(new CsvEscaper());
+    }
+
+    /**
+     * Sets the {@link HtmlEscaper} used for special characters escaping.
+     *
+     * @return This reference.
+     * @see #html()
+     * @see HtmlEscaper
+     * @since 0.2.1
+     */
+    public RenderContext withHtmlEscaper() {
+        return this.withEscaper(new HtmlEscaper());
     }
 
     public int[] getColumnWidths() {
@@ -474,6 +502,19 @@ public class RenderContext {
         return withCsvWriter().withCsvEscaper().withLineBreakCRLF();
     }
 
+    /**
+     * Use predefined HTML configuration, shortcut of:
+     * <pre>{@code
+     *     withHtmlWriter().withHtmlEscaper();
+     * }</pre>
+     *
+     * @return This reference.
+     * @since 0.2.1
+     */
+    public RenderContext html() {
+        return this.withHtmlWriter().withHtmlEscaper();
+    }
+
     @Contract(pure = true)
     @NotNull
     public String getLineBreak() {
@@ -513,6 +554,11 @@ public class RenderContext {
     }
 
     public void appendLine() {
+        append(getLineBreak());
+    }
+
+    public void appendLine(String what) {
+        append(what);
         append(getLineBreak());
     }
 
