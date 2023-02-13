@@ -41,25 +41,61 @@ public class RenderContext {
         return new RenderContext();
     }
 
+    /**
+     * Source of headers and data used to fill the table.
+     *
+     * @since 0.2.0
+     */
     private ITableSource source = null;
 
+    /**
+     * {@link ITableWriter} responsible for formatting and writing the headers and data.
+     *
+     * @since 0.2.0
+     */
     private ITableWriter writer = null;
 
     /**
      * Used to create the rendered table.
+     *
+     * @since 0.2.0
      */
     private PureAppendable out = null;
 
     /**
      * Use output file by path instead of PureAppendable. {@link RenderOperation} will be responsible for closing
      * temporary {@link java.io.FileOutputStream}.
+     *
+     * @since 0.2.0
      */
     private File outFile = null;
 
+    /**
+     * {@link IEscaper} used to format the special characters.
+     *
+     * @since 0.2.0
+     */
     private IEscaper escaper = null;
 
+    /**
+     * Requested widths of all columns used during the table rendering.
+     *
+     * @since 0.2.0
+     */
     private int[] columnWidths = null;
 
+    /**
+     * Determines whether {@link #columnWidths} must be computed automatically, fixed values should be used or default
+     * value, depending on the {@link ITableWriter#getDefaultAlignedColumnWidths()}.
+     *
+     * @see ITableWriter#getDefaultAlignedColumnWidths()
+     * @see #isComputeColumnWidths()
+     * @see #getColumnWidths()
+     * @see #withAlignedColumnWidths()
+     * @see #withAlignedColumnWidths(Boolean)
+     * @see #withArbitraryColumnWidths(int[])
+     * @since 0.2.0
+     */
     private Boolean computeColumnWidths = null;
 
     /**
@@ -71,15 +107,35 @@ public class RenderContext {
     @Nullable
     private String cellDelimiter = null;
 
+    /**
+     * Defines how the lines should be separated.
+     *
+     * @since 0.2.0
+     */
     private String lineBreak = System.lineSeparator();
 
     /**
      * Updated internally by {@link RenderOperation} when visiting related cells.
+     *
+     * @since 0.2.0
      */
     public int columnIdx = 0;
 
+    /**
+     * Updated internally by {@link RenderOperation}. Defines whether currently the headers are rendered or not.
+     * <p>
+     * If false, the table body is rendered.
+     *
+     * @since 0.2.0
+     */
     public boolean headerState = false;
 
+    /**
+     * Default constructor. By convention, use {@link #make()} to create the object.
+     *
+     * @see #make()
+     * @since 0.1.12
+     */
     public RenderContext() {
     }
 
@@ -88,7 +144,9 @@ public class RenderContext {
      *
      * @param out Where to write the rendered table.
      * @return This reference.
+     * @since 0.2.0
      */
+    @NotNull
     public RenderContext to(PureAppendable out) {
         this.out = out;
         return this;
@@ -101,6 +159,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext to(PrintStream out) {
         return to(PureAppendable.from(out));
     }
@@ -113,6 +172,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext to(OutputStream out, Charset charset) {
         return to(PureAppendable.from(out, charset));
     }
@@ -124,6 +184,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext to(OutputStream out) {
         return to(PureAppendable.from(out));
     }
@@ -135,6 +196,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext to(StringBuilder out) {
         return to(PureAppendable.from(out));
     }
@@ -146,6 +208,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext to(Appendable out) {
         if (out instanceof PureAppendable) {
             return to((PureAppendable) out);
@@ -160,12 +223,24 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext to(File file) {
         this.out = null;
         this.outFile = file;
         return this;
     }
 
+    /**
+     * Allows setting the file destination using the path defines as {@link String}.
+     * <p>
+     * The same result may be achieved by calling: <pre>.to(new File(path));</pre>
+     *
+     * @param path The rendering destination file path. It may be relative or absolute.
+     * @return This reference.
+     * @see #to(File)
+     * @since 0.2.0
+     */
+    @NotNull
     public RenderContext toFile(String path) {
         return this.to(new File(path));
     }
@@ -190,6 +265,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withWriter(ITableWriter writer) {
         this.writer = writer;
         return this;
@@ -201,6 +277,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withMarkdownWriter() {
         return this.withWriter(new MarkdownTableWriter());
     }
@@ -211,6 +288,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withCsvWriter() {
         return this.withWriter(new CsvTableWriter());
     }
@@ -221,6 +299,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withHtmlWriter() {
         return this.withWriter(new HtmlTableWriter());
     }
@@ -231,6 +310,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withBlankTableWriter() {
         return this.withWriter(new BlankTableWriter());
     }
@@ -241,6 +321,7 @@ public class RenderContext {
      * @return {@link IEscaper} used for rendering operation.
      * @since 0.2.0
      */
+    @Nullable
     public IEscaper getEscaper() {
         return escaper;
     }
@@ -252,6 +333,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withEscaper(IEscaper escaper) {
         this.escaper = escaper;
         return this;
@@ -265,6 +347,7 @@ public class RenderContext {
      * @see MarkdownEscaper
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withMarkdownEscaper() {
         return withEscaper(MarkdownEscaper.getDefaultInstance());
     }
@@ -277,6 +360,7 @@ public class RenderContext {
      * @see CsvEscaper
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withCsvEscaper() {
         return this.withEscaper(new CsvEscaper());
     }
@@ -289,22 +373,62 @@ public class RenderContext {
      * @see HtmlEscaper
      * @since 0.2.1
      */
+    @NotNull
     public RenderContext withHtmlEscaper() {
         return this.withEscaper(new HtmlEscaper());
     }
 
+    /**
+     * Provides the requested column widths or <code>null</code> if not specified.
+     *
+     * @return Requested column widths or <code>null</code>.
+     * @since 0.2.0
+     */
     public int[] getColumnWidths() {
         return columnWidths;
     }
 
+    /**
+     * Provides the table columns count.
+     *
+     * @return Count of table columns.
+     * @since 0.2.0
+     */
     public int getColumnsCount() {
         return source.getColumnsCount();
     }
 
+    /**
+     * Tells whether column widths are specified or not.
+     *
+     * @return <code>true</code> when column widths are specified, <code>false</code> otherwise.
+     * @see #getColumnWidths()
+     * @see #withArbitraryColumnWidths(int[])
+     * @see #withAlignedColumnWidths(Boolean)
+     * @see #withAlignedColumnWidths()
+     * @see #withoutAlignedColumnWidths()
+     * @since 0.2.0
+     */
     public boolean hasColumnWidths() {
         return columnWidths != null;
     }
 
+    /**
+     * Tells whether column widths must be computed.
+     * <p>
+     * If <code>true</code>, the {@link RenderOperation} will compute column widths and set this value to false to
+     * indicate that it is already done.
+     *
+     * @return <code>true</code> when column widths must be computed during rendering. <code>false</code> when column
+     * widths must not be computed during rendering. <code>null</code> when the default value should be used.
+     * @see ITableWriter#getDefaultAlignedColumnWidths()
+     * @see #withArbitraryColumnWidths(int[])
+     * @see #withAlignedColumnWidths(Boolean)
+     * @see #withAlignedColumnWidths()
+     * @see #withoutAlignedColumnWidths()
+     * @since 0.2.0
+     */
+    @Nullable
     public Boolean isComputeColumnWidths() {
         return computeColumnWidths;
     }
@@ -320,6 +444,7 @@ public class RenderContext {
      * @see #withoutAlignedColumnWidths()
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withArbitraryColumnWidths(int[] columnWidths) {
         this.columnWidths = columnWidths;
         this.computeColumnWidths = false;
@@ -335,6 +460,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withAlignedColumnWidths() {
         this.columnWidths = null;
         this.computeColumnWidths = true;
@@ -354,6 +480,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withAlignedColumnWidths(final Boolean alignedColumnWidths) {
         if (alignedColumnWidths == null) {
             this.columnWidths = null;
@@ -371,6 +498,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withoutAlignedColumnWidths() {
         this.columnWidths = null;
         this.computeColumnWidths = false;
@@ -385,6 +513,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.1.13
      */
+    @NotNull
     public RenderContext withCellDelimiter(String what) {
         this.cellDelimiter = what;
         return this;
@@ -398,6 +527,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withCellDelimiter(char what) {
         this.cellDelimiter = String.valueOf(what);
         return this;
@@ -409,6 +539,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withDefaultCellDelimiter() {
         return withCellDelimiter(null);
     }
@@ -419,6 +550,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withoutCellDelimiter() {
         return withCellDelimiter("");
     }
@@ -441,6 +573,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withLineBreak(String lineBreak) {
         this.lineBreak = lineBreak;
         return this;
@@ -452,6 +585,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withLineBreakLF() {
         return this.withLineBreak(Str.LF);
     }
@@ -462,6 +596,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withLineBreakCRLF() {
         return this.withLineBreak(Str.CRLF);
     }
@@ -472,6 +607,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @NotNull
     public RenderContext withLineBreakCR() {
         return this.withLineBreak(Str.CR);
     }
@@ -485,6 +621,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.1
      */
+    @NotNull
     public RenderContext markdown() {
         return withMarkdownWriter().withMarkdownEscaper();
     }
@@ -498,6 +635,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.1
      */
+    @NotNull
     public RenderContext csv() {
         return withCsvWriter().withCsvEscaper().withLineBreakCRLF();
     }
@@ -511,6 +649,7 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.1
      */
+    @NotNull
     public RenderContext html() {
         return this.withHtmlWriter().withHtmlEscaper();
     }
