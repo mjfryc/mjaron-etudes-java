@@ -115,6 +115,16 @@ public class RenderContext {
     private String lineBreak = System.lineSeparator();
 
     /**
+     * Defines how the content of the table is aligned.
+     * <p>
+     * If <code>null</code>, the default value should be used.
+     *
+     * @since 0.2.1
+     */
+    @Nullable
+    private VerticalAlign verticalAlign = null;
+
+    /**
      * Updated internally by {@link RenderOperation} when visiting related cells.
      *
      * @since 0.2.0
@@ -610,6 +620,30 @@ public class RenderContext {
     @NotNull
     public RenderContext withLineBreakCR() {
         return this.withLineBreak(Str.CR);
+    }
+
+    /**
+     * Get the current value of {@link VerticalAlign} or <code>null</code> when value is not set.
+     *
+     * @return {@link VerticalAlign} or <code>null</code> when value is not set.
+     * @since 0.2.1
+     */
+    @Nullable
+    public VerticalAlign getVerticalAlign() {
+        return this.verticalAlign;
+    }
+
+    /**
+     * Sets the cell {@link VerticalAlign}.
+     *
+     * @param align The cell {@link VerticalAlign}.
+     * @return This reference.
+     * @since 0.2.1
+     */
+    @NotNull
+    public RenderContext withAlign(@Nullable VerticalAlign align) {
+        this.verticalAlign = align;
+        return this;
     }
 
     /**
