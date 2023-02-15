@@ -20,6 +20,7 @@
 package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
+import pl.mjaron.etudes.table.VerticalAlign;
 
 import java.nio.charset.Charset;
 
@@ -45,12 +46,17 @@ class TableTest {
         System.out.println("Default charset is: " + Charset.defaultCharset().name());
 
         final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5), new Cat("My nickname is \"ABC\"", 10), new Cat("Next\r\nline", 11)};
-        Table.render(cats, Cat.class).withMarkdownEscaper().withAlignedColumnWidths().run();
 
+        System.out.println("MarkdownEscaper:");
+        Table.render(cats, Cat.class).withMarkdownEscaper().withAlign(VerticalAlign.Left).withAlignedColumnWidths().run();
+
+        System.out.println("withAlignedColumnWidths(false):");
         Table.render(cats, Cat.class).withAlignedColumnWidths(false).run();
 
-        Table.render(cats, Cat.class).withBlankTableWriter().run();
+        System.out.println("BlankTableWriter: ");
+        Table.render(cats, Cat.class).withBlankTableWriter().withAlignedColumnWidths().withAlign(VerticalAlign.Right).run();
 
+        System.out.println("CsvTableWriter: ");
         Table.render(cats, Cat.class).withCsvWriter().run();
 
         String rendered = Table.render(cats, Cat.class).withAlignedColumnWidths().withCsvWriter().withLineBreakCRLF().runToString();

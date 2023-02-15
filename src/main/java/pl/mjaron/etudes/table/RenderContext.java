@@ -752,11 +752,22 @@ public class RenderContext {
      *
      * @param what     String to append.
      * @param fillChar Character to fill the String during padding.
+     * @see #getVerticalAlign()
+     * @see VerticalAlign
      * @since 0.2.0
      */
     public void appendPadded(String what, final char fillChar) {
         if (this.hasColumnWidths()) {
-            Str.padLeft(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+            if (verticalAlign == null || verticalAlign == VerticalAlign.Left) {
+                //noinspection ConstantConditions
+                Str.padRight(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+            } else if (verticalAlign == VerticalAlign.Right) {
+                Str.padLeft(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+            } else if (verticalAlign == VerticalAlign.Center) {
+                Str.padCenter(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+            } else {
+                throw new RuntimeException("Unsupported vertical align value: " + verticalAlign);
+            }
         } else {
             this.append(what);
         }

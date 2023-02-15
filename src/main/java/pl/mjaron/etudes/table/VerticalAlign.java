@@ -21,6 +21,8 @@ package pl.mjaron.etudes.table;
 
 /**
  * Defines how the cell content should be aligned.
+ *
+ * @since 0.2.1
  */
 public enum VerticalAlign {
     Left, Right, Center
