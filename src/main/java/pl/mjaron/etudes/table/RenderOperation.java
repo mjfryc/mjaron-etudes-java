@@ -19,7 +19,6 @@
 
 package pl.mjaron.etudes.table;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -50,7 +49,7 @@ public abstract class RenderOperation {
                     context.withoutAlignedColumnWidths();
                 }
             }
-            if (context.isComputeColumnWidths()) {
+            if (Boolean.TRUE.equals(context.isComputeColumnWidths())) {
                 final int[] widths = TableColumnsWidthDetector.compute(context.getSource(), context.getEscaper());
                 context.withArbitraryColumnWidths(widths);
             }
@@ -62,28 +61,28 @@ public abstract class RenderOperation {
             context.getEscaper().beginTable(context);
             writer.beginTable(context);
             if (context.getSource().hasHeaders()) {
-                context.headerState = true;
+                context.setHeaderState(true);
                 writer.beginHeader();
-                context.columnIdx = 0;
+                context.resetColumn();
                 for (final String header : context.getSource().getHeaders()) {
                     writer.writeCell(context.getEscaper().escape(header));
-                    ++context.columnIdx;
+                    context.nextColumn();
                 }
                 writer.endHeader();
-                context.headerState = false;
+                context.setHeaderState(false);
             }
 
             for (final Iterable<String> row : context.getSource()) {
                 writer.beginRow();
-                context.columnIdx = 0;
+                context.resetColumn();
                 for (final String cell : row) {
                     writer.writeCell(context.getEscaper().escape(cell));
-                    ++context.columnIdx;
+                    context.nextColumn();
                 }
                 writer.endRow();
             }
             writer.endTable();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Render operation failed.", e);
         } finally {
             if (internalOutputStream != null) {

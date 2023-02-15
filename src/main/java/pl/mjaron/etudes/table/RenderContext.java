@@ -115,21 +115,11 @@ public class RenderContext {
     private String lineBreak = System.lineSeparator();
 
     /**
-     * Defines how the content of the table is aligned.
-     * <p>
-     * If <code>null</code>, the default value should be used.
-     *
-     * @since 0.2.1
-     */
-    @Nullable
-    private VerticalAlign verticalAlign = null;
-
-    /**
      * Updated internally by {@link RenderOperation} when visiting related cells.
      *
      * @since 0.2.0
      */
-    public int columnIdx = 0;
+    private int columnIdx = 0;
 
     /**
      * Updated internally by {@link RenderOperation}. Defines whether currently the headers are rendered or not.
@@ -138,7 +128,12 @@ public class RenderContext {
      *
      * @since 0.2.0
      */
-    public boolean headerState = false;
+    private boolean headerState = false;
+
+    /**
+     * Used to determine column's vertical align.
+     */
+    private final VerticalAlignContext verticalAlignContext = new VerticalAlignContext(this);
 
     /**
      * Default constructor. By convention, use {@link #make()} to create the object.
@@ -623,17 +618,6 @@ public class RenderContext {
     }
 
     /**
-     * Get the current value of {@link VerticalAlign} or <code>null</code> when value is not set.
-     *
-     * @return {@link VerticalAlign} or <code>null</code> when value is not set.
-     * @since 0.2.1
-     */
-    @Nullable
-    public VerticalAlign getVerticalAlign() {
-        return this.verticalAlign;
-    }
-
-    /**
      * Sets the cell {@link VerticalAlign}.
      *
      * @param align The cell {@link VerticalAlign}.
@@ -642,7 +626,7 @@ public class RenderContext {
      */
     @NotNull
     public RenderContext withAlign(@Nullable VerticalAlign align) {
-        this.verticalAlign = align;
+        verticalAlignContext.setGeneralVerticalAlign(align);
         return this;
     }
 
@@ -752,21 +736,22 @@ public class RenderContext {
      *
      * @param what     String to append.
      * @param fillChar Character to fill the String during padding.
-     * @see #getVerticalAlign()
+     * @see VerticalAlignContext
      * @see VerticalAlign
      * @since 0.2.0
      */
     public void appendPadded(String what, final char fillChar) {
+        final VerticalAlign currentAlign = verticalAlignContext.getCurrentColumnVerticalAlign();
         if (this.hasColumnWidths()) {
-            if (verticalAlign == null || verticalAlign == VerticalAlign.Left) {
+            if (currentAlign == null || currentAlign == VerticalAlign.Left) {
                 //noinspection ConstantConditions
                 Str.padRight(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
-            } else if (verticalAlign == VerticalAlign.Right) {
+            } else if (currentAlign == VerticalAlign.Right) {
                 Str.padLeft(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
-            } else if (verticalAlign == VerticalAlign.Center) {
+            } else if (currentAlign == VerticalAlign.Center) {
                 Str.padCenter(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
             } else {
-                throw new RuntimeException("Unsupported vertical align value: " + verticalAlign);
+                throw new RuntimeException("Unsupported vertical align value: " + currentAlign);
             }
         } else {
             this.append(what);
@@ -802,6 +787,32 @@ public class RenderContext {
      */
     public void setSource(ITableSource source) {
         this.source = source;
+    }
+
+    public int getColumnIdx() {
+        return this.columnIdx;
+    }
+
+    public void nextColumn() {
+        ++this.columnIdx;
+        verticalAlignContext.onCurrentColumnChanged();
+    }
+
+    public void resetColumn() {
+        this.columnIdx = 0;
+        verticalAlignContext.onCurrentColumnChanged();
+    }
+
+    public boolean isHeaderState() {
+        return headerState;
+    }
+
+    public void setHeaderState(boolean headerState) {
+        this.headerState = headerState;
+    }
+
+    public VerticalAlignContext getVerticalAlignContext() {
+        return verticalAlignContext;
     }
 
     /**

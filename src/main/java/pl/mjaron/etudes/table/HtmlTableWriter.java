@@ -73,7 +73,7 @@ public class HtmlTableWriter implements ITableWriter {
     public void writeCell(String what) {
         context.append(indentationUnit);
         context.append(indentationUnit);
-        if (context.headerState) {
+        if (context.isHeaderState()) {
             context.append("<th>");
             context.append(what);
             context.append("</th>");

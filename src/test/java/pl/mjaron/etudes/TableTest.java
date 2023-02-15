@@ -42,21 +42,20 @@ class TableTest {
     @Test
     void render() {
 
-
         System.out.println("Default charset is: " + Charset.defaultCharset().name());
 
         final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5), new Cat("My nickname is \"ABC\"", 10), new Cat("Next\r\nline", 11)};
 
         System.out.println("MarkdownEscaper:");
-        Table.render(cats, Cat.class).withMarkdownEscaper().withAlign(VerticalAlign.Left).withAlignedColumnWidths().run();
+        Table.render(cats, Cat.class).withMarkdownEscaper().withAlign(VerticalAlign.Center).withAlignedColumnWidths().run();
 
         System.out.println("withAlignedColumnWidths(false):");
         Table.render(cats, Cat.class).withAlignedColumnWidths(false).run();
 
-        System.out.println("BlankTableWriter: ");
+        System.out.println("BlankTableWriter:");
         Table.render(cats, Cat.class).withBlankTableWriter().withAlignedColumnWidths().withAlign(VerticalAlign.Right).run();
 
-        System.out.println("CsvTableWriter: ");
+        System.out.println("CsvTableWriter:");
         Table.render(cats, Cat.class).withCsvWriter().run();
 
         String rendered = Table.render(cats, Cat.class).withAlignedColumnWidths().withCsvWriter().withLineBreakCRLF().runToString();
