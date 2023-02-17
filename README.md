@@ -1,21 +1,30 @@
-# mjaron-etudes-java
+# mjaron-etudes-java ![Etudes](other/Etudes.png)
 
 Library for printing Java object lists as a Markdown-formatted table.
 Utils compatible with Java 1.8.
-
-```gradle
-implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.0'
-```
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.mjfryc/mjaron-etudes-java?color=dark-green&style=flat)](https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/)
 [![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
 [![Publish package to GitHub Packages](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml)
 
-![Etudes](other/Etudes.png)
-_Pianists practice etudes, programmers also!_
-
 ## Table generation utils
 
+### Short example
+
+```gradle
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.0'
+```
+
+```ignorelang
+Table.render(cats, Cat.class).run();
+```
+
+```ignorelang
+| name | legsCount | lazy  | topSpeed |
+|------|-----------|-------|----------|
+| John | 4         | true  | 35.24    |
+| Bob  | 5         | false | 75.0     |
+```
 ### Printing java arrays / iterables as a Markdown / CSV / HTML table
 
 ```java
