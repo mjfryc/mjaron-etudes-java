@@ -1,6 +1,6 @@
 # mjaron-etudes-java
 
-Library for printing Java object lists as a Markdown-formatted table.
+Standalone library for printing Java object lists (arrays, iterables) as a Markdown, CSV or HTML formatted table.  
 Utils compatible with Java 1.8.
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.mjfryc/mjaron-etudes-java?color=dark-green&style=flat)](https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/)
