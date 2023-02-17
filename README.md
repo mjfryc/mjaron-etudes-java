@@ -18,7 +18,7 @@ implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.1'
 ```
 
 ```ignorelang
-Table.render(cats, Cat.class).markdown().run();
+Table.render(myCatsArray, Cat.class).markdown().run();
 ```
 
 ```ignorelang
