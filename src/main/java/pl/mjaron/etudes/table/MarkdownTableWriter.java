@@ -19,6 +19,7 @@
 
 package pl.mjaron.etudes.table;
 
+import pl.mjaron.etudes.Pair;
 import pl.mjaron.etudes.Str;
 
 /**
@@ -49,19 +50,44 @@ public class MarkdownTableWriter implements ITableWriter {
     public void beginHeader() {
     }
 
+    public Pair<String, String> determineColumnDividerMargins(final int columnIdx) {
+        final VerticalAlign verticalAlign = context.getVerticalAlignContext().getForColumn(columnIdx);
+        if (verticalAlign == null) {
+            return new Pair<>("-", "-");
+        }
+        if (verticalAlign == VerticalAlign.Left) {
+            return new Pair<>(":", " ");
+        }
+        if (verticalAlign == VerticalAlign.Right) {
+            return new Pair<>(" ", ":");
+        }
+        if (verticalAlign == VerticalAlign.Center) {
+            return new Pair<>(":", ":");
+        }
+        throw new RuntimeException("Unsupported " + VerticalAlign.class.getSimpleName() + " value: " + verticalAlign);
+    }
+
     @Override
     public void endHeader() {
         context.append("|");
         context.appendLine();
         if (context.hasColumnWidths()) {
-            for (final int w : context.getColumnWidths()) {
-                context.append("| ");
+            for (int i = 0; i < context.getColumnWidths().length; ++i) {
+                final int w = context.getColumnWidths()[i];
+                //for (final int w : context.getColumnWidths()) {
+                final Pair<String, String> margins = determineColumnDividerMargins(i);
+                context.append("|");
+                context.append(margins.getKey());
                 Str.pad(context.out(), w, '-');
-                context.append(' ');
+                context.append(margins.getValue());
             }
         } else {
             for (int i = 0; i < context.getColumnsCount(); ++i) {
-                context.append("| ---- ");
+                final Pair<String, String> margins = determineColumnDividerMargins(i);
+                context.append("|");
+                context.append(margins.getKey());
+                context.append("----");
+                context.append(margins.getValue());
             }
         }
         context.append("|");

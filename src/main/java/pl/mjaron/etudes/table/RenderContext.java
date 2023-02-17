@@ -119,7 +119,7 @@ public class RenderContext {
      *
      * @since 0.2.0
      */
-    public int columnIdx = 0;
+    private int columnIdx = 0;
 
     /**
      * Updated internally by {@link RenderOperation}. Defines whether currently the headers are rendered or not.
@@ -128,7 +128,12 @@ public class RenderContext {
      *
      * @since 0.2.0
      */
-    public boolean headerState = false;
+    private boolean headerState = false;
+
+    /**
+     * Used to determine column's vertical align.
+     */
+    private final VerticalAlignContext verticalAlignContext = new VerticalAlignContext(this);
 
     /**
      * Default constructor. By convention, use {@link #make()} to create the object.
@@ -337,6 +342,22 @@ public class RenderContext {
     public RenderContext withEscaper(IEscaper escaper) {
         this.escaper = escaper;
         return this;
+    }
+
+    /**
+     * Turns off the escaper so cell content will not be customized to the table format.
+     *
+     * @return This reference.
+     * @see #withEscaper(IEscaper)
+     * @see #withMarkdownEscaper()
+     * @see #withCsvEscaper()
+     * @see #withHtmlEscaper()
+     * @see IEscaper
+     * @since 0.2.1
+     */
+    @NotNull
+    public RenderContext withoutEscaper() {
+        return withEscaper(null);
     }
 
     /**
@@ -613,6 +634,19 @@ public class RenderContext {
     }
 
     /**
+     * Sets the cell {@link VerticalAlign}.
+     *
+     * @param align The cell {@link VerticalAlign}.
+     * @return This reference.
+     * @since 0.2.1
+     */
+    @NotNull
+    public RenderContext withAlign(@Nullable VerticalAlign align) {
+        verticalAlignContext.setGeneralVerticalAlign(align);
+        return this;
+    }
+
+    /**
      * Use predefined Markdown configuration, shortcut of:
      * <pre>{@code
      *     withMarkdownWriter().withMarkdownEscaper();
@@ -684,29 +718,66 @@ public class RenderContext {
         return this.outFile;
     }
 
+    /**
+     * Appends given {@link String} to the table rendering output.
+     *
+     * @param what {@link String} to append.
+     * @since 0.2.0
+     */
     public void append(String what) {
         out.append(what);
     }
 
+    /**
+     * Appends given <code>char</code> to the table rendering output.
+     *
+     * @param what <code>char</code> to append.
+     * @since 0.2.0
+     */
     public void append(char what) {
         out.append(what);
     }
 
+    /**
+     * Appends new line characters to the table rendering output.
+     *
+     * @since 0.2.0
+     */
     public void appendLine() {
         append(getLineBreak());
     }
 
+    /**
+     * Appends given {@link String} and new line characters to the table rendering output.
+     *
+     * @param what {@link String} to append.
+     * @since 0.2.0
+     */
     public void appendLine(String what) {
         append(what);
         append(getLineBreak());
     }
 
+    /**
+     * Appends given {@link String} to the table rendering output only when current column is not first column (not with
+     * index <code>0</code>).
+     *
+     * @param what {@link String} to append.
+     * @since 0.2.0
+     */
     public void appendIfNotFirstColumn(String what) {
         if (columnIdx != 0) {
             this.append(what);
         }
     }
 
+    /**
+     * Appends given <code>char</code> to the table rendering output only when current column is not first column (not
+     * with index <code>0</code>).
+     *
+     * @param what <code>char</code> to append.
+     * @since 0.2.0
+     */
     public void appendIfNotFirstColumn(char what) {
         if (columnIdx != 0) {
             this.append(what);
@@ -718,11 +789,23 @@ public class RenderContext {
      *
      * @param what     String to append.
      * @param fillChar Character to fill the String during padding.
+     * @see VerticalAlignContext
+     * @see VerticalAlign
      * @since 0.2.0
      */
     public void appendPadded(String what, final char fillChar) {
+        final VerticalAlign currentAlign = verticalAlignContext.getCurrentColumnVerticalAlign();
         if (this.hasColumnWidths()) {
-            Str.padLeft(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+            if (currentAlign == null || currentAlign == VerticalAlign.Left) {
+                //noinspection ConstantConditions
+                Str.padRight(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+            } else if (currentAlign == VerticalAlign.Right) {
+                Str.padLeft(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+            } else if (currentAlign == VerticalAlign.Center) {
+                Str.padCenter(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+            } else {
+                throw new RuntimeException("Unsupported vertical align value: " + currentAlign);
+            }
         } else {
             this.append(what);
         }
@@ -757,6 +840,69 @@ public class RenderContext {
      */
     public void setSource(ITableSource source) {
         this.source = source;
+    }
+
+    /**
+     * Provides currently rendered column index, counting from <code>0</code>.
+     *
+     * @return Currently rendered column index.
+     * @since 0.2.1
+     */
+    public int getColumnIdx() {
+        return this.columnIdx;
+    }
+
+    /**
+     * Increments by one currently rendered column index.
+     *
+     * @since 0.2.1
+     */
+    public void nextColumn() {
+        ++this.columnIdx;
+        verticalAlignContext.onCurrentColumnChanged();
+    }
+
+    /**
+     * Resets to <code>0</code> currently rendered column index.
+     *
+     * @since 0.2.1
+     */
+    public void resetColumn() {
+        this.columnIdx = 0;
+        verticalAlignContext.onCurrentColumnChanged();
+    }
+
+    /**
+     * Tells whether currently rendered row is the table header.
+     *
+     * @return <code>true</code> when table rendering is in header state.
+     * @since 0.2.1
+     */
+    public boolean isHeaderState() {
+        return headerState;
+    }
+
+    /**
+     * Updates the table rendering header state. Called by {@link RenderOperation}.
+     *
+     * @param headerState New value of rendering header state.
+     * @see RenderOperation
+     * @since 0.2.1
+     */
+    public void setHeaderState(boolean headerState) {
+        this.headerState = headerState;
+    }
+
+    /**
+     * Provides {@link VerticalAlignContext} for vertical align related options.
+     *
+     * @return {@link VerticalAlignContext} used by this rendering context.
+     * @see VerticalAlignContext
+     * @see VerticalAlign
+     * @since 0.2.1
+     */
+    public VerticalAlignContext getVerticalAlignContext() {
+        return verticalAlignContext;
     }
 
     /**

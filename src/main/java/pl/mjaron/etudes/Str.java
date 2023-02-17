@@ -215,7 +215,7 @@ public abstract class Str {
     }
 
     /**
-     * Fills String with given character from left side.
+     * Fills String with given character from left side, so the padded text will be at the right.
      *
      * @param what Given String.
      * @param size Width of desired String.
@@ -323,6 +323,68 @@ public abstract class Str {
         } catch (IOException e) {
             throw new RuntimeException("Failed to append character " + size + " times.", e);
         }
+    }
+
+    /**
+     * Fills String with given character from right and left side to achieve the text at the center.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @param ch   Character used to fill padding gap.
+     * @param out  Output where result String will be written.
+     * @throws RuntimeException on {@link Appendable#append} failure.
+     * @since 0.2.1
+     */
+    public static void padCenter(final String what, final int size, final char ch, final Appendable out) {
+        try {
+            final int toPad = size - what.length();
+            if (toPad <= 0) {
+                out.append(what);
+                return;
+            }
+            if (toPad == 1) {
+                out.append(what);
+                out.append(ch);
+                return;
+            }
+            final int toPadRight = toPad / 2 + (((toPad & 1) == 1) ? 1 : 0);
+            final int toPadLeft = toPad / 2;
+
+            pad(out, toPadLeft, ch);
+            out.append(what);
+            pad(out, toPadRight, ch);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to pad center the String.", e);
+        }
+    }
+
+    /**
+     * Fills String with given character from right and left side to achieve the text at the center.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @param ch   Character used to fill the padding gaps.
+     * @return Padded String.
+     * @since 0.2.1
+     */
+    public static String padCenter(final String what, final int size, final char ch) {
+        final StringBuilder out = new StringBuilder();
+        padCenter(what, size, ch, out);
+        return out.toString();
+    }
+
+    /**
+     * Fills String with given character from right and left side to achieve the text at the center.
+     * <p>
+     * Uses the space character to fill the padding.
+     *
+     * @param what Given String.
+     * @param size Width of desired String.
+     * @return Padded String.
+     * @since 0.2.1
+     */
+    public static String padCenter(final String what, final int size) {
+        return padCenter(what, size, ' ');
     }
 
     /**

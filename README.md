@@ -1,4 +1,4 @@
-# mjaron-etudes-java
+# mjaron-etudes-java ![Etudes](other/Etudes.png)
 
 Library for printing Java object lists as a Markdown-formatted table.
 Utils compatible with Java 1.8.
@@ -7,33 +7,26 @@ Utils compatible with Java 1.8.
 [![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
 [![Publish package to GitHub Packages](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml)
 
-![Etudes](other/Etudes.png)
-_Pianists practice etudes, programmers also!_
+## Table generation utils
 
-## How to integrate with Gradle
-
-### From Maven Central
-
-<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.2.0/jar>
+### Short example
 
 ```gradle
 implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.0'
 ```
 
-### As local `jar` file
+```ignorelang
+Table.render(cats, Cat.class).run();
+```
 
-* Download the latest release
-    * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
-    * To `[gradle's root directory]/libs/`
-    * E.g: `my-project/libs/mjaron-etudes-java-0.2.0.jar`
-* In any Gradle subproject which needs this library, put following content:
-    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.2.0.jar')`
-* Now import package and use it, e.g:
-    * `import pl.mjaron.etudes.Obj;`
+```ignorelang
+| name | legsCount | lazy  | topSpeed |
+|------|-----------|-------|----------|
+| John | 4         | true  | 35.24    |
+| Bob  | 5         | false | 75.0     |
+```
 
-## Table generation utils
-
-### Printing object list as a Markdown / CSV / custom table
+### Verbose example of printing java iterables as Markdown / CSV / HTML table
 
 ```java
 // Sample class.
@@ -57,6 +50,7 @@ class Sample {
         // Sample array or iterable of Java objects.
         final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5)};
 
+        // It will print the Markdown table to the System.out.
         Table.render(cats, Cat.class).run();
 
         // Or
@@ -65,11 +59,40 @@ class Sample {
 
         // Verbose options demo
         Table.render(cats, Cat.class)
-                .withCsvWriter()
-                .withCsvEscaper() // Escape the special characters.
-                .withAlignedColumnWidths(false) // Optionally force align / do not align column widths.
-                .withCellDelimiter(',') // Optionally use the custom cell delimiter.
-                .withLineBreakCRLF() // How the lines will be separated.
+
+                .markdown() // Use Markdown renderer and escaper (option used by default).
+                // or
+                // .csv() // Use CSV renderer and CSV escaper.
+                // or
+                // .html() // Use HTML renderer and HTML escaper.
+                
+                // Skip escaping the special characters.
+                .withEscaper(null)
+                
+                // Optionally force align / do not align column widths.
+                .withAlignedColumnWidths(false)
+                // or
+                // .withAlignedColumnWidths(true)
+
+                // Optionally use the custom cell delimiter.
+                // ',' is the default cell delimiter.
+                .withCellDelimiter(',')
+
+                // How the lines will be separated.
+                .withLineBreakCRLF()
+                // or '\n'
+                // .withLineBreakLF()
+                // or '\r'
+                // .withLineBreakCR()
+
+                // How align the text (Left, Right or Center)
+                .withAlign(VerticalAlign.Left)
+                // or
+                // .withAlign(VerticalAlign.Right)
+                // or
+                // .withAlign(VerticalAlign.Center)
+                // or
+                // .withAlign(null) // Use the default align.
 
                 // Where to save the table.
                 .toFile("build/sample.csv")
@@ -78,7 +101,10 @@ class Sample {
                 // or: .to(Stream|PrintStream|Appendable|File|StringBuilder out)
 
                 // Run the render operation.
-                .run(); // or: .runString() to create the String with whole table.
+                .run()
+                // or
+                // .runToString() // to create the String with whole table.
+        ;
     }
 }
 ```
@@ -94,50 +120,103 @@ Sample generated table:
 
 ### Table generation customization
 
-#### Escaping markdown special characters:
+#### Markdown customization
+
+Following code creates Markdown table with center vertical align and with escaping the special characters.
 
 ```java
 class Sample {
     void test() {
-        Table.render(cats, Cat.class).withMarkdownEscaper().run();
+        Table.render(cats, Cat.class).withMarkdownEscaper().withAlign(VerticalAlign.Center).run();
     }
 }
 ```
 
 So now all special characters are escaped by HTML number syntax, there is following raw text:
 
-    |              name | age |
-    | ----------------- | --- |
-    |               Tom |   2 |
-    | &#95;Michael&#95; |   5 |
+    |       name        | age |
+    |:-----------------:|:---:|
+    |        Tom        |  2  |
+    | &#95;Michael&#95; |  5  |
 
 Rendered by Markdown as:
 
-|              name | age |
-| ----------------- | --- |
-|               Tom |   2 |
-| &#95;Michael&#95; |   5 |
+|       name        | age |
+|:-----------------:|:---:|
+|        Tom        |  2  |
+| &#95;Michael&#95; |  5  |
 
-Without a `MarkdownEscaper`, cells will be rendered 'as is', which potentially can cause a bad rendering:
+Without a `MarkdownEscaper`, cells will be rendered 'as is', so user is responsible for correct cell values:
 
 ```java
 class Sample {
     void test() {
-        Table.render(cats, Cat.class);
+        Table.render(cats, Cat.class).withoutEscaper().run();
     }
 }
 ```
 
-|      name | age |
-| --------- | --- |
-|       Tom |   2 |
-| _Michael_ |   5 |
+    | name      | age |
+    |-----------|-----|
+    | Tom       | 2   |
+    | _Michael_ | 5   |
+
+| name      | age |
+|-----------|-----|
+| Tom       | 2   |
+| _Michael_ | 5   |
 
 #### Markdown custom escaper - @TODO
 
-@TODO Implement escaper which escapes only when preceded by (eg.) backslash `&#92;`.
+`@todo`Implement escaper which escapes only when preceded by (eg.) backslash `&#92;`.
 
-### Escaping CSV characters
+### CSV
+
+Below code configures the rendering with the CSV renderer and CSV special characters' escaper:
+
+```java
+class Sample {
+    void test() {
+        Table.render(cats, Cat.class).csv().run();
+    }
+}
+```
+
+```csv
+name,age
+Tom,2
+_Michael_,5
+```
+
+### HTML
+
+Below code configures the rendering with the HTML renderer and HTML special characters' escaper:
+
+```java
+class Sample {
+    void test() {
+        Table.render(cats, Cat.class).html().withAlign(VerticalAlign.Right).run();
+    }
+}
+```
+
+```html
+
+<table>
+    <tr>
+        <th style="text-align: right;">name</th>
+        <th style="text-align: right;">age</th>
+    </tr>
+    <tr>
+        <td style="text-align: right;">Tom</td>
+        <td style="text-align: right;">2</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">_Michael_</td>
+        <td style="text-align: right;">5</td>
+    </tr>
+</table>
+```
 
 ## Object utils
 
@@ -270,3 +349,25 @@ class Sample {
     }
 }
 ```
+
+## How to integrate with Gradle
+
+### From Maven Central
+
+<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.2.0/jar>
+
+```gradle
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.0'
+```
+
+### As local `jar` file
+
+* Download the latest release
+    * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
+    * To `[gradle's root directory]/libs/`
+    * E.g: `my-project/libs/mjaron-etudes-java-0.2.0.jar`
+* In any Gradle subproject which needs this library, put following content:
+    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.2.0.jar')`
+* Now import package and use it, e.g:
+    * `import pl.mjaron.etudes.*;`
+

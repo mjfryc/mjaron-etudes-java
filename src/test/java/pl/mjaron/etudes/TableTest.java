@@ -20,6 +20,7 @@
 package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
+import pl.mjaron.etudes.table.VerticalAlign;
 
 import java.nio.charset.Charset;
 
@@ -41,16 +42,23 @@ class TableTest {
     @Test
     void render() {
 
-
         System.out.println("Default charset is: " + Charset.defaultCharset().name());
 
-        final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5), new Cat("My nickname is \"ABC\"", 10), new Cat("Next\r\nline", 11)};
-        Table.render(cats, Cat.class).withMarkdownEscaper().withAlignedColumnWidths().run();
+        final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5)};//, new Cat("My nickname is \"ABC\"", 10), new Cat("Next\r\nline", 11)};
 
-        Table.render(cats, Cat.class).withAlignedColumnWidths(false).run();
+        System.out.println("MarkdownEscaper:");
+        Table.render(cats, Cat.class).withMarkdownEscaper().withAlign(VerticalAlign.Center).withAlignedColumnWidths().run();
 
-        Table.render(cats, Cat.class).withBlankTableWriter().run();
+        System.out.println("withAlignedColumnWidths(false):");
+        Table.render(cats, Cat.class).withAlignedColumnWidths(false).withoutEscaper().run();
 
+        System.out.println("withAlignedColumnWidths(true):");
+        Table.render(cats, Cat.class).withAlignedColumnWidths(true).run();
+
+        System.out.println("BlankTableWriter:");
+        Table.render(cats, Cat.class).withBlankTableWriter().withAlignedColumnWidths().withAlign(VerticalAlign.Right).run();
+
+        System.out.println("CsvTableWriter:");
         Table.render(cats, Cat.class).withCsvWriter().run();
 
         String rendered = Table.render(cats, Cat.class).withAlignedColumnWidths().withCsvWriter().withLineBreakCRLF().runToString();
@@ -59,7 +67,7 @@ class TableTest {
         //System.out.println("All options demo.");
         //Table.render(cats, Cat.class).withCsvWriter().withCsvEscaper().withAlignedColumnWidths(false).withCellDelimiter(';').withLineBreakCRLF().toFile("build/sample.csv").run();
 
-        Table.render(cats, Cat.class).html().run();
+        Table.render(cats, Cat.class).html().withAlign(VerticalAlign.Right).run();
     }
 }
 
