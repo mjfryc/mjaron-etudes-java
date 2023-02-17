@@ -69,16 +69,57 @@ public class HtmlTableWriter implements ITableWriter {
         context.appendLine("</tr>");
     }
 
+    /**
+     * Appends the style attribute for currently processed table column. The appended value depends on the current
+     * column vertical align.
+     * <p>
+     * For internal use.
+     *
+     * @see #writeCell(String)
+     * @see VerticalAlign
+     * @see VerticalAlignContext#getCurrentColumnVerticalAlign()
+     * @see RenderContext#getColumnIdx()
+     * @since 0.2.1
+     */
+    public void writeColumnStyle() {
+        final VerticalAlign verticalAlign = context.getVerticalAlignContext().getCurrentColumnVerticalAlign();
+        if (verticalAlign == null) {
+            return;
+        }
+
+        switch (verticalAlign) {
+            case Left: {
+                context.append(" style=\"text-align: left;\"");
+                return;
+            }
+            case Right: {
+                context.append(" style=\"text-align: right;\"");
+                return;
+            }
+            case Center: {
+                context.append(" style=\"text-align: center;\"");
+                return;
+            }
+            default: {
+                throw new RuntimeException("Unexpected vertical align value: " + verticalAlign);
+            }
+        }
+    }
+
     @Override
     public void writeCell(String what) {
         context.append(indentationUnit);
         context.append(indentationUnit);
         if (context.isHeaderState()) {
-            context.append("<th>");
+            context.append("<th");
+            writeColumnStyle();
+            context.append(">");
             context.append(what);
             context.append("</th>");
         } else {
-            context.append("<td>");
+            context.append("<td");
+            writeColumnStyle();
+            context.append(">");
             context.append(what);
             context.append("</td>");
         }

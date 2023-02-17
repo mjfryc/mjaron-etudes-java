@@ -345,6 +345,22 @@ public class RenderContext {
     }
 
     /**
+     * Turns off the escaper so cell content will not be customized to the table format.
+     *
+     * @return This reference.
+     * @see #withEscaper(IEscaper)
+     * @see #withMarkdownEscaper()
+     * @see #withCsvEscaper()
+     * @see #withHtmlEscaper()
+     * @see IEscaper
+     * @since 0.2.1
+     */
+    @NotNull
+    public RenderContext withoutEscaper() {
+        return withEscaper(null);
+    }
+
+    /**
      * Sets the {@link MarkdownEscaper} used for special characters escaping.
      *
      * @return This reference.
@@ -702,29 +718,66 @@ public class RenderContext {
         return this.outFile;
     }
 
+    /**
+     * Appends given {@link String} to the table rendering output.
+     *
+     * @param what {@link String} to append.
+     * @since 0.2.0
+     */
     public void append(String what) {
         out.append(what);
     }
 
+    /**
+     * Appends given <code>char</code> to the table rendering output.
+     *
+     * @param what <code>char</code> to append.
+     * @since 0.2.0
+     */
     public void append(char what) {
         out.append(what);
     }
 
+    /**
+     * Appends new line characters to the table rendering output.
+     *
+     * @since 0.2.0
+     */
     public void appendLine() {
         append(getLineBreak());
     }
 
+    /**
+     * Appends given {@link String} and new line characters to the table rendering output.
+     *
+     * @param what {@link String} to append.
+     * @since 0.2.0
+     */
     public void appendLine(String what) {
         append(what);
         append(getLineBreak());
     }
 
+    /**
+     * Appends given {@link String} to the table rendering output only when current column is not first column (not with
+     * index <code>0</code>).
+     *
+     * @param what {@link String} to append.
+     * @since 0.2.0
+     */
     public void appendIfNotFirstColumn(String what) {
         if (columnIdx != 0) {
             this.append(what);
         }
     }
 
+    /**
+     * Appends given <code>char</code> to the table rendering output only when current column is not first column (not
+     * with index <code>0</code>).
+     *
+     * @param what <code>char</code> to append.
+     * @since 0.2.0
+     */
     public void appendIfNotFirstColumn(char what) {
         if (columnIdx != 0) {
             this.append(what);
@@ -789,28 +842,65 @@ public class RenderContext {
         this.source = source;
     }
 
+    /**
+     * Provides currently rendered column index, counting from <code>0</code>.
+     *
+     * @return Currently rendered column index.
+     * @since 0.2.1
+     */
     public int getColumnIdx() {
         return this.columnIdx;
     }
 
+    /**
+     * Increments by one currently rendered column index.
+     *
+     * @since 0.2.1
+     */
     public void nextColumn() {
         ++this.columnIdx;
         verticalAlignContext.onCurrentColumnChanged();
     }
 
+    /**
+     * Resets to <code>0</code> currently rendered column index.
+     *
+     * @since 0.2.1
+     */
     public void resetColumn() {
         this.columnIdx = 0;
         verticalAlignContext.onCurrentColumnChanged();
     }
 
+    /**
+     * Tells whether currently rendered row is the table header.
+     *
+     * @return <code>true</code> when table rendering is in header state.
+     * @since 0.2.1
+     */
     public boolean isHeaderState() {
         return headerState;
     }
 
+    /**
+     * Updates the table rendering header state. Called by {@link RenderOperation}.
+     *
+     * @param headerState New value of rendering header state.
+     * @see RenderOperation
+     * @since 0.2.1
+     */
     public void setHeaderState(boolean headerState) {
         this.headerState = headerState;
     }
 
+    /**
+     * Provides {@link VerticalAlignContext} for vertical align related options.
+     *
+     * @return {@link VerticalAlignContext} used by this rendering context.
+     * @see VerticalAlignContext
+     * @see VerticalAlign
+     * @since 0.2.1
+     */
     public VerticalAlignContext getVerticalAlignContext() {
         return verticalAlignContext;
     }

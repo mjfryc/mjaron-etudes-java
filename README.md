@@ -3,6 +3,10 @@
 Library for printing Java object lists as a Markdown-formatted table.
 Utils compatible with Java 1.8.
 
+```gradle
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.0'
+```
+
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.mjfryc/mjaron-etudes-java?color=dark-green&style=flat)](https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/)
 [![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
 [![Publish package to GitHub Packages](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml)
@@ -10,30 +14,9 @@ Utils compatible with Java 1.8.
 ![Etudes](other/Etudes.png)
 _Pianists practice etudes, programmers also!_
 
-## How to integrate with Gradle
-
-### From Maven Central
-
-<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.2.0/jar>
-
-```gradle
-implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.0'
-```
-
-### As local `jar` file
-
-* Download the latest release
-    * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
-    * To `[gradle's root directory]/libs/`
-    * E.g: `my-project/libs/mjaron-etudes-java-0.2.0.jar`
-* In any Gradle subproject which needs this library, put following content:
-    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.2.0.jar')`
-* Now import package and use it, e.g:
-    * `import pl.mjaron.etudes.Obj;`
-
 ## Table generation utils
 
-### Printing object list as a Markdown / CSV / custom table
+### Printing java arrays / iterables as a Markdown / CSV / HTML table
 
 ```java
 // Sample class.
@@ -57,6 +40,7 @@ class Sample {
         // Sample array or iterable of Java objects.
         final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5)};
 
+        // It will print the Markdown table to the System.out.
         Table.render(cats, Cat.class).run();
 
         // Or
@@ -70,6 +54,8 @@ class Sample {
                 .withAlignedColumnWidths(false) // Optionally force align / do not align column widths.
                 .withCellDelimiter(',') // Optionally use the custom cell delimiter.
                 .withLineBreakCRLF() // How the lines will be separated.
+
+                .withAlign(VerticalAlign.Left) // How align the text (Left, Right or Center)
 
                 // Where to save the table.
                 .toFile("build/sample.csv")
@@ -94,50 +80,102 @@ Sample generated table:
 
 ### Table generation customization
 
-#### Escaping markdown special characters:
+#### Markdown customization
+
+Following code creates Markdown table with center vertical align and with escaping the special characters.
 
 ```java
 class Sample {
     void test() {
-        Table.render(cats, Cat.class).withMarkdownEscaper().run();
+        Table.render(cats, Cat.class).withMarkdownEscaper().withAlign(VerticalAlign.Center).run();
     }
 }
 ```
 
 So now all special characters are escaped by HTML number syntax, there is following raw text:
 
-    |              name | age |
-    | ----------------- | --- |
-    |               Tom |   2 |
-    | &#95;Michael&#95; |   5 |
+    |       name        | age |
+    |:-----------------:|:---:|
+    |        Tom        |  2  |
+    | &#95;Michael&#95; |  5  |
 
 Rendered by Markdown as:
 
-|              name | age |
-| ----------------- | --- |
-|               Tom |   2 |
-| &#95;Michael&#95; |   5 |
+|       name        | age |
+|:-----------------:|:---:|
+|        Tom        |  2  |
+| &#95;Michael&#95; |  5  |
 
-Without a `MarkdownEscaper`, cells will be rendered 'as is', which potentially can cause a bad rendering:
+Without a `MarkdownEscaper`, cells will be rendered 'as is', so user is responsible for correct cell values:
 
 ```java
 class Sample {
     void test() {
-        Table.render(cats, Cat.class);
+        Table.render(cats, Cat.class).withoutEscaper().run();
     }
 }
 ```
 
-|      name | age |
-| --------- | --- |
-|       Tom |   2 |
-| _Michael_ |   5 |
+    | name      | age |
+    |-----------|-----|
+    | Tom       | 2   |
+    | _Michael_ | 5   |
+
+| name      | age |
+|-----------|-----|
+| Tom       | 2   |
+| _Michael_ | 5   |
 
 #### Markdown custom escaper - @TODO
 
-@TODO Implement escaper which escapes only when preceded by (eg.) backslash `&#92;`.
+`@todo`Implement escaper which escapes only when preceded by (eg.) backslash `&#92;`.
 
-### Escaping CSV characters
+### CSV
+
+Below code configures the rendering with the CSV renderer and CSV special characters' escaper:
+
+```java
+class Sample {
+    void test() {
+      Table.render(cats, Cat.class).csv().run();
+    }
+}
+```
+
+```csv
+name,age
+Tom,2
+_Michael_,5
+```
+
+### HTML
+
+Below code configures the rendering with the HTML renderer and HTML special characters' escaper:
+
+```java
+class Sample {
+  void test() {
+    Table.render(cats, Cat.class).html().withAlign(VerticalAlign.Right).run();
+  }
+}
+```
+
+```html
+<table>
+    <tr>
+        <th style="text-align: right;">name</th>
+        <th style="text-align: right;">age</th>
+    </tr>
+    <tr>
+        <td style="text-align: right;">Tom</td>
+        <td style="text-align: right;">2</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">_Michael_</td>
+        <td style="text-align: right;">5</td>
+    </tr>
+</table>
+```
 
 ## Object utils
 
@@ -270,3 +308,25 @@ class Sample {
     }
 }
 ```
+
+## How to integrate with Gradle
+
+### From Maven Central
+
+<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.2.0/jar>
+
+```gradle
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.0'
+```
+
+### As local `jar` file
+
+* Download the latest release
+    * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
+    * To `[gradle's root directory]/libs/`
+    * E.g: `my-project/libs/mjaron-etudes-java-0.2.0.jar`
+* In any Gradle subproject which needs this library, put following content:
+    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.2.0.jar')`
+* Now import package and use it, e.g:
+    * `import pl.mjaron.etudes.*;`
+
