@@ -25,7 +25,8 @@ Table.render(cats, Cat.class).run();
 | John | 4         | true  | 35.24    |
 | Bob  | 5         | false | 75.0     |
 ```
-### Printing java arrays / iterables as a Markdown / CSV / HTML table
+
+### Verbose example of printing java iterables as Markdown / CSV / HTML table
 
 ```java
 // Sample class.
@@ -58,13 +59,40 @@ class Sample {
 
         // Verbose options demo
         Table.render(cats, Cat.class)
-                .withCsvWriter()
-                .withCsvEscaper() // Escape the special characters.
-                .withAlignedColumnWidths(false) // Optionally force align / do not align column widths.
-                .withCellDelimiter(',') // Optionally use the custom cell delimiter.
-                .withLineBreakCRLF() // How the lines will be separated.
 
-                .withAlign(VerticalAlign.Left) // How align the text (Left, Right or Center)
+                .markdown() // Use Markdown renderer and escaper (option used by default).
+                // or
+                // .csv() // Use CSV renderer and CSV escaper.
+                // or
+                // .html() // Use HTML renderer and HTML escaper.
+                
+                // Skip escaping the special characters.
+                .withEscaper(null)
+                
+                // Optionally force align / do not align column widths.
+                .withAlignedColumnWidths(false)
+                // or
+                // .withAlignedColumnWidths(true)
+
+                // Optionally use the custom cell delimiter.
+                // ',' is the default cell delimiter.
+                .withCellDelimiter(',')
+
+                // How the lines will be separated.
+                .withLineBreakCRLF()
+                // or '\n'
+                // .withLineBreakLF()
+                // or '\r'
+                // .withLineBreakCR()
+
+                // How align the text (Left, Right or Center)
+                .withAlign(VerticalAlign.Left)
+                // or
+                // .withAlign(VerticalAlign.Right)
+                // or
+                // .withAlign(VerticalAlign.Center)
+                // or
+                // .withAlign(null) // Use the default align.
 
                 // Where to save the table.
                 .toFile("build/sample.csv")
@@ -73,7 +101,10 @@ class Sample {
                 // or: .to(Stream|PrintStream|Appendable|File|StringBuilder out)
 
                 // Run the render operation.
-                .run(); // or: .runString() to create the String with whole table.
+                .run()
+                // or
+                // .runToString() // to create the String with whole table.
+        ;
     }
 }
 ```
@@ -146,7 +177,7 @@ Below code configures the rendering with the CSV renderer and CSV special charac
 ```java
 class Sample {
     void test() {
-      Table.render(cats, Cat.class).csv().run();
+        Table.render(cats, Cat.class).csv().run();
     }
 }
 ```
@@ -163,13 +194,14 @@ Below code configures the rendering with the HTML renderer and HTML special char
 
 ```java
 class Sample {
-  void test() {
-    Table.render(cats, Cat.class).html().withAlign(VerticalAlign.Right).run();
-  }
+    void test() {
+        Table.render(cats, Cat.class).html().withAlign(VerticalAlign.Right).run();
+    }
 }
 ```
 
 ```html
+
 <table>
     <tr>
         <th style="text-align: right;">name</th>
