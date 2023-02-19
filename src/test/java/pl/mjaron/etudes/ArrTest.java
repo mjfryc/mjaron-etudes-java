@@ -21,9 +21,44 @@ package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArrTest {
+
+    @Test
+    void ensureSize() {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        Arr.ensureSize(arrayList, 3);
+        assertEquals(3, arrayList.size());
+        assertEquals(new ArrayList<Integer>() {{ add(null);  add(null); add(null);}}, arrayList);
+    }
+
+    @Test
+    void trimToSize() {
+        ArrayList<Integer> arrayList = new ArrayList<Integer>() {{ add(0);  add(1); add(2); add(3); add(4);}};
+        Arr.trimToSize(arrayList, 2);
+        assertEquals(new ArrayList<Integer>() {{ add(0);  add(1);}}, arrayList);
+        Arr.trimToSize(arrayList, 2);
+        assertEquals(new ArrayList<Integer>() {{ add(0);  add(1);}}, arrayList);
+        Arr.trimToSize(arrayList, 3);
+        assertEquals(new ArrayList<Integer>() {{ add(0);  add(1);}}, arrayList);
+    }
+
+    @Test
+    void resizeArrayList() {
+        ArrayList<Integer> arrayList = new ArrayList<Integer>() {{ add(0);  add(1); add(2); add(3); add(4);}};
+        Arr.resize(arrayList, 7);
+        assertEquals(new ArrayList<Integer>() {{ add(0);  add(1); add(2); add(3); add(4); add(null); add(null);}}, arrayList);
+        Arr.resize(arrayList, 1);
+        assertEquals(new ArrayList<Integer>() {{ add(0);}}, arrayList);
+        Arr.resize(arrayList, 2);
+        assertEquals(new ArrayList<Integer>() {{ add(0); add(null);}}, arrayList);
+        Arr.resize(arrayList, 0);
+        assertTrue(arrayList.isEmpty());
+    }
 
     @Test
     void add() {

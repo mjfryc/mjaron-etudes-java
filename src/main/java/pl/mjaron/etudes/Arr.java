@@ -19,12 +19,54 @@
 
 package pl.mjaron.etudes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Array utilities.
  */
 public abstract class Arr {
+
+    /**
+     * Appends <code>null</code> values to the array's end until the array has required minimum size. If array is bigger
+     * than given size, no any action is performed.
+     *
+     * @param arrayList {@link ArrayList} to update.
+     * @param size      Required minimal size of {@link ArrayList}.
+     * @since 0.2.2
+     */
+    static void ensureSize(ArrayList<?> arrayList, final int size) {
+        arrayList.ensureCapacity(size);
+        while (arrayList.size() < size) {
+            arrayList.add(null);
+        }
+    }
+
+    /**
+     * Removes elements from the array's end until the array has required maximum size. If array is smaller than given
+     * size, no any action is performed.
+     *
+     * @param arrayList {@link ArrayList} to update.
+     * @param size      Required maximal size of {@link ArrayList}.
+     * @since 0.2.2
+     */
+    static void trimToSize(ArrayList<?> arrayList, final int size) {
+        while (arrayList.size() > size && !arrayList.isEmpty()) {
+            arrayList.remove(arrayList.size() - 1);
+        }
+    }
+
+    /**
+     * Extends or trims the array to given size. Removes elements from the end or appends null values.
+     *
+     * @param arrayList {@link ArrayList} to update.
+     * @param size      Required maximal size of {@link ArrayList}.
+     * @since 0.2.2
+     */
+    static void resize(ArrayList<?> arrayList, final int size) {
+        ensureSize(arrayList, size);
+        trimToSize(arrayList, size);
+    }
 
     public static <T> T[] add(final T[] array, final T what) {
         T[] newArray = Arrays.copyOf(array, array.length + 1);
