@@ -19,6 +19,9 @@
 
 package pl.mjaron.etudes;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -28,14 +31,15 @@ import java.util.Arrays;
 public abstract class Arr {
 
     /**
-     * Appends <code>null</code> values to the array's end until the array has required minimum size. If array is bigger
-     * than given size, no any action is performed.
+     * Appends <code>null</code> values to the array's end until the array has required minimum size.
+     * <p>
+     * If array is bigger than given size, no any action is performed.
      *
      * @param arrayList {@link ArrayList} to update.
      * @param size      Required minimal size of {@link ArrayList}.
      * @since 0.2.2
      */
-    static void ensureSize(ArrayList<?> arrayList, final int size) {
+    public static void ensureSize(@NotNull ArrayList<?> arrayList, @Range(from = 0, to = Integer.MAX_VALUE) final int size) {
         arrayList.ensureCapacity(size);
         while (arrayList.size() < size) {
             arrayList.add(null);
@@ -43,15 +47,16 @@ public abstract class Arr {
     }
 
     /**
-     * Removes elements from the array's end until the array has required maximum size. If array is smaller than given
-     * size, no any action is performed.
+     * Removes elements from the array's end until the array has required maximum size.
+     * <p>
+     * If array is smaller than given size, no any action is performed.
      *
      * @param arrayList {@link ArrayList} to update.
      * @param size      Required maximal size of {@link ArrayList}.
      * @since 0.2.2
      */
-    static void trimToSize(ArrayList<?> arrayList, final int size) {
-        while (arrayList.size() > size && !arrayList.isEmpty()) {
+    public static void trimToSize(@NotNull ArrayList<?> arrayList, @Range(from = 0, to = Integer.MAX_VALUE) final int size) {
+        while (arrayList.size() > size) {
             arrayList.remove(arrayList.size() - 1);
         }
     }
@@ -63,7 +68,7 @@ public abstract class Arr {
      * @param size      Required maximal size of {@link ArrayList}.
      * @since 0.2.2
      */
-    static void resize(ArrayList<?> arrayList, final int size) {
+    public static void resize(@NotNull ArrayList<?> arrayList, @Range(from = 0, to = Integer.MAX_VALUE) final int size) {
         ensureSize(arrayList, size);
         trimToSize(arrayList, size);
     }
@@ -193,8 +198,7 @@ public abstract class Arr {
 
     public static boolean contains(final char[] arr, final char elem) {
         for (final char entry : arr)
-            if (entry == elem)
-                return true;
+            if (entry == elem) return true;
         return false;
     }
 }
