@@ -152,6 +152,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_ -> this")
     public RenderContext to(PureAppendable out) {
         this.out = out;
         return this;
@@ -165,6 +166,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_ -> this")
     public RenderContext to(PrintStream out) {
         return to(PureAppendable.from(out));
     }
@@ -178,6 +180,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_, _-> this")
     public RenderContext to(OutputStream out, Charset charset) {
         return to(PureAppendable.from(out, charset));
     }
@@ -190,6 +193,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_ -> this")
     public RenderContext to(OutputStream out) {
         return to(PureAppendable.from(out));
     }
@@ -202,6 +206,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_ -> this")
     public RenderContext to(StringBuilder out) {
         return to(PureAppendable.from(out));
     }
@@ -214,6 +219,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_ -> this")
     public RenderContext to(Appendable out) {
         if (out instanceof PureAppendable) {
             return to((PureAppendable) out);
@@ -229,6 +235,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_ -> this")
     public RenderContext to(File file) {
         this.out = null;
         this.outFile = file;
@@ -246,6 +253,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_ -> this")
     public RenderContext toFile(String path) {
         return this.to(new File(path));
     }
@@ -271,6 +279,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_ -> this")
     public RenderContext withWriter(ITableWriter writer) {
         this.writer = writer;
         return this;
@@ -283,6 +292,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withMarkdownWriter() {
         return this.withWriter(new MarkdownTableWriter());
     }
@@ -294,6 +304,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withCsvWriter() {
         return this.withWriter(new CsvTableWriter());
     }
@@ -369,6 +380,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withMarkdownEscaper() {
         return withEscaper(MarkdownEscaper.getDefaultInstance());
     }
@@ -382,6 +394,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withCsvEscaper() {
         return this.withEscaper(new CsvEscaper());
     }
@@ -395,6 +408,7 @@ public class RenderContext {
      * @since 0.2.1
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withHtmlEscaper() {
         return this.withEscaper(new HtmlEscaper());
     }
