@@ -51,15 +51,15 @@ public class MarkdownTableWriter implements ITableWriter {
     }
 
     public Pair<String, String> determineColumnDividerMargins(final int columnIdx) {
-        final VerticalAlign verticalAlign = context.getVerticalAlignContext().getForColumn(columnIdx);
+        final VerticalAlign verticalAlign = context.getVerticalAlign(columnIdx);
         if (verticalAlign == null) {
             return new Pair<>("-", "-");
         }
         if (verticalAlign == VerticalAlign.Left) {
-            return new Pair<>(":", " ");
+            return new Pair<>(":", "-");
         }
         if (verticalAlign == VerticalAlign.Right) {
-            return new Pair<>(" ", ":");
+            return new Pair<>("-", ":");
         }
         if (verticalAlign == VerticalAlign.Center) {
             return new Pair<>(":", ":");

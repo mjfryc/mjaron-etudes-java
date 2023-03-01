@@ -129,7 +129,10 @@ Following code creates Markdown table with center vertical align and with escapi
 ```java
 class Sample {
     void test() {
-        Table.render(cats, Cat.class).withMarkdownEscaper().withAlign(VerticalAlign.Center).run();
+        Table.render(cats, Cat.class).withMarkdownEscaper()
+                .withAlign(VerticalAlign.Center)    // General table align
+                .withAlign(1, VerticalAlign.Right)  // Particular column align.
+                .run();
     }
 }
 ```
@@ -137,16 +140,16 @@ class Sample {
 So now all special characters are escaped by HTML number syntax, there is following raw text:
 
     |       name        | age |
-    |:-----------------:|:---:|
-    |        Tom        |  2  |
-    | &#95;Michael&#95; |  5  |
+    |:-----------------:|----:|
+    |        Tom        |   2 |
+    | &#95;Michael&#95; |   5 |
 
 Rendered by Markdown as:
 
 |       name        | age |
-|:-----------------:|:---:|
-|        Tom        |  2  |
-| &#95;Michael&#95; |  5  |
+|:-----------------:|----:|
+|        Tom        |   2 |
+| &#95;Michael&#95; |   5 |
 
 Without a `MarkdownEscaper`, cells will be rendered 'as is', so user is responsible for correct cell values:
 

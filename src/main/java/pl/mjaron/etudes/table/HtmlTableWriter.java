@@ -82,7 +82,7 @@ public class HtmlTableWriter implements ITableWriter {
      * @since 0.2.1
      */
     public void writeColumnStyle() {
-        final VerticalAlign verticalAlign = context.getVerticalAlignContext().getCurrentColumnVerticalAlign();
+        final VerticalAlign verticalAlign = context.getCurrentColumnVerticalAlign();
         if (verticalAlign == null) {
             return;
         }

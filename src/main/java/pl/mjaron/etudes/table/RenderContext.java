@@ -22,8 +22,10 @@ package pl.mjaron.etudes.table;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import pl.mjaron.etudes.PureAppendable;
 import pl.mjaron.etudes.Str;
+import pl.mjaron.etudes.table.property.ColumnOnlyPropertyProvider;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -133,7 +135,8 @@ public class RenderContext {
     /**
      * Used to determine column's vertical align.
      */
-    private final VerticalAlignContext verticalAlignContext = new VerticalAlignContext(this);
+    //private final VerticalAlignContext verticalAlignContext = new VerticalAlignContext(this);
+    private final ColumnOnlyPropertyProvider<VerticalAlign> verticalAlignPropertyProvider = new ColumnOnlyPropertyProvider<>();
 
     /**
      * Default constructor. By convention, use {@link #make()} to create the object.
@@ -648,15 +651,33 @@ public class RenderContext {
     }
 
     /**
-     * Sets the cell {@link VerticalAlign}.
+     * Sets the whole table {@link VerticalAlign}. Overrides particular cells vertical align values, previously set with
+     * {@link #withAlign(int, VerticalAlign)}.
      *
-     * @param align The cell {@link VerticalAlign}.
+     * @param align The {@link VerticalAlign} applied to whole table.
      * @return This reference.
+     * @see #withAlign(int, VerticalAlign)
+     * @see VerticalAlign
      * @since 0.2.1
      */
     @NotNull
     public RenderContext withAlign(@Nullable VerticalAlign align) {
-        verticalAlignContext.setGeneralVerticalAlign(align);
+        verticalAlignPropertyProvider.put(align);
+        return this;
+    }
+
+    /**
+     * Sets the single column {@link VerticalAlign}.
+     *
+     * @param column Related column.
+     * @param align  The cell {@link VerticalAlign}.
+     * @return This reference.
+     * @since 0.2.2
+     */
+    @NotNull
+    @Contract("_, _-> this")
+    public RenderContext withAlign(@Range(from = 0, to = Integer.MAX_VALUE) final int column, @Nullable VerticalAlign align) {
+        verticalAlignPropertyProvider.put(column, align);
         return this;
     }
 
@@ -808,7 +829,8 @@ public class RenderContext {
      * @since 0.2.0
      */
     public void appendPadded(String what, final char fillChar) {
-        final VerticalAlign currentAlign = verticalAlignContext.getCurrentColumnVerticalAlign();
+        final VerticalAlign currentAlign = verticalAlignPropertyProvider.get(columnIdx, -1);
+        //final VerticalAlign currentAlign = verticalAlignContext.getCurrentColumnVerticalAlign();
         if (this.hasColumnWidths()) {
             if (currentAlign == null || currentAlign == VerticalAlign.Left) {
                 //noinspection ConstantConditions
@@ -873,7 +895,6 @@ public class RenderContext {
      */
     public void nextColumn() {
         ++this.columnIdx;
-        verticalAlignContext.onCurrentColumnChanged();
     }
 
     /**
@@ -883,7 +904,6 @@ public class RenderContext {
      */
     public void resetColumn() {
         this.columnIdx = 0;
-        verticalAlignContext.onCurrentColumnChanged();
     }
 
     /**
@@ -908,15 +928,24 @@ public class RenderContext {
     }
 
     /**
-     * Provides {@link VerticalAlignContext} for vertical align related options.
+     * Provides {@link VerticalAlign} related to currently processed column.
      *
-     * @return {@link VerticalAlignContext} used by this rendering context.
-     * @see VerticalAlignContext
-     * @see VerticalAlign
-     * @since 0.2.1
+     * @return {@link VerticalAlign} related to currently processed column.
+     * @since 0.2.2
      */
-    public VerticalAlignContext getVerticalAlignContext() {
-        return verticalAlignContext;
+    public VerticalAlign getCurrentColumnVerticalAlign() {
+        return getVerticalAlign(columnIdx);
+    }
+
+    /**
+     * Provides {@link VerticalAlign} related to given <code>column</code> parameter.
+     *
+     * @param column Requested column index.
+     * @return {@link VerticalAlign} related to given <code>column</code> parameter.
+     * @since 0.2.2
+     */
+    public VerticalAlign getVerticalAlign(@Range(from = 0, to = Integer.MAX_VALUE) final int column) {
+        return verticalAlignPropertyProvider.get(column, -1);
     }
 
     /**
