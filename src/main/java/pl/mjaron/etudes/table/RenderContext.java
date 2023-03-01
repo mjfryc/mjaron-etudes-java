@@ -134,8 +134,10 @@ public class RenderContext {
 
     /**
      * Used to determine column's vertical align.
+     *
+     * @see VerticalAlign
+     * @since 0.2.2
      */
-    //private final VerticalAlignContext verticalAlignContext = new VerticalAlignContext(this);
     private final ColumnOnlyPropertyProvider<VerticalAlign> verticalAlignPropertyProvider = new ColumnOnlyPropertyProvider<>();
 
     /**
@@ -454,8 +456,8 @@ public class RenderContext {
     /**
      * Tells whether column widths must be computed.
      * <p>
-     * If <code>true</code>, the {@link RenderOperation} will compute column widths and set this value to false to
-     * indicate that it is already done.
+     * If <code>true</code>, the {@link RenderOperation} will compute column widths and set this value to false
+     * indicating that it is already done.
      *
      * @return <code>true</code> when column widths must be computed during rendering. <code>false</code> when column
      * widths must not be computed during rendering. <code>null</code> when the default value should be used.
@@ -640,7 +642,7 @@ public class RenderContext {
     }
 
     /**
-     * Using {@code CR} - {@code "\r"} as a new line separator. This is the default line separator in Mac OS before X.
+     * Using {@code CR} - {@code "\r"} as a new line separator. This is the default line separator in macOS before X.
      *
      * @return This reference.
      * @since 0.2.0
