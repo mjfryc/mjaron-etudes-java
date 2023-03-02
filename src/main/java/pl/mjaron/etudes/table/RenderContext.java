@@ -419,16 +419,6 @@ public class RenderContext {
     }
 
     /**
-     * Provides the requested column widths or <code>null</code> if not specified.
-     *
-     * @return Requested column widths or <code>null</code>.
-     * @since 0.2.0
-     */
-    public int[] getColumnWidths() {
-        return columnWidths;
-    }
-
-    /**
      * Provides the table columns count.
      *
      * @return Count of table columns.
@@ -436,21 +426,6 @@ public class RenderContext {
      */
     public int getColumnsCount() {
         return source.getColumnsCount();
-    }
-
-    /**
-     * Tells whether column widths are specified or not.
-     *
-     * @return <code>true</code> when column widths are specified, <code>false</code> otherwise.
-     * @see #getColumnWidths()
-     * @see #withArbitraryColumnWidths(int[])
-     * @see #withAlignedColumnWidths(Boolean)
-     * @see #withAlignedColumnWidths()
-     * @see #withoutAlignedColumnWidths()
-     * @since 0.2.0
-     */
-    public boolean hasColumnWidths() {
-        return columnWidths != null;
     }
 
     /**
@@ -471,6 +446,31 @@ public class RenderContext {
     @Nullable
     public Boolean isComputeColumnWidths() {
         return computeColumnWidths;
+    }
+
+    /**
+     * Tells whether column widths are specified or not.
+     *
+     * @return <code>true</code> when column widths are specified, <code>false</code> otherwise.
+     * @see #getColumnWidths()
+     * @see #withArbitraryColumnWidths(int[])
+     * @see #withAlignedColumnWidths(Boolean)
+     * @see #withAlignedColumnWidths()
+     * @see #withoutAlignedColumnWidths()
+     * @since 0.2.0
+     */
+    public boolean hasColumnWidths() {
+        return columnWidths != null;
+    }
+
+    /**
+     * Provides the requested column widths or <code>null</code> if not specified.
+     *
+     * @return Requested column widths or <code>null</code>.
+     * @since 0.2.0
+     */
+    public int[] getColumnWidths() {
+        return columnWidths;
     }
 
     /**
@@ -832,7 +832,6 @@ public class RenderContext {
      */
     public void appendPadded(String what, final char fillChar) {
         final VerticalAlign currentAlign = verticalAlignPropertyProvider.get(columnIdx, -1);
-        //final VerticalAlign currentAlign = verticalAlignContext.getCurrentColumnVerticalAlign();
         if (this.hasColumnWidths()) {
             if (currentAlign == null || currentAlign == VerticalAlign.Left) {
                 //noinspection ConstantConditions
