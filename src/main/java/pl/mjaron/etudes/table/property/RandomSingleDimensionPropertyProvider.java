@@ -19,15 +19,17 @@
 
 package pl.mjaron.etudes.table.property;
 
+import org.jetbrains.annotations.Range;
+
 import java.util.Map;
 import java.util.TreeMap;
 
-public class SingleDimensionPropertyProvider<T> {
+public class RandomSingleDimensionPropertyProvider<T> {
 
     private T tableValue = null;
     Map<Integer, T> columnValues = null;
 
-    public T get(int index) {
+    public T get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         if (columnValues == null) {
             return tableValue;
         }
@@ -43,7 +45,7 @@ public class SingleDimensionPropertyProvider<T> {
         this.columnValues = null;
     }
 
-    public void setValue(int index, T value) {
+    public void setValue(@Range(from = 0, to = Integer.MAX_VALUE) int index, T value) {
         if (columnValues == null) {
             columnValues = new TreeMap<>();
         }

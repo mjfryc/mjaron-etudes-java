@@ -19,22 +19,44 @@
 
 package pl.mjaron.etudes.table.property;
 
-import pl.mjaron.etudes.table.IPropertyProvider;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
+import pl.mjaron.etudes.Arr;
 
-public class ColumnOnlyPropertyProvider<T> implements IPropertyProvider<T> {
+import java.util.ArrayList;
 
-    private final ArraySingleDimensionPropertyProvider<T> provider = new ArraySingleDimensionPropertyProvider<>();
+public class ArraySingleDimensionPropertyProvider<T> {
 
-    @Override
-    public T get(int column, int row) {
-        return provider.get(column);
+    private T rootValue = null;
+
+    private ArrayList<T> arrayList = null;
+
+    public @Nullable T get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
+        if (arrayList == null || arrayList.size() <= index) {
+            return rootValue;
+        }
+        final T indexValue = arrayList.get(index);
+        if (indexValue == null) {
+            return rootValue;
+        }
+        return indexValue;
     }
 
-    public void put(T value) {
-        provider.setValue(value);
+    public void setValue(@Nullable final T value) {
+        this.rootValue = value;
+        this.arrayList = null;
     }
 
-    public void put(int column, T value) {
-        provider.setValue(column, value);
+    public void setValue(@Range(from = 0, to = Integer.MAX_VALUE) final int index, @Nullable final T value) {
+        if (arrayList == null) {
+            arrayList = new ArrayList<>(index + 8);
+        }
+        Arr.ensureSize(arrayList, index + 1);
+        arrayList.set(index, value);
+    }
+
+    @Nullable
+    public ArrayList<T> getArrayList() {
+        return arrayList;
     }
 }

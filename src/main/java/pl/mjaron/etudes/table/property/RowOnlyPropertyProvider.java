@@ -23,7 +23,7 @@ import pl.mjaron.etudes.table.IPropertyProvider;
 
 public class RowOnlyPropertyProvider<T> implements IPropertyProvider<T> {
 
-    private final SingleDimensionPropertyProvider<T> provider = new SingleDimensionPropertyProvider<>();
+    private final ArraySingleDimensionPropertyProvider<T> provider = new ArraySingleDimensionPropertyProvider<>();
 
     @Override
     public T get(int column, int row) {
