@@ -74,7 +74,6 @@ public class MarkdownTableWriter implements ITableWriter {
         if (context.hasColumnWidths()) {
             for (int i = 0; i < context.getColumnWidths().length; ++i) {
                 final int w = context.getColumnWidths()[i];
-                //for (final int w : context.getColumnWidths()) {
                 final Pair<String, String> margins = determineColumnDividerMargins(i);
                 context.append("|");
                 context.append(margins.getKey());
@@ -90,8 +89,7 @@ public class MarkdownTableWriter implements ITableWriter {
                 context.append(margins.getValue());
             }
         }
-        context.append("|");
-        context.appendLine();
+        context.appendLine("|");
     }
 
     @Override
@@ -100,8 +98,7 @@ public class MarkdownTableWriter implements ITableWriter {
 
     @Override
     public void endRow() {
-        context.append("|");
-        context.appendLine();
+        context.appendLine("|");
     }
 
     @Override
