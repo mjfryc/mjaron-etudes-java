@@ -42,24 +42,18 @@ public abstract class RenderOperation {
             if (context.getEscaper() == null) {
                 context.withEscaper(DummyEscaper.getInstance());
             }
-            if (context.isComputeColumnWidths() == null) {
-                if (context.getWriter().getDefaultAlignedColumnWidths()) {
-                    context.withAlignedColumnWidths();
-                } else {
-                    context.withoutAlignedColumnWidths();
-                }
-            }
-            if (Boolean.TRUE.equals(context.isComputeColumnWidths())) {
-                final int[] widths = TableColumnsWidthDetector.compute(context.getSource(), context.getEscaper());
-                context.withArbitraryColumnWidths(widths);
-            }
+
+            context.getColumnWidthResolver().resolve(context);
+
             final ITableWriter writer = context.getWriter();
 
             if (context.getCellDelimiter() == null && writer.getDefaultDelimiter() != null) {
                 context.withCellDelimiter(writer.getDefaultDelimiter());
             }
+
             context.getEscaper().beginTable(context);
             writer.beginTable(context);
+
             if (context.getSource().hasHeaders()) {
                 context.setHeaderState(true);
                 writer.beginHeader();

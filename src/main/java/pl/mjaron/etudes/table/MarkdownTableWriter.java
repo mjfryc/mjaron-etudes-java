@@ -71,9 +71,9 @@ public class MarkdownTableWriter implements ITableWriter {
     public void endHeader() {
         context.append("|");
         context.appendLine();
-        if (context.hasColumnWidths()) {
-            for (int i = 0; i < context.getColumnWidths().length; ++i) {
-                final int w = context.getColumnWidths()[i];
+        if (context.getColumnWidthResolver().hasWidths()) {
+            for (int i = 0; i < context.getColumnWidthResolver().getWidths().length; ++i) {
+                final int w = context.getColumnWidthResolver().getWidth(i);
                 final Pair<String, String> margins = determineColumnDividerMargins(i);
                 context.append("|");
                 context.append(margins.getKey());

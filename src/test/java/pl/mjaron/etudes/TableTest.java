@@ -49,11 +49,14 @@ class TableTest {
         System.out.println("MarkdownEscaper:");
         Table.render(cats, Cat.class).withMarkdownEscaper().withAlign(VerticalAlign.Center).withAlign(1, VerticalAlign.Right).withAlignedColumnWidths().run();
 
-        System.out.println("withAlignedColumnWidths(false):");
-        Table.render(cats, Cat.class).withAlignedColumnWidths(false).withoutEscaper().run();
+        System.out.println("withoutAlignedColumnWidths():");
+        Table.render(cats, Cat.class).withoutAlignedColumnWidths().withoutEscaper().run();
 
-        System.out.println("withAlignedColumnWidths(true):");
-        Table.render(cats, Cat.class).withAlignedColumnWidths(true).run();
+        System.out.println("withAlignedColumnWidths():");
+        Table.render(cats, Cat.class).withAlignedColumnWidths().run();
+
+        System.out.println("withEqualColumnWidths():");
+        Table.render(cats, Cat.class).withEqualColumnWidths().run();
 
         System.out.println("BlankTableWriter:");
         Table.render(cats, Cat.class).withBlankTableWriter().withAlignedColumnWidths().withAlign(VerticalAlign.Left).run();

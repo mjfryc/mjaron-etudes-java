@@ -1,5 +1,5 @@
 /*
- * Copyright  2021  Michał Jaroń <m.jaron@protonmail.com>
+ * Copyright  2023  Michał Jaroń <m.jaron@protonmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -19,40 +19,44 @@
 
 package pl.mjaron.etudes.table;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-
 /**
- * Abstract operations required to write table.
+ * Tells how to align the columns.
+ *
+ * @since 0.2.2
  */
-public interface ITableWriter {
+public enum AlignmentMode {
 
     /**
-     * Provides default cell delimiter if delimiter option is used or null if not used.
+     * Use the value from {@link ITableWriter#getDefaultAlignedColumnWidths()}.
      *
-     * @return Default delimiter or null.
+     * @since 0.2.2
      */
-    @Nullable
-    default String getDefaultDelimiter() {
-        return null;
-    }
+    DEFAULT,
 
-    @Contract(pure = true)
-    default boolean getDefaultAlignedColumnWidths() {
-        return false;
-    }
+    /**
+     * Use the fixed width values.
+     * @since 0.2.2
+     */
+    ARBITRARY,
 
-    void beginTable(RenderContext options);
+    /**
+     * Do not align the columns. Each row will have different cell widths. Good for CSV format.
+     *
+     * @since 0.2.2
+     */
+    NOT_ALIGNED,
 
-    void endTable();
+    /**
+     * Align the row's columns.
+     *
+     * @since 0.2.2
+     */
+    ALIGNED,
 
-    void beginHeader();
-
-    void endHeader();
-
-    void beginRow();
-
-    void endRow();
-
-    void writeCell(final String what);
+    /**
+     * All columns will have the same width.
+     *
+     * @since 0.2.2
+     */
+    EQUAL
 }

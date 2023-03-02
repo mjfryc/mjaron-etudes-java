@@ -19,6 +19,8 @@
 
 package pl.mjaron.etudes.table;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Determines the widths of table columns.
  */
@@ -48,7 +50,7 @@ public abstract class TableColumnsWidthDetector {
      * @param source  Input table
      * @return Array of max widths of corresponding columns
      */
-    public static int[] compute(final ITableSource source, final IEscaper escaper) {
+    public static int[] compute(@NotNull final ITableSource source, @NotNull final IEscaper escaper) {
         final int[] widths = new int[source.getColumnsCount()];
         if (source.hasHeaders()) {
             applyRow(widths, source.getHeaders(), escaper);

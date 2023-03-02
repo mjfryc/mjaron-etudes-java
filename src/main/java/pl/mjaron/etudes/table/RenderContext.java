@@ -80,27 +80,6 @@ public class RenderContext {
     private IEscaper escaper = null;
 
     /**
-     * Requested widths of all columns used during the table rendering.
-     *
-     * @since 0.2.0
-     */
-    private int[] columnWidths = null;
-
-    /**
-     * Determines whether {@link #columnWidths} must be computed automatically, fixed values should be used or default
-     * value, depending on the {@link ITableWriter#getDefaultAlignedColumnWidths()}.
-     *
-     * @see ITableWriter#getDefaultAlignedColumnWidths()
-     * @see #isComputeColumnWidths()
-     * @see #getColumnWidths()
-     * @see #withAlignedColumnWidths()
-     * @see #withAlignedColumnWidths(Boolean)
-     * @see #withArbitraryColumnWidths(int[])
-     * @since 0.2.0
-     */
-    private Boolean computeColumnWidths = null;
-
-    /**
      * Allows using custom cell delimiter if related {@link ITableWriter} and optionally {@link IEscaper} supports it.
      * Usually used with the CSV format.
      *
@@ -115,6 +94,13 @@ public class RenderContext {
      * @since 0.2.0
      */
     private String lineBreak = System.lineSeparator();
+
+    /**
+     * Determines the column widths depending on {@link AlignmentMode}.
+     *
+     * @since 0.2.2
+     */
+    private final ColumnWidthResolver columnWidthResolver = new ColumnWidthResolver();
 
     /**
      * Updated internally by {@link RenderOperation} when visiting related cells.
@@ -429,55 +415,40 @@ public class RenderContext {
     }
 
     /**
-     * Tells whether column widths must be computed.
-     * <p>
-     * If <code>true</code>, the {@link RenderOperation} will compute column widths and set this value to false
-     * indicating that it is already done.
+     * Returns the helper object which determines the column widths.
      *
-     * @return <code>true</code> when column widths must be computed during rendering. <code>false</code> when column
-     * widths must not be computed during rendering. <code>null</code> when the default value should be used.
-     * @see ITableWriter#getDefaultAlignedColumnWidths()
-     * @see #withArbitraryColumnWidths(int[])
-     * @see #withAlignedColumnWidths(Boolean)
-     * @see #withAlignedColumnWidths()
-     * @see #withoutAlignedColumnWidths()
-     * @since 0.2.0
+     * @return Helper object which determines the column widths.
+     * @since 0.2.2
      */
-    @Nullable
-    public Boolean isComputeColumnWidths() {
-        return computeColumnWidths;
+    @NotNull
+    @Contract(pure = true)
+    public ColumnWidthResolver getColumnWidthResolver() {
+        return columnWidthResolver;
     }
 
     /**
-     * Tells whether column widths are specified or not.
+     * Configures the column widths mode.
      *
-     * @return <code>true</code> when column widths are specified, <code>false</code> otherwise.
-     * @see #getColumnWidths()
-     * @see #withArbitraryColumnWidths(int[])
-     * @see #withAlignedColumnWidths(Boolean)
-     * @see #withAlignedColumnWidths()
-     * @see #withoutAlignedColumnWidths()
-     * @since 0.2.0
+     * @param mode   Requested column widths mode.
+     * @param widths Column widths values. It <strong>must</strong> be set when mode is {@link AlignmentMode#ARBITRARY}.
+     *               In other cases it must be <code>null</code>.
+     * @return This reference.
+     * @throws IllegalArgumentException When <code>widths</code> value is unexpected, depending on <code>mode</code>
+     *                                  parameter.
+     * @see ColumnWidthResolver#configure(AlignmentMode, int[])
+     * @since 0.2.2
      */
-    public boolean hasColumnWidths() {
-        return columnWidths != null;
-    }
-
-    /**
-     * Provides the requested column widths or <code>null</code> if not specified.
-     *
-     * @return Requested column widths or <code>null</code>.
-     * @since 0.2.0
-     */
-    public int[] getColumnWidths() {
-        return columnWidths;
+    @NotNull
+    @Contract("_,_-> this")
+    public RenderContext withColumnWidths(final AlignmentMode mode, final int[] widths) {
+        getColumnWidthResolver().configure(mode, widths);
+        return this;
     }
 
     /**
      * Allows specifying each column width.
      *
-     * @param columnWidths Array of widths where nth value indicates the nth column width (minimal count of
-     *                     characters).
+     * @param widths Array of widths where nth value indicates the nth column width (minimal count of characters).
      * @return This reference.
      * @see #withAlignedColumnWidths()
      * @see #withAlignedColumnWidths(Boolean)
@@ -485,10 +456,9 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
-    public RenderContext withArbitraryColumnWidths(int[] columnWidths) {
-        this.columnWidths = columnWidths;
-        this.computeColumnWidths = false;
-        return this;
+    @Contract("_ -> this")
+    public RenderContext withArbitraryColumnWidths(final int[] widths) {
+        return withColumnWidths(AlignmentMode.ARBITRARY, widths);
     }
 
     /**
@@ -501,10 +471,9 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withAlignedColumnWidths() {
-        this.columnWidths = null;
-        this.computeColumnWidths = true;
-        return this;
+        return withColumnWidths(AlignmentMode.ALIGNED, null);
     }
 
     /**
@@ -519,12 +488,14 @@ public class RenderContext {
      *                            {@link ITableWriter} default value.
      * @return This reference.
      * @since 0.2.0
+     * @deprecated Use {@link RenderContext#withColumnWidths(AlignmentMode, int[])} instead.
      */
     @NotNull
+    @Contract("_ -> this")
+    @Deprecated
     public RenderContext withAlignedColumnWidths(final Boolean alignedColumnWidths) {
         if (alignedColumnWidths == null) {
-            this.columnWidths = null;
-            this.computeColumnWidths = null;
+            getColumnWidthResolver().configure(AlignmentMode.DEFAULT);
         }
         if (Boolean.TRUE.equals(alignedColumnWidths)) {
             return withAlignedColumnWidths();
@@ -538,24 +509,37 @@ public class RenderContext {
      * @return This reference.
      * @since 0.2.0
      */
+    @Contract("-> this")
     @NotNull
     public RenderContext withoutAlignedColumnWidths() {
-        this.columnWidths = null;
-        this.computeColumnWidths = false;
-        return this;
+        return withColumnWidths(AlignmentMode.NOT_ALIGNED, null);
+    }
+
+    /**
+     * All columns will have the width of the wider column.
+     *
+     * @return This reference.
+     * @see AlignmentMode#EQUAL
+     * @since 0.2.2
+     */
+    @Contract("-> this")
+    @NotNull
+    public RenderContext withEqualColumnWidths() {
+        return withColumnWidths(AlignmentMode.EQUAL, null);
     }
 
     /**
      * Allows setting custom cell delimiter if related {@link ITableWriter} and optionally {@link IEscaper} supports it.
      * Usually used with the CSV format.
      *
-     * @param what Custom delimiter.
+     * @param delimiter Custom delimiter.
      * @return This reference.
      * @since 0.1.13
      */
+    @Contract("_-> this")
     @NotNull
-    public RenderContext withCellDelimiter(String what) {
-        this.cellDelimiter = what;
+    public RenderContext withCellDelimiter(final String delimiter) {
+        this.cellDelimiter = delimiter;
         return this;
     }
 
@@ -563,13 +547,14 @@ public class RenderContext {
      * Allows setting custom cell delimiter if related {@link ITableWriter} and optionally {@link IEscaper} supports it.
      * Usually used with the CSV format.
      *
-     * @param what Custom delimiter.
+     * @param delimiter Custom delimiter.
      * @return This reference.
      * @since 0.2.0
      */
+    @Contract("_-> this")
     @NotNull
-    public RenderContext withCellDelimiter(char what) {
-        this.cellDelimiter = String.valueOf(what);
+    public RenderContext withCellDelimiter(final char delimiter) {
+        this.cellDelimiter = String.valueOf(delimiter);
         return this;
     }
 
@@ -832,14 +817,14 @@ public class RenderContext {
      */
     public void appendPadded(String what, final char fillChar) {
         final VerticalAlign currentAlign = verticalAlignPropertyProvider.get(columnIdx, -1);
-        if (this.hasColumnWidths()) {
+        if (getColumnWidthResolver().hasWidths()) {
             if (currentAlign == null || currentAlign == VerticalAlign.Left) {
                 //noinspection ConstantConditions
-                Str.padRight(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+                Str.padRight(what, getColumnWidthResolver().getWidth(columnIdx), fillChar, this.out());
             } else if (currentAlign == VerticalAlign.Right) {
-                Str.padLeft(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+                Str.padLeft(what, getColumnWidthResolver().getWidth(columnIdx), fillChar, this.out());
             } else if (currentAlign == VerticalAlign.Center) {
-                Str.padCenter(what, this.getColumnWidths()[columnIdx], fillChar, this.out());
+                Str.padCenter(what, getColumnWidthResolver().getWidth(columnIdx), fillChar, this.out());
             } else {
                 throw new RuntimeException("Unsupported vertical align value: " + currentAlign);
             }

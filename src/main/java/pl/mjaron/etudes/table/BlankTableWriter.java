@@ -27,6 +27,11 @@ public class BlankTableWriter implements ITableWriter {
 
     private int columnIdx = 0;
 
+    @Override
+    public boolean getDefaultAlignedColumnWidths() {
+        return true;
+    }
+
     public BlankTableWriter() {
     }
 
@@ -61,8 +66,8 @@ public class BlankTableWriter implements ITableWriter {
     @Override
     public void writeCell(String what) {
         context.append(' ');
-        if (context.hasColumnWidths()) {
-            Str.padLeft(what, context.getColumnWidths()[columnIdx], ' ', context.out());
+        if (context.getColumnWidthResolver().hasWidths()) {
+            Str.padLeft(what, context.getColumnWidthResolver().getWidth(columnIdx), ' ', context.out());
         } else {
             context.append(what);
         }

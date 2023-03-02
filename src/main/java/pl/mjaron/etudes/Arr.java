@@ -73,6 +73,40 @@ public abstract class Arr {
         trimToSize(arrayList, size);
     }
 
+    /**
+     * Determines maximum value in array.
+     *
+     * @param array Given array.
+     * @return Maximum value in array.
+     * @since 0.2.2
+     */
+    public static int max(final int[] array) {
+        int v = Integer.MIN_VALUE;
+        for (final int i : array) {
+            if (i > v) {
+                v = i;
+            }
+        }
+        return v;
+    }
+
+    /**
+     * Determines minimum value in array.
+     *
+     * @param array Given array.
+     * @return Minimum value in array.
+     * @since 0.2.2
+     */
+    public static int min(final int[] array) {
+        int v = Integer.MAX_VALUE;
+        for (final int i : array) {
+            if (i < v) {
+                v = i;
+            }
+        }
+        return v;
+    }
+
     public static <T> T[] add(final T[] array, final T what) {
         T[] newArray = Arrays.copyOf(array, array.length + 1);
         newArray[array.length] = what;
