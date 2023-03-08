@@ -24,6 +24,8 @@ import pl.mjaron.etudes.table.VerticalAlign;
 
 import java.nio.charset.Charset;
 
+import static pl.mjaron.etudes.table.RenderContext.col;
+
 class Cat {
     String name = "Tom";
     int age = 2;
@@ -71,6 +73,10 @@ class TableTest {
         //Table.render(cats, Cat.class).withCsvWriter().withCsvEscaper().withAlignedColumnWidths(false).withCellDelimiter(';').withLineBreakCRLF().toFile("build/sample.csv").run();
 
         Table.render(cats, Cat.class).html().withAlign(VerticalAlign.Right).withAlign(0, VerticalAlign.Left).run();
+
+        System.out.println("ColumnSelector:");
+        String abc = "abc";
+        Table.render(cats, Cat.class).withColumns(col("name").as("Cat name").col("age", "Cat age")).run();
     }
 }
 

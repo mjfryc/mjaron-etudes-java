@@ -57,12 +57,12 @@ public class CsvEscaper implements IEscaper {
     }
 
     @Override
-    public void beginTable(RenderContext renderContext) {
-        if (renderContext.getCellDelimiter() != null) {
-            delimiter = renderContext.getCellDelimiter();
+    public void beginTable(RenderRuntime runtime) {
+        if (runtime.getCellDelimiter() != null) {
+            delimiter = runtime.getCellDelimiter();
         }
-        if (renderContext.getLineBreak() != null) {
-            lineBreak = renderContext.getLineBreak();
+        if (runtime.getLineBreak() != null) {
+            lineBreak = runtime.getLineBreak();
         }
     }
 

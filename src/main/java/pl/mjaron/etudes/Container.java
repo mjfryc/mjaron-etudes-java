@@ -19,48 +19,31 @@
 
 package pl.mjaron.etudes;
 
-import java.io.IOException;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 
-public class WrappingPureAppendable implements PureAppendable {
+public abstract class Container {
 
-    private final Appendable appendable;
-
-    public WrappingPureAppendable(Appendable appendable) {
-        this.appendable = appendable;
-    }
-
-    public static WrappingPureAppendable from(Appendable appendable) {
-        return new WrappingPureAppendable(appendable);
-    }
-
-    @Override
-    public Appendable append(CharSequence csq) {
-        try {
-            appendable.append(csq);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to append char sequence.", e);
+    @Nullable
+    public static <T, IteratorT extends Iterator<T>> IteratorT find(final IteratorT begin, final IteratorT end, final T what) {
+        while (!begin.equals(end)) {
+            final T entry = begin.next();
+            if (entry.equals(what)) {
+                return begin;
+            }
         }
-        return this;
+        return null;
     }
 
-    @Override
-    public Appendable append(CharSequence csq, int start, int end) {
-        try {
-            appendable.append(csq, start, end);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to append char sequence with given range.", e);
+    @Nullable
+    public static <T, IteratorT extends Iterator<T>> IteratorT find(final IteratorT begin, final T what) {
+        while (begin.hasNext()) {
+            final T entry = begin.next();
+            if (entry.equals(what)) {
+                return begin;
+            }
         }
-        return this;
-    }
-
-    @Override
-    public Appendable append(char c) {
-        try {
-            appendable.append(c);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to append char.", e);
-        }
-        return this;
+        return null;
     }
 }

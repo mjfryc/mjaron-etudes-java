@@ -71,9 +71,9 @@ public class ColumnWidthResolver {
         configure(mode, null);
     }
 
-    public void resolve(@NotNull final RenderContext context) {
+    public void resolve(@NotNull final RenderRuntime runtime) {
         if (mode == AlignmentMode.DEFAULT) {
-            if (context.getWriter().getDefaultAlignedColumnWidths()) {
+            if (runtime.getWriter().getDefaultAlignedColumnWidths()) {
                 mode = AlignmentMode.ALIGNED;
             } else {
                 mode = AlignmentMode.NOT_ALIGNED;
@@ -81,9 +81,9 @@ public class ColumnWidthResolver {
         }
 
         if (mode == AlignmentMode.ALIGNED) {
-            this.widths = TableColumnsWidthDetector.compute(context.getSource(), context.getEscaper());
+            this.widths = TableColumnsWidthDetector.compute(runtime.getSource(), runtime.getEscaper());
         } else if (mode == AlignmentMode.EQUAL) {
-            this.widths = TableColumnsWidthDetector.compute(context.getSource(), context.getEscaper());
+            this.widths = TableColumnsWidthDetector.compute(runtime.getSource(), runtime.getEscaper());
             final int maxWidth = Arr.max(this.widths);
             Arrays.fill(widths, maxWidth);
         }

@@ -19,29 +19,27 @@
 
 package pl.mjaron.etudes.table;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+public class HtmlOptions {
 
-    default void beginTable(RenderRuntime runtime) {
+    private String tableId = null;
+
+    private String tableClass = null;
+
+    public HtmlOptions tableId(final String tableId) {
+        this.tableId = tableId;
+        return this;
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    public String getTableId() {
+        return tableId;
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
+    public HtmlOptions tableClass(final String tableClass) {
+        this.tableClass = tableClass;
+        return this;
+    }
+
+    public String getTableClass() {
+        return this.tableClass;
     }
 }

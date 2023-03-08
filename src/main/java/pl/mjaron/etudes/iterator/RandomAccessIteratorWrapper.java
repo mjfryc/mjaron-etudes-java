@@ -17,36 +17,64 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes;
+package pl.mjaron.etudes.iterator;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.nio.charset.Charset;
+import pl.mjaron.etudes.IRandomAccess;
+import pl.mjaron.etudes.IRandomIterator;
 
-/**
- * {@link Appendable} interface without exceptions in method signatures.
- */
-public interface PureAppendable extends Appendable {
+public class RandomAccessIteratorWrapper<T> implements IRandomIterator<T> {
 
-    Appendable append(CharSequence csq);
+    private final IRandomAccess<T> randomAccess;
 
-    Appendable append(CharSequence csq, int start, int end);
+    private int pos = IRandomIterator.FLOOR;
 
-    Appendable append(char c);
-
-    static WrappingPureAppendable from(Appendable appendable) {
-        return WrappingPureAppendable.from(appendable);
+    public RandomAccessIteratorWrapper(IRandomAccess<T> randomAccess) {
+        this.randomAccess = randomAccess;
     }
 
-    static WrappingPureAppendable from(PrintStream printStream) {
-        return WrappingPureAppendable.from(printStream);
+    @Override
+    public T getCurrent() {
+        return randomAccess.get(pos);
     }
 
-    static OutputStreamPureAppendable from(OutputStream outputStream) {
-        return OutputStreamPureAppendable.from(outputStream);
+    @Override
+    public int getPosition() {
+        return pos;
     }
 
-    static OutputStreamPureAppendable from(OutputStream outputStream, Charset charset) {
-        return OutputStreamPureAppendable.from(outputStream, charset);
+    @Override
+    public void setPosition(int position) {
+        this.pos = position;
+    }
+
+    @Override
+    public void increment(int count) {
+        this.pos += count;
+    }
+
+    @Override
+    public void increment() {
+        increment(1);
+    }
+
+    @Override
+    public void decrement(int count) {
+        this.pos -= count;
+    }
+
+    @Override
+    public void decrement() {
+        decrement(1);
+    }
+
+    @Override
+    public boolean hasNext() {
+        return randomAccess.size() > (pos + 1);
+    }
+
+    @Override
+    public T next() {
+        increment();
+        return getCurrent();
     }
 }

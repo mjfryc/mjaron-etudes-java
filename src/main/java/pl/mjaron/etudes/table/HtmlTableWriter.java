@@ -26,47 +26,69 @@ package pl.mjaron.etudes.table;
  */
 public class HtmlTableWriter implements ITableWriter {
 
-    private RenderContext context = null;
+    private RenderRuntime runtime = null;
 
     /**
      * TODO Move it to RenderContext.
      */
     private final String indentationUnit = "    ";
 
+    private final HtmlOptions htmlOptions;
+
+    public HtmlTableWriter(HtmlOptions htmlOptions) {
+        this.htmlOptions = htmlOptions;
+    }
+
+    public HtmlTableWriter() {
+        this(new HtmlOptions());
+    }
+
     @Override
-    public void beginTable(RenderContext context) {
-        this.context = context;
-        context.appendLine("<table>");
+    public void beginTable(RenderRuntime runtime) {
+        this.runtime = runtime;
+        runtime.append("<table");
+        if (htmlOptions.getTableId() != null) {
+            runtime.append(" id=\"");
+            runtime.append(htmlOptions.getTableId());
+            runtime.append('\"');
+        }
+
+        if (htmlOptions.getTableClass() != null) {
+            runtime.append(" class=\"");
+            runtime.append(htmlOptions.getTableClass());
+            runtime.append('\"');
+        }
+        runtime.appendLine('>');
     }
 
     @Override
     public void endTable() {
-        context.appendLine("</table>");
-        context = null;
+        runtime.appendLine("</table>");
+        runtime = null;
     }
 
     @Override
     public void beginHeader() {
-        context.append(indentationUnit);
-        context.appendLine("<tr>");
+        runtime.append(indentationUnit);
+        runtime.appendLine("<tr>");
     }
 
     @Override
     public void endHeader() {
-        context.append(indentationUnit);
-        context.appendLine("</tr>");
+        runtime.append(indentationUnit);
+        runtime.appendLine("</tr>");
     }
 
     @Override
     public void beginRow() {
-        context.append(indentationUnit);
-        context.appendLine("<tr>");
+        runtime.append(indentationUnit);
+        runtime.appendLine("<tr>");
     }
 
     @Override
     public void endRow() {
-        context.append(indentationUnit);
-        context.appendLine("</tr>");
+        runtime.append(indentationUnit);
+        runtime.appendLine("</tr>");
     }
 
     /**
@@ -77,27 +99,26 @@ public class HtmlTableWriter implements ITableWriter {
      *
      * @see #writeCell(String)
      * @see VerticalAlign
-     * @see VerticalAlignContext#getCurrentColumnVerticalAlign()
-     * @see RenderContext#getColumnIdx()
+     * @see RenderRuntime#getColumnIdx()
      * @since 0.2.1
      */
     public void writeColumnStyle() {
-        final VerticalAlign verticalAlign = context.getCurrentColumnVerticalAlign();
+        final VerticalAlign verticalAlign = runtime.getCurrentColumnVerticalAlign();
         if (verticalAlign == null) {
             return;
         }
 
         switch (verticalAlign) {
             case Left: {
-                context.append(" style=\"text-align: left;\"");
+                runtime.append(" style=\"text-align: left;\"");
                 return;
             }
             case Right: {
-                context.append(" style=\"text-align: right;\"");
+                runtime.append(" style=\"text-align: right;\"");
                 return;
             }
             case Center: {
-                context.append(" style=\"text-align: center;\"");
+                runtime.append(" style=\"text-align: center;\"");
                 return;
             }
             default: {
@@ -108,21 +129,21 @@ public class HtmlTableWriter implements ITableWriter {
 
     @Override
     public void writeCell(String what) {
-        context.append(indentationUnit);
-        context.append(indentationUnit);
-        if (context.isHeaderState()) {
-            context.append("<th");
+        runtime.append(indentationUnit);
+        runtime.append(indentationUnit);
+        if (runtime.isHeaderState()) {
+            runtime.append("<th");
             writeColumnStyle();
-            context.append(">");
-            context.append(what);
-            context.append("</th>");
+            runtime.append(">");
+            runtime.append(what);
+            runtime.append("</th>");
         } else {
-            context.append("<td");
+            runtime.append("<td");
             writeColumnStyle();
-            context.append(">");
-            context.append(what);
-            context.append("</td>");
+            runtime.append(">");
+            runtime.append(what);
+            runtime.append("</td>");
         }
-        context.appendLine();
+        runtime.appendLine();
     }
 }

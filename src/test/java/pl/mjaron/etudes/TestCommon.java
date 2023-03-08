@@ -17,31 +17,22 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import java.io.File;
+import java.nio.file.Paths;
 
-    default void beginTable(RenderRuntime runtime) {
+public abstract class TestCommon {
+    public static String getTestClassPath(Class<?> clazz) {
+        String packagePath = clazz.getPackage().getName().replaceAll("\\.","/");
+        return Paths.get("src", "test", "java", packagePath, clazz.getSimpleName() + ".java").toAbsolutePath().toString();
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    public static File getTestClassFile(Class<?> clazz) {
+        return new File(getTestClassPath(clazz));
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
+    public static String getTestClassContent(Class<?> clazz) {
+        return IO.readAllToString(getTestClassFile(clazz));
     }
 }

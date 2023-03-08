@@ -42,7 +42,7 @@ public interface ITableWriter {
         return false;
     }
 
-    void beginTable(RenderContext options);
+    void beginTable(RenderRuntime runtime);
 
     void endTable();
 

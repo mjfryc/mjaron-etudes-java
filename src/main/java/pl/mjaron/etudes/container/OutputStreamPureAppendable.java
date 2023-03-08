@@ -17,13 +17,15 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes;
+package pl.mjaron.etudes.container;
+
+import pl.mjaron.etudes.IPureAppendable;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-public class OutputStreamPureAppendable implements PureAppendable {
+public class OutputStreamPureAppendable implements IPureAppendable {
 
     private final OutputStream out;
 
@@ -54,7 +56,7 @@ public class OutputStreamPureAppendable implements PureAppendable {
     public OutputStreamPureAppendable append(CharSequence csq) {
         try {
             out.write(csq.toString().getBytes(charset));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("Failed to append char sequence.", e);
         }
         return this;
@@ -68,5 +70,10 @@ public class OutputStreamPureAppendable implements PureAppendable {
     @Override
     public OutputStreamPureAppendable append(char c) {
         return this.append(String.valueOf(c));
+    }
+
+    @Override
+    public OutputStream getUnderlyingObject() {
+        return out;
     }
 }

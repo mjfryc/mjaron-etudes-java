@@ -19,6 +19,8 @@
 
 package pl.mjaron.etudes.table;
 
+import pl.mjaron.etudes.Exc;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,65 +28,38 @@ import java.io.OutputStream;
 public abstract class RenderOperation {
 
     public static void execute(final RenderContext context) {
-        OutputStream internalOutputStream = null;
-        try {
-            if (context.getSource() == null) {
-                throw new NullPointerException("Cannot write table without table source.");
-            }
-            if (context.getOutFile() != null) {
-                //noinspection IOStreamConstructor
-                internalOutputStream = new FileOutputStream(context.getOutFile());
-                context.to(internalOutputStream);
-            }
-            if (context.out() == null) {
-                context.to(System.out);
-            }
-            if (context.getEscaper() == null) {
-                context.withEscaper(DummyEscaper.getInstance());
-            }
+        try (RenderRuntime runtime = new RenderRuntime(context)) {
+            context.getColumnWidthResolver().resolve(runtime);
+            final ITableSource source = runtime.getSource();
+            final ITableWriter writer = runtime.getWriter();
 
-            context.getColumnWidthResolver().resolve(context);
+            runtime.getEscaper().beginTable(runtime);
+            writer.beginTable(runtime);
 
-            final ITableWriter writer = context.getWriter();
-
-            if (context.getCellDelimiter() == null && writer.getDefaultDelimiter() != null) {
-                context.withCellDelimiter(writer.getDefaultDelimiter());
-            }
-
-            context.getEscaper().beginTable(context);
-            writer.beginTable(context);
-
-            if (context.getSource().hasHeaders()) {
-                context.setHeaderState(true);
+            if (runtime.getSource().hasHeaders()) {
+                runtime.setHeaderState(true);
                 writer.beginHeader();
-                context.resetColumn();
-                for (final String header : context.getSource().getHeaders()) {
-                    writer.writeCell(context.getEscaper().escape(header));
-                    context.nextColumn();
+                runtime.resetColumn();
+                for (final String header : source.getHeaders()) {
+                    writer.writeCell(runtime.getEscaper().escape(header));
+                    runtime.nextColumn();
                 }
                 writer.endHeader();
-                context.setHeaderState(false);
+                runtime.setHeaderState(false);
             }
 
-            for (final Iterable<String> row : context.getSource()) {
+            for (final Iterable<String> row : source) {
                 writer.beginRow();
-                context.resetColumn();
+                runtime.resetColumn();
                 for (final String cell : row) {
-                    writer.writeCell(context.getEscaper().escape(cell));
-                    context.nextColumn();
+                    writer.writeCell(runtime.getEscaper().escape(cell));
+                    runtime.nextColumn();
                 }
                 writer.endRow();
             }
             writer.endTable();
         } catch (final Exception e) {
             throw new RuntimeException("Render operation failed.", e);
-        } finally {
-            if (internalOutputStream != null) {
-                try {
-                    internalOutputStream.close();
-                } catch (final IOException ignored) {
-                }
-            }
         }
     }
 }

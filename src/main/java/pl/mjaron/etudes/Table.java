@@ -30,7 +30,7 @@ import java.util.Arrays;
  *
  * <pre>
  * | name | legsCount | lazy | topSpeed |
- * | ---- | --------- | ---- | -------- |
+ * |------|-----------|------|----------|
  * | John |         4 | true |    35.24 |
  * </pre>
  *

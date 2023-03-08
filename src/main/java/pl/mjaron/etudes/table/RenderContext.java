@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import pl.mjaron.etudes.PureAppendable;
+import pl.mjaron.etudes.IPureAppendable;
 import pl.mjaron.etudes.Str;
 import pl.mjaron.etudes.table.property.ColumnOnlyPropertyProvider;
 
@@ -39,17 +39,25 @@ import java.nio.charset.Charset;
  */
 public class RenderContext {
 
-    public static RenderContext make() {
-        return new RenderContext();
-    }
-
     /**
      * Source of headers and data used to fill the table.
      *
-     * @since 0.2.0
+     * @since 0.2.2
      */
-    private ITableSource source = null;
-
+    private final ManipulatingTableSourceBuilder tableSourceBuilder = new ManipulatingTableSourceBuilder();
+    /**
+     * Determines the column widths depending on {@link AlignmentMode}.
+     *
+     * @since 0.2.2
+     */
+    private final ColumnWidthResolver columnWidthResolver = new ColumnWidthResolver();
+    /**
+     * Used to determine column's vertical align.
+     *
+     * @see VerticalAlign
+     * @since 0.2.2
+     */
+    private final ColumnOnlyPropertyProvider<VerticalAlign> verticalAlignPropertyProvider = new ColumnOnlyPropertyProvider<>();
     /**
      * {@link ITableWriter} responsible for formatting and writing the headers and data.
      *
@@ -62,10 +70,10 @@ public class RenderContext {
      *
      * @since 0.2.0
      */
-    private PureAppendable out = null;
+    private IPureAppendable out = null;
 
     /**
-     * Use output file by path instead of PureAppendable. {@link RenderOperation} will be responsible for closing
+     * Use output file by path instead of IPureAppendable. {@link RenderOperation} will be responsible for closing
      * temporary {@link java.io.FileOutputStream}.
      *
      * @since 0.2.0
@@ -96,43 +104,70 @@ public class RenderContext {
     private String lineBreak = System.lineSeparator();
 
     /**
-     * Determines the column widths depending on {@link AlignmentMode}.
-     *
-     * @since 0.2.2
-     */
-    private final ColumnWidthResolver columnWidthResolver = new ColumnWidthResolver();
-
-    /**
-     * Updated internally by {@link RenderOperation} when visiting related cells.
-     *
-     * @since 0.2.0
-     */
-    private int columnIdx = 0;
-
-    /**
-     * Updated internally by {@link RenderOperation}. Defines whether currently the headers are rendered or not.
-     * <p>
-     * If false, the table body is rendered.
-     *
-     * @since 0.2.0
-     */
-    private boolean headerState = false;
-
-    /**
-     * Used to determine column's vertical align.
-     *
-     * @see VerticalAlign
-     * @since 0.2.2
-     */
-    private final ColumnOnlyPropertyProvider<VerticalAlign> verticalAlignPropertyProvider = new ColumnOnlyPropertyProvider<>();
-
-    /**
      * Default constructor. By convention, use {@link #make()} to create the object.
      *
      * @see #make()
      * @since 0.1.12
      */
     public RenderContext() {
+    }
+
+    /**
+     * Initializes the {@link RenderContext} object.
+     *
+     * @return New instance of {@link RenderContext}.
+     * @since 0.2.0
+     */
+    @NotNull
+    public static RenderContext make() {
+        return new RenderContext();
+    }
+
+    /**
+     * Provides the {@link ColumnSelector} object initialized with first column id.
+     *
+     * @param id Identifier of first column. It is the name of column provided by {@link ITableSource}.
+     * @return New instance of {@link ColumnSelector}.
+     * @since 0.2.2
+     */
+    @NotNull
+    public static ColumnSelector col(final String id) {
+        return new ColumnSelector().col(id);
+    }
+
+    /**
+     * Provides the {@link ColumnSelector} object initialized with first column id and name alias.
+     *
+     * @param id    Identifier of first column. It is the name of column provided by {@link ITableSource}.
+     * @param alias Alias of first column name. If {@code null}, the column id will be used as column name.
+     * @return New instance of {@link ColumnSelector}.
+     * @since 0.2.2
+     */
+    @NotNull
+    public static ColumnSelector col(final String id, final String alias) {
+        return new ColumnSelector().col(id).as(alias);
+    }
+
+    /**
+     * Provides {@link ManipulatingTableSourceBuilder}.
+     *
+     * @return {@link ManipulatingTableSourceBuilder} instance.
+     * @since 0.2.2
+     */
+    @NotNull
+    public ManipulatingTableSourceBuilder getTableSourceBuilder() {
+        return this.tableSourceBuilder;
+    }
+
+    /**
+     * Provides {@link ColumnOnlyPropertyProvider<VerticalAlign>} which determines the columns' width.
+     *
+     * @return {@link ColumnOnlyPropertyProvider<VerticalAlign>} which determines the columns' width.
+     * @since 0.2.2
+     */
+    @NotNull
+    public ColumnOnlyPropertyProvider<VerticalAlign> getVerticalAlignPropertyProvider() {
+        return verticalAlignPropertyProvider;
     }
 
     /**
@@ -144,7 +179,7 @@ public class RenderContext {
      */
     @NotNull
     @Contract("_ -> this")
-    public RenderContext to(PureAppendable out) {
+    public RenderContext to(IPureAppendable out) {
         this.out = out;
         return this;
     }
@@ -159,7 +194,7 @@ public class RenderContext {
     @NotNull
     @Contract("_ -> this")
     public RenderContext to(PrintStream out) {
-        return to(PureAppendable.from(out));
+        return to(IPureAppendable.from(out));
     }
 
     /**
@@ -173,7 +208,7 @@ public class RenderContext {
     @NotNull
     @Contract("_, _-> this")
     public RenderContext to(OutputStream out, Charset charset) {
-        return to(PureAppendable.from(out, charset));
+        return to(IPureAppendable.from(out, charset));
     }
 
     /**
@@ -186,7 +221,7 @@ public class RenderContext {
     @NotNull
     @Contract("_ -> this")
     public RenderContext to(OutputStream out) {
-        return to(PureAppendable.from(out));
+        return to(IPureAppendable.from(out));
     }
 
     /**
@@ -199,7 +234,7 @@ public class RenderContext {
     @NotNull
     @Contract("_ -> this")
     public RenderContext to(StringBuilder out) {
-        return to(PureAppendable.from(out));
+        return to(IPureAppendable.from(out));
     }
 
     /**
@@ -212,10 +247,10 @@ public class RenderContext {
     @NotNull
     @Contract("_ -> this")
     public RenderContext to(Appendable out) {
-        if (out instanceof PureAppendable) {
-            return to((PureAppendable) out);
+        if (out instanceof IPureAppendable) {
+            return to((IPureAppendable) out);
         }
-        return to(PureAppendable.from(out));
+        return to(IPureAppendable.from(out));
     }
 
     /**
@@ -240,12 +275,13 @@ public class RenderContext {
      *
      * @param path The rendering destination file path. It may be relative or absolute.
      * @return This reference.
+     * @throws NullPointerException If the {@code path} argument is {@code null}.
      * @see #to(File)
      * @since 0.2.0
      */
     @NotNull
     @Contract("_ -> this")
-    public RenderContext toFile(String path) {
+    public RenderContext toFile(@NotNull final String path) {
         return this.to(new File(path));
     }
 
@@ -255,10 +291,9 @@ public class RenderContext {
      * @return {@link ITableWriter} used for table rendering.
      * @since 0.2.0
      */
+    @Nullable
+    @Contract(pure = true)
     public ITableWriter getWriter() {
-        if (writer == null) {
-            writer = new MarkdownTableWriter(); // Markdown table writer by default.
-        }
         return writer;
     }
 
@@ -309,6 +344,18 @@ public class RenderContext {
     @NotNull
     public RenderContext withHtmlWriter() {
         return this.withWriter(new HtmlTableWriter());
+    }
+
+    /**
+     * Use {@link HtmlTableWriter} for render operation.
+     *
+     * @param htmlOptions HTML special options.
+     * @return This reference.
+     * @since 0.2.2
+     */
+    @NotNull
+    public RenderContext withHtmlWriter(final HtmlOptions htmlOptions) {
+        return this.withWriter(new HtmlTableWriter(htmlOptions));
     }
 
     /**
@@ -402,16 +449,6 @@ public class RenderContext {
     @Contract("-> this")
     public RenderContext withHtmlEscaper() {
         return this.withEscaper(new HtmlEscaper());
-    }
-
-    /**
-     * Provides the table columns count.
-     *
-     * @return Count of table columns.
-     * @since 0.2.0
-     */
-    public int getColumnsCount() {
-        return source.getColumnsCount();
     }
 
     /**
@@ -565,6 +602,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withDefaultCellDelimiter() {
         return withCellDelimiter(null);
     }
@@ -576,6 +614,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withoutCellDelimiter() {
         return withCellDelimiter("");
     }
@@ -587,6 +626,7 @@ public class RenderContext {
      * @since 0.1.13
      */
     @Nullable
+    @Contract(pure = true)
     public String getCellDelimiter() {
         return this.cellDelimiter;
     }
@@ -599,7 +639,8 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
-    public RenderContext withLineBreak(String lineBreak) {
+    @Contract("_-> this")
+    public RenderContext withLineBreak(@NotNull final String lineBreak) {
         this.lineBreak = lineBreak;
         return this;
     }
@@ -611,6 +652,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("_-> this")
     public RenderContext withLineBreakLF() {
         return this.withLineBreak(Str.LF);
     }
@@ -622,6 +664,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withLineBreakCRLF() {
         return this.withLineBreak(Str.CRLF);
     }
@@ -633,6 +676,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext withLineBreakCR() {
         return this.withLineBreak(Str.CR);
     }
@@ -648,6 +692,7 @@ public class RenderContext {
      * @since 0.2.1
      */
     @NotNull
+    @Contract("_-> this")
     public RenderContext withAlign(@Nullable VerticalAlign align) {
         verticalAlignPropertyProvider.put(align);
         return this;
@@ -669,6 +714,34 @@ public class RenderContext {
     }
 
     /**
+     * Selects the columns used for rendering. Overwrites previous call of this method.
+     *
+     * @param columnSelector {@link ColumnSelector} instance.
+     * @return This reference.
+     * @since 0.2.2
+     */
+    @Contract("_-> this")
+    public RenderContext withColumns(ColumnSelector columnSelector) {
+        getTableSourceBuilder().setColumnSelector(columnSelector);
+        getTableSourceBuilder().setAllColumns(false);
+        return this;
+    }
+
+    /**
+     * Rename the column names. Missing column names will use original column names.
+     *
+     * @param columnSelector {@link ColumnSelector} instance.
+     * @return This reference.
+     * @since 0.2.2
+     */
+    @Contract("_-> this")
+    public RenderContext withColumnNames(ColumnSelector columnSelector) {
+        getTableSourceBuilder().setColumnSelector(columnSelector);
+        getTableSourceBuilder().setAllColumns(true);
+        return this;
+    }
+
+    /**
      * Use predefined Markdown configuration, shortcut of:
      * <pre>{@code
      *     withMarkdownWriter().withMarkdownEscaper();
@@ -678,6 +751,7 @@ public class RenderContext {
      * @since 0.2.1
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext markdown() {
         return withMarkdownWriter().withMarkdownEscaper();
     }
@@ -692,6 +766,7 @@ public class RenderContext {
      * @since 0.2.1
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext csv() {
         return withCsvWriter().withCsvEscaper().withLineBreakCRLF();
     }
@@ -706,12 +781,28 @@ public class RenderContext {
      * @since 0.2.1
      */
     @NotNull
+    @Contract("-> this")
     public RenderContext html() {
         return this.withHtmlWriter().withHtmlEscaper();
     }
 
-    @Contract(pure = true)
+    /**
+     * Use predefined HTML configuration, shortcut of:
+     * <pre>{@code
+     *     withHtmlWriter(htmlOptions).withHtmlEscaper();
+     * }</pre>
+     *
+     * @return This reference.
+     * @since 0.2.1
+     */
     @NotNull
+    @Contract("_-> this")
+    public RenderContext html(@NotNull final HtmlOptions htmlOptions) {
+        return this.withHtmlWriter(htmlOptions).withHtmlEscaper();
+    }
+
+    @NotNull
+    @Contract(pure = true)
     public String getLineBreak() {
         return lineBreak;
     }
@@ -719,12 +810,12 @@ public class RenderContext {
     /**
      * Used by {@link ITableWriter} during {@link RenderOperation#execute(RenderContext)}.
      *
-     * @return Any {@link PureAppendable} used to render the table.
+     * @return Any {@link IPureAppendable} used to render the table.
      * @since 0.2.0
      */
-    @Contract(pure = true)
     @Nullable
-    public PureAppendable out() {
+    @Contract(pure = true)
+    public IPureAppendable getOut() {
         return this.out;
     }
 
@@ -734,124 +825,10 @@ public class RenderContext {
      * @return {@link File} where rendered table will be written or {@code null} if the file is not set.
      * @since 0.2.0
      */
-    @Contract(pure = true)
     @Nullable
+    @Contract(pure = true)
     public File getOutFile() {
         return this.outFile;
-    }
-
-    /**
-     * Appends given {@link String} to the table rendering output.
-     *
-     * @param what {@link String} to append.
-     * @since 0.2.0
-     */
-    public void append(String what) {
-        out.append(what);
-    }
-
-    /**
-     * Appends given <code>char</code> to the table rendering output.
-     *
-     * @param what <code>char</code> to append.
-     * @since 0.2.0
-     */
-    public void append(char what) {
-        out.append(what);
-    }
-
-    /**
-     * Appends new line characters to the table rendering output.
-     *
-     * @since 0.2.0
-     */
-    public void appendLine() {
-        append(getLineBreak());
-    }
-
-    /**
-     * Appends given {@link String} and new line characters to the table rendering output.
-     *
-     * @param what {@link String} to append.
-     * @since 0.2.0
-     */
-    public void appendLine(String what) {
-        append(what);
-        append(getLineBreak());
-    }
-
-    /**
-     * Appends given {@link String} to the table rendering output only when current column is not first column (not with
-     * index <code>0</code>).
-     *
-     * @param what {@link String} to append.
-     * @since 0.2.0
-     */
-    public void appendIfNotFirstColumn(String what) {
-        if (columnIdx != 0) {
-            this.append(what);
-        }
-    }
-
-    /**
-     * Appends given <code>char</code> to the table rendering output only when current column is not first column (not
-     * with index <code>0</code>).
-     *
-     * @param what <code>char</code> to append.
-     * @since 0.2.0
-     */
-    public void appendIfNotFirstColumn(char what) {
-        if (columnIdx != 0) {
-            this.append(what);
-        }
-    }
-
-    /**
-     * Pads given String by filling with given character and next appends to rendered table output.
-     *
-     * @param what     String to append.
-     * @param fillChar Character to fill the String during padding.
-     * @see VerticalAlignContext
-     * @see VerticalAlign
-     * @since 0.2.0
-     */
-    public void appendPadded(String what, final char fillChar) {
-        final VerticalAlign currentAlign = verticalAlignPropertyProvider.get(columnIdx, -1);
-        if (getColumnWidthResolver().hasWidths()) {
-            if (currentAlign == null || currentAlign == VerticalAlign.Left) {
-                //noinspection ConstantConditions
-                Str.padRight(what, getColumnWidthResolver().getWidth(columnIdx), fillChar, this.out());
-            } else if (currentAlign == VerticalAlign.Right) {
-                Str.padLeft(what, getColumnWidthResolver().getWidth(columnIdx), fillChar, this.out());
-            } else if (currentAlign == VerticalAlign.Center) {
-                Str.padCenter(what, getColumnWidthResolver().getWidth(columnIdx), fillChar, this.out());
-            } else {
-                throw new RuntimeException("Unsupported vertical align value: " + currentAlign);
-            }
-        } else {
-            this.append(what);
-        }
-    }
-
-    /**
-     * Pads given String by filling with space character and next appends to rendered table output.
-     *
-     * @param what String to append.
-     * @since 0.2.0
-     */
-    public void appendPadded(String what) {
-        this.appendPadded(what, ' ');
-    }
-
-    /**
-     * Getter of {@link ITableSource} used to read the table data.
-     *
-     * @return {@link ITableSource} used to read the table data.
-     * @since 0.2.0
-     */
-    @Contract(pure = true)
-    public ITableSource getSource() {
-        return source;
     }
 
     /**
@@ -861,77 +838,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     public void setSource(ITableSource source) {
-        this.source = source;
-    }
-
-    /**
-     * Provides currently rendered column index, counting from <code>0</code>.
-     *
-     * @return Currently rendered column index.
-     * @since 0.2.1
-     */
-    public int getColumnIdx() {
-        return this.columnIdx;
-    }
-
-    /**
-     * Increments by one currently rendered column index.
-     *
-     * @since 0.2.1
-     */
-    public void nextColumn() {
-        ++this.columnIdx;
-    }
-
-    /**
-     * Resets to <code>0</code> currently rendered column index.
-     *
-     * @since 0.2.1
-     */
-    public void resetColumn() {
-        this.columnIdx = 0;
-    }
-
-    /**
-     * Tells whether currently rendered row is the table header.
-     *
-     * @return <code>true</code> when table rendering is in header state.
-     * @since 0.2.1
-     */
-    public boolean isHeaderState() {
-        return headerState;
-    }
-
-    /**
-     * Updates the table rendering header state. Called by {@link RenderOperation}.
-     *
-     * @param headerState New value of rendering header state.
-     * @see RenderOperation
-     * @since 0.2.1
-     */
-    public void setHeaderState(boolean headerState) {
-        this.headerState = headerState;
-    }
-
-    /**
-     * Provides {@link VerticalAlign} related to currently processed column.
-     *
-     * @return {@link VerticalAlign} related to currently processed column.
-     * @since 0.2.2
-     */
-    public VerticalAlign getCurrentColumnVerticalAlign() {
-        return getVerticalAlign(columnIdx);
-    }
-
-    /**
-     * Provides {@link VerticalAlign} related to given <code>column</code> parameter.
-     *
-     * @param column Requested column index.
-     * @return {@link VerticalAlign} related to given <code>column</code> parameter.
-     * @since 0.2.2
-     */
-    public VerticalAlign getVerticalAlign(@Range(from = 0, to = Integer.MAX_VALUE) final int column) {
-        return verticalAlignPropertyProvider.get(column, -1);
+        getTableSourceBuilder().setUnderlyingSource(source);
     }
 
     /**
@@ -951,10 +858,11 @@ public class RenderContext {
      * @see #run()
      * @since 0.2.1
      */
+    @NotNull
     @Contract(pure = true)
     public String runToString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (this.out() != null) {
+        if (this.getOut() != null) {
             throw new IllegalArgumentException("Cannot render to String: Invalid render context: Appender already set with " + RenderContext.class.getSimpleName() + "::to(...) method.");
         }
         this.to(stringBuilder);
@@ -971,6 +879,7 @@ public class RenderContext {
      * @deprecated Use {@link #runToString()}
      */
     @Deprecated
+    @NotNull
     @Contract(pure = true)
     public String runString() {
         return this.runToString();

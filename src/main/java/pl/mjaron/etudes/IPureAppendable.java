@@ -17,57 +17,46 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes;
+
+import pl.mjaron.etudes.container.OutputStreamPureAppendable;
+import pl.mjaron.etudes.container.WrappingPureAppendable;
+
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
 
 /**
- * Csv specification: <a href="https://www.rfc-editor.org/rfc/rfc4180">https://www.rfc-editor.org/rfc/rfc4180</a>
+ * {@link Appendable} interface without exceptions in method signatures.
  */
-public class CsvTableWriter implements ITableWriter {
-
-    public static final String DEFAULT_DELIMITER = ",";
-
-    private RenderRuntime runtime = null;
+public interface IPureAppendable extends Appendable {
 
     @Override
-    public String getDefaultDelimiter() {
-        return DEFAULT_DELIMITER;
+    IPureAppendable append(CharSequence csq);
+
+    @Override
+    IPureAppendable append(CharSequence csq, int start, int end);
+
+    @Override
+    IPureAppendable append(char c);
+
+    default Object getUnderlyingObject() {
+        return null;
     }
 
-    @Override
-    public boolean getDefaultAlignedColumnWidths() {
-        return false;
+    static WrappingPureAppendable from(Appendable appendable) {
+        return WrappingPureAppendable.from(appendable);
     }
 
-    @Override
-    public void beginTable(RenderRuntime runtime) {
-        this.runtime = runtime;
+    static WrappingPureAppendable from(PrintStream printStream) {
+        return WrappingPureAppendable.from(printStream);
     }
 
-    @Override
-    public void endTable() {
+    static OutputStreamPureAppendable from(OutputStream outputStream) {
+        return OutputStreamPureAppendable.from(outputStream);
     }
 
-    @Override
-    public void beginHeader() {
-    }
-
-    @Override
-    public void endHeader() {
-        runtime.appendLine();
-    }
-
-    @Override
-    public void beginRow() {
-    }
-
-    @Override
-    public void endRow() {
-        runtime.appendLine();
-    }
-
-    @Override
-    public void writeCell(String what) {
-        runtime.appendIfNotFirstColumn(runtime.getCellDelimiter());
-        runtime.appendPadded(what);
+    static OutputStreamPureAppendable from(OutputStream outputStream, Charset charset) {
+        return OutputStreamPureAppendable.from(outputStream, charset);
     }
 }

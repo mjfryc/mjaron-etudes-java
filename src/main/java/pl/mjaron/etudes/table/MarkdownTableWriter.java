@@ -27,7 +27,7 @@ import pl.mjaron.etudes.Str;
  */
 public class MarkdownTableWriter implements ITableWriter {
 
-    RenderContext context = null;
+    RenderRuntime runtime = null;
 
     public MarkdownTableWriter() {
     }
@@ -38,8 +38,8 @@ public class MarkdownTableWriter implements ITableWriter {
     }
 
     @Override
-    public void beginTable(RenderContext options) {
-        this.context = options;
+    public void beginTable(RenderRuntime runtime) {
+        this.runtime = runtime;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class MarkdownTableWriter implements ITableWriter {
     }
 
     public Pair<String, String> determineColumnDividerMargins(final int columnIdx) {
-        final VerticalAlign verticalAlign = context.getVerticalAlign(columnIdx);
+        final VerticalAlign verticalAlign = runtime.getVerticalAlign(columnIdx);
         if (verticalAlign == null) {
             return new Pair<>("-", "-");
         }
@@ -69,27 +69,27 @@ public class MarkdownTableWriter implements ITableWriter {
 
     @Override
     public void endHeader() {
-        context.append("|");
-        context.appendLine();
-        if (context.getColumnWidthResolver().hasWidths()) {
-            for (int i = 0; i < context.getColumnWidthResolver().getWidths().length; ++i) {
-                final int w = context.getColumnWidthResolver().getWidth(i);
+        runtime.append("|");
+        runtime.appendLine();
+        if (runtime.hasColumnWidths()) {
+            for (int i = 0; i < runtime.getColumnsCount(); ++i) {
+                final int w = runtime.getColumnWidth(i);
                 final Pair<String, String> margins = determineColumnDividerMargins(i);
-                context.append("|");
-                context.append(margins.getKey());
-                Str.pad(context.out(), w, '-');
-                context.append(margins.getValue());
+                runtime.append("|");
+                runtime.append(margins.getKey());
+                Str.pad(runtime.getOut(), w, '-');
+                runtime.append(margins.getValue());
             }
         } else {
-            for (int i = 0; i < context.getColumnsCount(); ++i) {
+            for (int i = 0; i < runtime.getColumnsCount(); ++i) {
                 final Pair<String, String> margins = determineColumnDividerMargins(i);
-                context.append("|");
-                context.append(margins.getKey());
-                context.append("----");
-                context.append(margins.getValue());
+                runtime.append("|");
+                runtime.append(margins.getKey());
+                runtime.append("----");
+                runtime.append(margins.getValue());
             }
         }
-        context.appendLine("|");
+        runtime.appendLine("|");
     }
 
     @Override
@@ -98,13 +98,13 @@ public class MarkdownTableWriter implements ITableWriter {
 
     @Override
     public void endRow() {
-        context.appendLine("|");
+        runtime.appendLine("|");
     }
 
     @Override
     public void writeCell(final String what) {
-        context.append("| ");
-        context.appendPadded(what, ' ');
-        context.append(' ');
+        runtime.append("| ");
+        runtime.appendPadded(what, ' ');
+        runtime.append(' ');
     }
 }

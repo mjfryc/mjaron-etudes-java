@@ -17,31 +17,37 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes.container;
+
+import pl.mjaron.etudes.IRandomAccess;
+
+import java.util.List;
+import java.util.RandomAccess;
 
 /**
- * Converts strings by replacing special characters.
+ * Random access designed for {@link java.util.ArrayList}.
  *
- * @since 0.1.12
+ * @param <T> List element type.
+ * @since 0.2.2
  */
-public interface IEscaper {
+public class ListRandomAccess<T> implements IRandomAccess<T> {
 
-    default void beginTable(RenderRuntime runtime) {
+    private final List<T> arrayList;
+
+    public ListRandomAccess(final List<T> list) {
+        if (!(list instanceof RandomAccess)) {
+            throw new IllegalArgumentException("Cannot create " + ListRandomAccess.class.getSimpleName() + " object: Given list instance is not a " + RandomAccess.class.getSimpleName() + ": " + list.getClass().getSimpleName());
+        }
+        this.arrayList = list;
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    @Override
+    public int size() {
+        return arrayList.size();
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
+    @Override
+    public T get(int position) {
+        return arrayList.get(position);
     }
 }
