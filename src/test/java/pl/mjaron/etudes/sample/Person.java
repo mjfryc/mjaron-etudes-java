@@ -41,8 +41,8 @@ public class Person {
     public static Person[] getSampleData() {
         return new Person[]{
                 new Person("Sally", "Fox", new Date(1990, Calendar.FEBRUARY, 20), "London", "sally@sallymfox.com"),
-                new Person("Jay", "Acunzo", new Date(1920, Calendar.APRIL, 20), "Paris", "jay.acunzo@protonmail.com.com"),
-                new Person("Bella", "Tran", new Date(1963, Calendar.JUNE, 12), "China", "a@b.com")
+                new Person("Jay", "Elephant", new Date(1920, Calendar.APRIL, 20), "Paris", "jay.elephant@protonmail.com"),
+                new Person("Bella", "Tran", new Date(1963, Calendar.JUNE, 12), "China", "tran@bella.com")
         };
     }
 }

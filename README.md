@@ -14,18 +14,18 @@ Utils compatible with Java 1.8.
 ### Short example
 
 ```gradle
-implementation 'io.github.mjfryc:mjaron-etudes-java:0.3.0'
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.1'
 ```
 
 ```
 Table.render(persons, Person.class).run();
 ```
 
-| name  | surname | birthDay                      | address | contact                       |
-|-------|---------|-------------------------------|---------|-------------------------------|
-| Sally | Fox     | Thu Feb 20 00:00:00 CET 3890  | London  | sally@sallymfox.com           |
-| Jay   | Acunzo  | Thu Apr 20 00:00:00 CEST 3820 | Paris   | jay.acunzo@protonmail.com.com |
-| Bella | Tran    | Fri Jun 12 00:00:00 CEST 3863 | China   | a@b.com                       |
+| name  | surname  | birthDay                      | address | contact                     |
+|-------|----------|-------------------------------|---------|-----------------------------|
+| Sally | Fox      | Thu Feb 20 00:00:00 CET 3890  | London  | sally@sallymfox.com         |
+| Jay   | Elephant | Thu Apr 20 00:00:00 CEST 3820 | Paris   | jay.elephant@protonmail.com |
+| Bella | Tran     | Fri Jun 12 00:00:00 CEST 3863 | China   | tran@bella.com              |
 
 ### Verbose example
 
@@ -75,11 +75,12 @@ public class Person {
     public static Person[] getSampleData() {
         return new Person[]{
                 new Person("Sally", "Fox", new Date(1990, Calendar.FEBRUARY, 20), "London", "sally@sallymfox.com"),
-                new Person("Jay", "Acunzo", new Date(1920, Calendar.APRIL, 20), "Paris", "jay.acunzo@protonmail.com.com"),
-                new Person("Bella", "Tran", new Date(1963, Calendar.JUNE, 12), "China", "a@b.com")
+                new Person("Jay", "Elephant", new Date(1920, Calendar.APRIL, 20), "Paris", "jay.elephant@protonmail.com"),
+                new Person("Bella", "Tran", new Date(1963, Calendar.JUNE, 12), "China", "tran@bella.com")
         };
     }
 }
+
 ```
 
 Then following code will render the table:
@@ -146,6 +147,7 @@ public class PersonVerboseSample {
         ;
     }
 }
+
 ```
 
 ### Markdown customization
@@ -175,27 +177,28 @@ public class MarkdownCustomizationSample {
         ).run();
     }
 }
+
 ```
 
 #### Column alignment
 
 There is possibility to set the all columns alignment and particular columns alignment. Column indexes are counted from 0.
 
-|  name | surname |                      birthDay | address |                                   contact |
-|------:|:--------|------------------------------:|--------:|------------------------------------------:|
-| Sally | Fox     |  Thu Feb 20 00:00:00 CET 3890 |  London |                   sally@sallymfox&#46;com |
-|   Jay | Acunzo  | Thu Apr 20 00:00:00 CEST 3820 |   Paris | jay&#46;acunzo@protonmail&#46;com&#46;com |
-| Bella | Tran    | Fri Jun 12 00:00:00 CEST 3863 |   China |                               a@b&#46;com |
+|  name | surname  |                      birthDay | address |                             contact |
+|------:|:---------|------------------------------:|--------:|------------------------------------:|
+| Sally | Fox      |  Thu Feb 20 00:00:00 CET 3890 |  London |             sally@sallymfox&#46;com |
+|   Jay | Elephant | Thu Apr 20 00:00:00 CEST 3820 |   Paris | jay&#46;elephant@protonmail&#46;com |
+| Bella | Tran     | Fri Jun 12 00:00:00 CEST 3863 |   China |                  tran@bella&#46;com |
 
 #### Column names and order
 
 There is possibility to filter the columns, customize column names and order.
 
-| CONTACT                                   | address | SURNAME |
-|-------------------------------------------|---------|---------|
-| sally@sallymfox&#46;com                   | London  | Fox     |
-| jay&#46;acunzo@protonmail&#46;com&#46;com | Paris   | Acunzo  |
-| a@b&#46;com                               | China   | Tran    |
+| CONTACT                             | address | SURNAME  |
+|-------------------------------------|---------|----------|
+| sally@sallymfox&#46;com             | London  | Fox      |
+| jay&#46;elephant@protonmail&#46;com | Paris   | Elephant |
+| tran@bella&#46;com                  | China   | Tran     |
 
 ### CSV customization
 
@@ -229,13 +232,15 @@ public class CsvCustomizationSample {
         ).run();
     }
 }
+
 ```
 
 ```csv
-CONTACT                       , address , SURNAME
-sally@sallymfox.com           , London  , Fox    
-jay.acunzo@protonmail.com.com , Paris   , Acunzo 
-a@b.com                       , China   , Tran   
+CONTACT                     , address , SURNAME 
+sally@sallymfox.com         , London  , Fox     
+jay.elephant@protonmail.com , Paris   , Elephant
+tran@bella.com              , China   , Tran    
+
 ```
 
 ### HTML customization
@@ -270,6 +275,7 @@ public class HtmlCustomizationSample {
         // @formatter:on
     }
 }
+
 ```
 
 ```html
@@ -285,37 +291,17 @@ public class HtmlCustomizationSample {
         <td style="text-align: center;">Fox</td>
     </tr>
     <tr>
-        <td style="text-align: center;">jay.acunzo@protonmail.com.com</td>
+        <td style="text-align: center;">jay.elephant@protonmail.com</td>
         <td style="text-align: right;">Paris</td>
-        <td style="text-align: center;">Acunzo</td>
+        <td style="text-align: center;">Elephant</td>
     </tr>
     <tr>
-        <td style="text-align: center;">a@b.com</td>
+        <td style="text-align: center;">tran@bella.com</td>
         <td style="text-align: right;">China</td>
         <td style="text-align: center;">Tran</td>
     </tr>
 </table>
-```
 
-
-
-
-## Object utils
-
-### Getting object values
-
-```
-{topSpeed=35.24, legsCount=4, lazy=true, name=John}
-```
-
-```java
-class Sample {
-    void test() {
-        Cat cat = new Cat();
-        Map<String, Object> values = Obj.getFieldValues(cat);
-        System.out.println(values);
-    }
-}
 ```
 
 ### Table generation sequence
@@ -364,6 +350,24 @@ sequenceDiagram
  end
  Rendering operation ->> ITableWriter: endTable(renderingContext)
  Rendering operation-->>-User: rendered table
+```
+
+## Object utils
+
+### Getting object values
+
+```
+{topSpeed=35.24, legsCount=4, lazy=true, name=John}
+```
+
+```java
+class Sample {
+    void test() {
+        Cat cat = new Cat();
+        Map<String, Object> values = Obj.getFieldValues(cat);
+        System.out.println(values);
+    }
+}
 ```
 
 ## Array utils
