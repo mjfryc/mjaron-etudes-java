@@ -17,31 +17,22 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes;
+
+import java.util.Calendar;
 
 /**
- * Converts strings by replacing special characters.
+ * Time-related code.
  *
- * @since 0.1.12
+ * @since 0.3.0
  */
-public interface IEscaper {
+public abstract class TimeUtils {
 
-    default void beginTable(RenderRuntime runtime) {
-    }
-
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
-
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
+    public static Calendar getCalendar(final int year, final int month, final int day) {
+        final Calendar date = Calendar.getInstance();
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month + 1);
+        date.set(Calendar.DAY_OF_MONTH, day);
+        return date;
     }
 }

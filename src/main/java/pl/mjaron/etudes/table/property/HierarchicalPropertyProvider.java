@@ -17,31 +17,34 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes.table.property;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+public class HierarchicalPropertyProvider<T> {
 
-    default void beginTable(RenderRuntime runtime) {
+    private final PropertyNode<T> tableNode = new PropertyNode<>();
+
+    public PropertyNode<T> getRootNode() {
+        return tableNode;
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
-
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
+    T getValue(int a, int b) {
+        PropertyNode<T> aChild = tableNode.getChild(a);
+        if (aChild == null) {
+            return tableNode.getValue();
         }
-        return what;
+        PropertyNode<T> bChild = aChild.getChild(b);
+        if (bChild == null) {
+            if (aChild.getValue() != null) {
+                return aChild.getValue();
+            }
+            return tableNode.getValue();
+        }
+        if (bChild.getValue() != null) {
+            return bChild.getValue();
+        }
+        if (aChild.getValue() != null) {
+            return aChild.getValue();
+        }
+        return tableNode.getValue();
     }
 }

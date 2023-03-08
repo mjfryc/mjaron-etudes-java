@@ -19,29 +19,27 @@
 
 package pl.mjaron.etudes.table;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-    default void beginTable(RenderRuntime runtime) {
+/**
+ * The {@link HtmlOptions} factory class.
+ *
+ * @see HtmlOptions
+ * @see HtmlTableWriter
+ * @since 0.3.0
+ */
+public abstract class Html {
+
+    @NotNull
+    @Contract(pure = true)
+    public static HtmlOptions tableId(final String tableId) {
+        return new HtmlOptions().tableId(tableId);
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
-
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
+    @NotNull
+    @Contract(pure = true)
+    public static HtmlOptions tableClass(final String tableClass) {
+        return new HtmlOptions().tableClass(tableClass);
     }
 }

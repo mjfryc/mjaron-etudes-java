@@ -19,29 +19,51 @@
 
 package pl.mjaron.etudes.table;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import pl.mjaron.etudes.Pair;
 
-    default void beginTable(RenderRuntime runtime) {
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Used to select the columns which will be rendered.
+ * <p>
+ * The order of the declared columns matters.
+ *
+ * @since 0.3.0
+ */
+public class ColumnSelector {
+
+    Pair<String, String> last = null;
+
+    List<Pair<String, String>> entries = new ArrayList<>();
+
+    public ColumnSelector col(final String id) {
+        last = new Pair<>(id, null);
+        entries.add(last);
+        return this;
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    public ColumnSelector as(final String alias) {
+        last.setValue(alias);
+        return this;
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
+    public ColumnSelector col(final String id, final String alias) {
+        last = new Pair<>(id, alias);
+        entries.add(last);
+        return this;
+    }
+
+    public List<Pair<String, String>> getEntries() {
+        return entries;
+    }
+
+    public String getColumnAlias(final String id) {
+        for (final Pair<String, String> entry : entries) {
+            if (entry.getKey().equals(id)) {
+                return entry.getValue();
+            }
         }
-        return what;
+        return null;
     }
 }

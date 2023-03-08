@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IteratorWrapperTest {
+class CurrIteratorWrapperTest {
 
     @Test
     void curr() {
@@ -15,14 +15,14 @@ class IteratorWrapperTest {
         List<Integer> list = new ArrayList<>();
         list.add(0);
         list.add(1);
-        IteratorWrapper<Integer> wrapper = new IteratorWrapper<>(list.iterator());
-        assertNull(wrapper.curr());
+        ICurrIterator<Integer> wrapper = new CurrIteratorWrapper<>(list.iterator());
+        assertNull(wrapper.getCurrent());
         Integer element0 = wrapper.next();
         assertNotNull(element0);
         assertEquals(0, element0.intValue());
-        assertEquals(element0.intValue(), wrapper.curr().intValue());
+        assertEquals(element0.intValue(), wrapper.getCurrent().intValue());
         Integer element1 = wrapper.next();
-        assertEquals(element1.intValue(), wrapper.curr().intValue());
+        assertEquals(element1.intValue(), wrapper.getCurrent().intValue());
         assertNotEquals(element0.intValue(), element1.intValue());
     }
 }

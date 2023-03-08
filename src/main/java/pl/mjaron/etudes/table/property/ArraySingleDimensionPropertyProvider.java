@@ -17,31 +17,46 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes.table.property;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
+import pl.mjaron.etudes.Arr;
 
-    default void beginTable(RenderRuntime runtime) {
+import java.util.ArrayList;
+
+public class ArraySingleDimensionPropertyProvider<T> {
+
+    private T rootValue = null;
+
+    private ArrayList<T> arrayList = null;
+
+    public @Nullable T get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
+        if (arrayList == null || arrayList.size() <= index) {
+            return rootValue;
+        }
+        final T indexValue = arrayList.get(index);
+        if (indexValue == null) {
+            return rootValue;
+        }
+        return indexValue;
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    public void setValue(@Nullable final T value) {
+        this.rootValue = value;
+        this.arrayList = null;
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
+    public void setValue(@Range(from = 0, to = Integer.MAX_VALUE) final int index, @Nullable final T value) {
+        if (arrayList == null) {
+            arrayList = new ArrayList<>(index + 8);
         }
-        return what;
+        Arr.ensureSize(arrayList, index + 1);
+        arrayList.set(index, value);
+    }
+
+    @Nullable
+    public ArrayList<T> getArrayList() {
+        return arrayList;
     }
 }

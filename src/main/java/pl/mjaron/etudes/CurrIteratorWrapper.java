@@ -4,16 +4,17 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 
 /**
- * Allows getting current iterated element with {@link #curr()} method.
+ * Allows getting current iterated element with {@link #getCurrent()} method.
  *
  * @param <T> Iterated element type
+ * @since 0.3.0
  */
-public class IteratorWrapper<T> implements Iterator<T> {
+public class CurrIteratorWrapper<T> implements ICurrIterator<T> {
 
     public final Iterator<T> it;
     private T curr = null;
 
-    public IteratorWrapper(Iterator<T> it) {
+    public CurrIteratorWrapper(Iterator<T> it) {
         this.it = it;
     }
 
@@ -31,7 +32,8 @@ public class IteratorWrapper<T> implements Iterator<T> {
      *
      * @return Currently referred element. It may be null when {@link #next()} hasn't been called or element is null.
      */
-    public T curr() {
+    @Override
+    public T getCurrent() {
         return this.curr;
     }
 

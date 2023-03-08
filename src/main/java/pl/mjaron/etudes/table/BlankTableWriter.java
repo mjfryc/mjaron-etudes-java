@@ -23,16 +23,21 @@ import pl.mjaron.etudes.Str;
 
 public class BlankTableWriter implements ITableWriter {
 
-    RenderContext context = null;
+    RenderRuntime runtime = null;
 
     private int columnIdx = 0;
+
+    @Override
+    public boolean getDefaultAlignedColumnWidths() {
+        return true;
+    }
 
     public BlankTableWriter() {
     }
 
     @Override
-    public void beginTable(RenderContext context) {
-        this.context = context;
+    public void beginTable(RenderRuntime runtime) {
+        this.runtime = runtime;
     }
 
     @Override
@@ -45,7 +50,7 @@ public class BlankTableWriter implements ITableWriter {
 
     @Override
     public void endHeader() {
-        context.appendLine();
+        runtime.appendLine();
     }
 
     @Override
@@ -55,18 +60,18 @@ public class BlankTableWriter implements ITableWriter {
 
     @Override
     public void endRow() {
-        context.appendLine();
+        runtime.appendLine();
     }
 
     @Override
     public void writeCell(String what) {
-        context.append(' ');
-        if (context.hasColumnWidths()) {
-            Str.padLeft(what, context.getColumnWidths()[columnIdx], ' ', context.out());
+        runtime.append(' ');
+        if (runtime.hasColumnWidths()) {
+            Str.padLeft(what, runtime.getColumnWidth(columnIdx), ' ', runtime.getOut());
         } else {
-            context.append(what);
+            runtime.append(what);
         }
-        context.append(' ');
+        runtime.append(' ');
         ++columnIdx;
     }
 }

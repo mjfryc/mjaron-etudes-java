@@ -17,31 +17,28 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes.table.property;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import pl.mjaron.etudes.table.IPropertyProvider;
 
-    default void beginTable(RenderRuntime runtime) {
+public class ByRowPropertyProvider<T> implements IPropertyProvider<T> {
+
+    private final HierarchicalPropertyProvider<T> hierarchicalPropertyProvider = new HierarchicalPropertyProvider<>();
+
+    @Override
+    public T get(int column, int row) {
+        return hierarchicalPropertyProvider.getValue(row, column);
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    public void put(T value) {
+        hierarchicalPropertyProvider.getRootNode().setValue(value);
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
+    public void put(int row, T value) {
+        hierarchicalPropertyProvider.getRootNode().ensureChild(row).setValue(value);
+    }
+
+    public void put(int row, int column, T value) {
+        hierarchicalPropertyProvider.getRootNode().ensureChild(row).ensureChild(column).setValue(value);
     }
 }

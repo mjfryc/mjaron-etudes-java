@@ -17,31 +17,38 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes.table.property;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import org.jetbrains.annotations.Range;
 
-    default void beginTable(RenderRuntime runtime) {
+import java.util.Map;
+import java.util.TreeMap;
+
+public class RandomSingleDimensionPropertyProvider<T> {
+
+    private T tableValue = null;
+    Map<Integer, T> columnValues = null;
+
+    public T get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+        if (columnValues == null) {
+            return tableValue;
+        }
+        T columnValue = columnValues.get(index);
+        if (columnValue != null) {
+            return columnValue;
+        }
+        return tableValue;
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    public void setValue(T value) {
+        this.tableValue = value;
+        this.columnValues = null;
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
+    public void setValue(@Range(from = 0, to = Integer.MAX_VALUE) int index, T value) {
+        if (columnValues == null) {
+            columnValues = new TreeMap<>();
         }
-        return what;
+        columnValues.put(index, value);
     }
 }

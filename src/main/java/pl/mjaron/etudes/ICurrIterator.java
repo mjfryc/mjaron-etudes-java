@@ -1,5 +1,5 @@
 /*
- * Copyright  2021  Michał Jaroń <m.jaron@protonmail.com>
+ * Copyright  2023  Michał Jaroń <m.jaron@protonmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -19,55 +19,27 @@
 
 package pl.mjaron.etudes;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Iterator;
+
 /**
- * Simple object for storing two related objects called key and value.
+ * Iterator which caches the current value.
  *
- * @param <T> First object type.
- * @param <U> Second object type.
+ * @param <T> Iterated container value type.
+ * @since 0.3.0
  */
-public class Pair<T, U> {
-    private T key;
-    private U value;
+public interface ICurrIterator<T> extends Iterator<T> {
 
     /**
-     * Initializes pair with key and value.
+     * Provides current element referenced by iterator.
      *
-     * @param key   First object instance. It may be `null`.
-     * @param value Second object instance. It may be `null`.
+     * @return Current element reference or <code>null</code> when there is no current value or container element is
+     * <code>null</code>.
+     * @since 0.3.0
      */
-    public Pair(final T key, final U value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    /**
-     * Provides first object instance.
-     *
-     * @return First object instance. It may be `null`.
-     */
-    public T getKey() {
-        return key;
-    }
-
-    public void setKey(final T key) {
-        this.key = key;
-    }
-
-    /**
-     * Provides second object instance.
-     *
-     * @return Second object instance. It may be `null`.
-     */
-    public U getValue() {
-        return value;
-    }
-
-    public void setValue(final U value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return key.toString() + "=" + value.toString();
-    }
+    @Nullable
+    @Contract(pure = true)
+    T getCurrent();
 }

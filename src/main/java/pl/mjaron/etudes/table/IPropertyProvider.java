@@ -19,29 +19,25 @@
 
 package pl.mjaron.etudes.table;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
-    default void beginTable(RenderRuntime runtime) {
-    }
+/**
+ * Provides information about property value used by each table cell.
+ *
+ * @param <T> Property type.
+ * @since 0.3.0
+ */
+public interface IPropertyProvider<T> {
 
     /**
-     * Converts given {@link String} by replacing special characters
+     * Resolves the value for given table cell.
      *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
+     * @param column Table column index.
+     * @param row    Table row index.
+     * @return Property value or null when cannot determine the value.
+     * @since 0.3.0
      */
-    String escape(String what);
-
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
-    }
+    @Contract(pure = true)
+    @Nullable T get(int column, int row);
 }

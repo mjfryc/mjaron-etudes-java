@@ -17,31 +17,44 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes.table.property;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import java.util.Map;
+import java.util.TreeMap;
 
-    default void beginTable(RenderRuntime runtime) {
+public class PropertyNode<T> {
+    private T value;
+
+    private Map<Integer, PropertyNode<T>> children = null;
+
+    public T getValue() {
+        return this.value;
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    public void setValue(final T what) {
+        value = what;
+        children = null;
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
+    public PropertyNode<T> ensureChild(int index) {
+        if (children != null) {
+            PropertyNode<T> childNode = children.get(index);
+            if (childNode != null) {
+                return childNode;
+            }
+        } else {
+            children = new TreeMap<>();
         }
-        return what;
+
+        PropertyNode<T> newChildNode = new PropertyNode<>();
+        children.put(index, newChildNode);
+        return newChildNode;
+    }
+
+    public PropertyNode<T> getChild(int index) {
+        if (children == null) {
+            return null;
+        }
+        return children.get(index);
     }
 }

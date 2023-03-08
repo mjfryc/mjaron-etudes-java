@@ -1,5 +1,5 @@
 /*
- * Copyright  2021  Michał Jaroń <m.jaron@protonmail.com>
+ * Copyright  2023  Michał Jaroń <m.jaron@protonmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -17,57 +17,46 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes;
+package pl.mjaron.etudes.table;
 
 /**
- * Simple object for storing two related objects called key and value.
+ * Tells how to align the columns.
  *
- * @param <T> First object type.
- * @param <U> Second object type.
+ * @since 0.3.0
  */
-public class Pair<T, U> {
-    private T key;
-    private U value;
+public enum AlignmentMode {
 
     /**
-     * Initializes pair with key and value.
+     * Use the value from {@link ITableWriter#getDefaultAlignedColumnWidths()}.
      *
-     * @param key   First object instance. It may be `null`.
-     * @param value Second object instance. It may be `null`.
+     * @since 0.3.0
      */
-    public Pair(final T key, final U value) {
-        this.key = key;
-        this.value = value;
-    }
+    DEFAULT,
 
     /**
-     * Provides first object instance.
-     *
-     * @return First object instance. It may be `null`.
+     * Use the fixed width values.
+     * @since 0.3.0
      */
-    public T getKey() {
-        return key;
-    }
-
-    public void setKey(final T key) {
-        this.key = key;
-    }
+    ARBITRARY,
 
     /**
-     * Provides second object instance.
+     * Do not align the columns. Each row will have different cell widths. Good for CSV format.
      *
-     * @return Second object instance. It may be `null`.
+     * @since 0.3.0
      */
-    public U getValue() {
-        return value;
-    }
+    NOT_ALIGNED,
 
-    public void setValue(final U value) {
-        this.value = value;
-    }
+    /**
+     * Align the row's columns.
+     *
+     * @since 0.3.0
+     */
+    ALIGNED,
 
-    @Override
-    public String toString() {
-        return key.toString() + "=" + value.toString();
-    }
+    /**
+     * All columns will have the same width.
+     *
+     * @since 0.3.0
+     */
+    EQUAL
 }

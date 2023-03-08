@@ -15,7 +15,7 @@ class IOTest {
         final String str = "Fish changes everything.";
         final File targetFile = new File("./test_dir/string.txt");
         IO.write(str, targetFile);
-        final String resultString = IO.readAllString(targetFile);
+        final String resultString = IO.readAllToString(targetFile);
         assertEquals(str, resultString);
     }
 

@@ -17,31 +17,31 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import org.junit.jupiter.api.Test;
+import pl.mjaron.etudes.iterator.CachingRandomIteratorWrapper;
+import pl.mjaron.etudes.iterator.RandomAccessIteratorWrapper;
 
-    default void beginTable(RenderRuntime runtime) {
+import java.util.LinkedList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class IRandomIteratorTest {
+
+    @Test
+    void nonRandomAccessTest() {
+        IRandomIterator<Integer> it = IRandomIterator.from(new LinkedList<>());
+        assertEquals(CachingRandomIteratorWrapper.class, it.getClass());
+        assertTrue(it.isFloorPosition());
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
-
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
+    @Test
+    void randomAccessTest() {
+        IRandomIterator<Integer> it = IRandomIterator.from(new CopyOnWriteArrayList<>());
+        assertEquals(RandomAccessIteratorWrapper.class, it.getClass());
+        assertTrue(it.isFloorPosition());
     }
 }

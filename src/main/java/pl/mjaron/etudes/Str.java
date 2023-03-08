@@ -20,6 +20,7 @@
 package pl.mjaron.etudes;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Locale;
 
 /**
@@ -587,6 +588,68 @@ public abstract class Str {
             }
         }
         return arr;
+    }
+
+    /**
+     * Joins given {@link Iterable} with given <code>separator</code>.
+     *
+     * @param what      Iterable to joint.
+     * @param separator Separator inserted between iterable elements.
+     * @param out       Where to write the result.
+     * @param <T>       Iterated element type.
+     * @since 0.3.0
+     */
+    public static <T> void join(Iterable<T> what, final String separator, IPureAppendable out) {
+        boolean isFirst = true;
+        for (final T entry : what) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                out.append(separator);
+            }
+            out.append(what.toString());
+        }
+    }
+
+    /**
+     * Joins given {@link Iterable} with given <code>separator</code>.
+     *
+     * @param what      Iterable to joint.
+     * @param separator Separator inserted between iterable elements.
+     * @param out       Where to write the result.
+     * @param <T>       Iterated element type.
+     * @since 0.3.0
+     */
+    public static <T> void join(Iterable<T> what, final String separator, StringBuilder out) {
+        join(what, separator, IPureAppendable.from(out));
+    }
+
+    /**
+     * Joins given {@link Iterable} with given <code>separator</code>.
+     *
+     * @param what      Iterable to joint.
+     * @param separator Separator inserted between iterable elements.
+     * @param out       Where to write the result.
+     * @param <T>       Iterated element type.
+     * @since 0.3.0
+     */
+    public static <T> void join(Iterable<T> what, final String separator, PrintStream out) {
+        join(what, separator, IPureAppendable.from(out));
+    }
+
+    /**
+     * Joins given {@link Iterable} with given <code>separator</code>.
+     *
+     * @param what      Iterable to joint.
+     * @param separator Separator inserted between iterable elements.
+     * @param <T>       Iterated element type.
+     * @return Joined elements string.
+     * @since 0.3.0
+     */
+    public static <T> String join(Iterable<T> what, final String separator) {
+        StringBuilder out = new StringBuilder();
+        join(what, separator, out);
+        return out.toString();
     }
 
     /**

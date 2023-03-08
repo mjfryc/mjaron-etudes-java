@@ -19,6 +19,7 @@
 
 package pl.mjaron.etudes.table;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -36,11 +37,12 @@ public interface ITableWriter {
         return null;
     }
 
+    @Contract(pure = true)
     default boolean getDefaultAlignedColumnWidths() {
         return false;
     }
 
-    void beginTable(RenderContext options);
+    void beginTable(RenderRuntime runtime);
 
     void endTable();
 

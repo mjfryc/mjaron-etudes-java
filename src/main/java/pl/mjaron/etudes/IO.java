@@ -137,7 +137,7 @@ public class IO {
         }
     }
 
-    public static String readAllString(final File targetFile) {
+    public static String readAllToString(final File targetFile) {
         return new String(readAllBytes(targetFile), Charset.defaultCharset());
     }
 

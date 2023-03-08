@@ -17,31 +17,27 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pl.mjaron.etudes.table;
+package pl.mjaron.etudes.container;
 
-/**
- * Converts strings by replacing special characters.
- *
- * @since 0.1.12
- */
-public interface IEscaper {
+import pl.mjaron.etudes.IRandomAccess;
 
-    default void beginTable(RenderRuntime runtime) {
+import java.util.Vector;
+
+public class VectorRandomAccess<T> implements IRandomAccess<T> {
+
+    private final Vector<T> vector;
+
+    public VectorRandomAccess(Vector<T> vector) {
+        this.vector = vector;
     }
 
-    /**
-     * Converts given {@link String} by replacing special characters
-     *
-     * @param what {@link String} to escape
-     * @return Escaped {@link String}
-     * @since 0.1.12
-     */
-    String escape(String what);
+    @Override
+    public int size() {
+        return vector.size();
+    }
 
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
+    @Override
+    public T get(int position) {
+        return vector.get(position);
     }
 }
