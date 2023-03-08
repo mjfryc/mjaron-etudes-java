@@ -14,7 +14,7 @@ Utils compatible with Java 1.8.
 ### Short example
 
 ```gradle
-implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.1'
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.3.0'
 ```
 
 ```
