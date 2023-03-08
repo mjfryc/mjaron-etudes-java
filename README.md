@@ -21,11 +21,11 @@ implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.1'
 Table.render(persons, Person.class).run();
 ```
 
-| name  | surname  | birthDay                      | address | contact                     |
+| name  | surname  | birthday                      | address | contact                     |
 |-------|----------|-------------------------------|---------|-----------------------------|
-| Sally | Fox      | Thu Feb 20 00:00:00 CET 3890  | London  | sally@sallymfox.com         |
-| Jay   | Elephant | Thu Apr 20 00:00:00 CEST 3820 | Paris   | jay.elephant@protonmail.com |
-| Bella | Tran     | Fri Jun 12 00:00:00 CEST 3863 | China   | tran@bella.com              |
+| Sally | Fox      | Mon Mar 25 00:00:00 CET 3872  | London  | sally@sallymfox.com         |
+| Jay   | Elephant | Mon Mar 20 00:00:00 CET 3820  | Paris   | jay.elephant@protonmail.com |
+| Bella | Tran     | Sun Apr 12 00:00:00 CEST 3863 | China   | tran@bella.com              |
 
 ### Verbose example
 
@@ -34,20 +34,20 @@ Let's assume following Person class:
 ```java
 package pl.mjaron.etudes.sample;
 
-import java.util.Calendar;
 import java.util.Date;
 
+@SuppressWarnings("unused")
 public class Person {
     private final String name;
     private final String surname;
-    private final Date birthDay;
+    private final Date birthday;
     private final String address;
     private final String contact;
 
-    public Person(String name, String surname, Date birthDay, String address, String contact) {
+    public Person(String name, String surname, Date birthday, String address, String contact) {
         this.name = name;
         this.surname = surname;
-        this.birthDay = birthDay;
+        this.birthday = birthday;
         this.address = address;
         this.contact = contact;
     }
@@ -60,8 +60,8 @@ public class Person {
         return surname;
     }
 
-    public Date getBirthDay() {
-        return birthDay;
+    public Date getBirthday() {
+        return birthday;
     }
 
     public String getAddress() {
@@ -74,9 +74,9 @@ public class Person {
 
     public static Person[] getSampleData() {
         return new Person[]{
-                new Person("Sally", "Fox", new Date(1990, Calendar.FEBRUARY, 20), "London", "sally@sallymfox.com"),
-                new Person("Jay", "Elephant", new Date(1920, Calendar.APRIL, 20), "Paris", "jay.elephant@protonmail.com"),
-                new Person("Bella", "Tran", new Date(1963, Calendar.JUNE, 12), "China", "tran@bella.com")
+                new Person("Sally", "Fox", new Date(1972, 2, 25), "London", "sally@sallymfox.com"),
+                new Person("Jay", "Elephant", new Date(1920, 2, 20), "Paris", "jay.elephant@protonmail.com"),
+                new Person("Bella", "Tran", new Date(1963, 3, 12), "China", "tran@bella.com")
         };
     }
 }
@@ -184,11 +184,11 @@ public class MarkdownCustomizationSample {
 
 There is possibility to set the all columns alignment and particular columns alignment. Column indexes are counted from 0.
 
-|  name | surname  |                      birthDay | address |                             contact |
+|  name | surname  |                      birthday | address |                             contact |
 |------:|:---------|------------------------------:|--------:|------------------------------------:|
-| Sally | Fox      |  Thu Feb 20 00:00:00 CET 3890 |  London |             sally@sallymfox&#46;com |
-|   Jay | Elephant | Thu Apr 20 00:00:00 CEST 3820 |   Paris | jay&#46;elephant@protonmail&#46;com |
-| Bella | Tran     | Fri Jun 12 00:00:00 CEST 3863 |   China |                  tran@bella&#46;com |
+| Sally | Fox      |  Mon Mar 25 00:00:00 CET 3872 |  London |             sally@sallymfox&#46;com |
+|   Jay | Elephant |  Mon Mar 20 00:00:00 CET 3820 |   Paris | jay&#46;elephant@protonmail&#46;com |
+| Bella | Tran     | Sun Apr 12 00:00:00 CEST 3863 |   China |                  tran@bella&#46;com |
 
 #### Column names and order
 
@@ -303,6 +303,9 @@ public class HtmlCustomizationSample {
 </table>
 
 ```
+
+
+
 
 ### Table generation sequence
 

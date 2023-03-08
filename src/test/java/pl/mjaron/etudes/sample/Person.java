@@ -1,19 +1,19 @@
 package pl.mjaron.etudes.sample;
 
-import java.util.Calendar;
 import java.util.Date;
 
+@SuppressWarnings("unused")
 public class Person {
     private final String name;
     private final String surname;
-    private final Date birthDay;
+    private final Date birthday;
     private final String address;
     private final String contact;
 
-    public Person(String name, String surname, Date birthDay, String address, String contact) {
+    public Person(String name, String surname, Date birthday, String address, String contact) {
         this.name = name;
         this.surname = surname;
-        this.birthDay = birthDay;
+        this.birthday = birthday;
         this.address = address;
         this.contact = contact;
     }
@@ -26,8 +26,8 @@ public class Person {
         return surname;
     }
 
-    public Date getBirthDay() {
-        return birthDay;
+    public Date getBirthday() {
+        return birthday;
     }
 
     public String getAddress() {
@@ -40,9 +40,9 @@ public class Person {
 
     public static Person[] getSampleData() {
         return new Person[]{
-                new Person("Sally", "Fox", new Date(1990, Calendar.FEBRUARY, 20), "London", "sally@sallymfox.com"),
-                new Person("Jay", "Elephant", new Date(1920, Calendar.APRIL, 20), "Paris", "jay.elephant@protonmail.com"),
-                new Person("Bella", "Tran", new Date(1963, Calendar.JUNE, 12), "China", "tran@bella.com")
+                new Person("Sally", "Fox", new Date(1972, 2, 25), "London", "sally@sallymfox.com"),
+                new Person("Jay", "Elephant", new Date(1920, 2, 20), "Paris", "jay.elephant@protonmail.com"),
+                new Person("Bella", "Tran", new Date(1963, 3, 12), "China", "tran@bella.com")
         };
     }
 }
