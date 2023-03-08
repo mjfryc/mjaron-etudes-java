@@ -652,7 +652,7 @@ public class RenderContext {
      * @since 0.2.0
      */
     @NotNull
-    @Contract("_-> this")
+    @Contract("-> this")
     public RenderContext withLineBreakLF() {
         return this.withLineBreak(Str.LF);
     }
@@ -792,8 +792,10 @@ public class RenderContext {
      *     withHtmlWriter(htmlOptions).withHtmlEscaper();
      * }</pre>
      *
+     * @param htmlOptions HTML-related options.
      * @return This reference.
-     * @since 0.2.1
+     * @see HtmlOptions
+     * @since 0.3.0
      */
     @NotNull
     @Contract("_-> this")
