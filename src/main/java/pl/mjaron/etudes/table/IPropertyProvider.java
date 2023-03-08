@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
  * Provides information about property value used by each table cell.
  *
  * @param <T> Property type.
- * @since 0.2.2
+ * @since 0.3.0
  */
 public interface IPropertyProvider<T> {
 
@@ -36,7 +36,7 @@ public interface IPropertyProvider<T> {
      * @param column Table column index.
      * @param row    Table row index.
      * @return Property value or null when cannot determine the value.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @Contract(pure = true)
     @Nullable T get(int column, int row);

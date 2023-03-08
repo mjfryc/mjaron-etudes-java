@@ -28,7 +28,7 @@ import java.util.Iterator;
  * Iterator which caches the current value.
  *
  * @param <T> Iterated container value type.
- * @since 0.2.2
+ * @since 0.3.0
  */
 public interface ICurrIterator<T> extends Iterator<T> {
 
@@ -37,7 +37,7 @@ public interface ICurrIterator<T> extends Iterator<T> {
      *
      * @return Current element reference or <code>null</code> when there is no current value or container element is
      * <code>null</code>.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @Nullable
     @Contract(pure = true)

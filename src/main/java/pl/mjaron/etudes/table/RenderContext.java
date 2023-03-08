@@ -42,20 +42,20 @@ public class RenderContext {
     /**
      * Source of headers and data used to fill the table.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     private final ManipulatingTableSourceBuilder tableSourceBuilder = new ManipulatingTableSourceBuilder();
     /**
      * Determines the column widths depending on {@link AlignmentMode}.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     private final ColumnWidthResolver columnWidthResolver = new ColumnWidthResolver();
     /**
      * Used to determine column's vertical align.
      *
      * @see VerticalAlign
-     * @since 0.2.2
+     * @since 0.3.0
      */
     private final ColumnOnlyPropertyProvider<VerticalAlign> verticalAlignPropertyProvider = new ColumnOnlyPropertyProvider<>();
     /**
@@ -128,7 +128,7 @@ public class RenderContext {
      *
      * @param id Identifier of first column. It is the name of column provided by {@link ITableSource}.
      * @return New instance of {@link ColumnSelector}.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     public static ColumnSelector col(final String id) {
@@ -141,7 +141,7 @@ public class RenderContext {
      * @param id    Identifier of first column. It is the name of column provided by {@link ITableSource}.
      * @param alias Alias of first column name. If {@code null}, the column id will be used as column name.
      * @return New instance of {@link ColumnSelector}.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     public static ColumnSelector col(final String id, final String alias) {
@@ -152,7 +152,7 @@ public class RenderContext {
      * Provides {@link ManipulatingTableSourceBuilder}.
      *
      * @return {@link ManipulatingTableSourceBuilder} instance.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     public ManipulatingTableSourceBuilder getTableSourceBuilder() {
@@ -160,10 +160,10 @@ public class RenderContext {
     }
 
     /**
-     * Provides {@link ColumnOnlyPropertyProvider<VerticalAlign>} which determines the columns' width.
+     * Provides {@link ColumnOnlyPropertyProvider} which determines the columns' width.
      *
-     * @return {@link ColumnOnlyPropertyProvider<VerticalAlign>} which determines the columns' width.
-     * @since 0.2.2
+     * @return {@link ColumnOnlyPropertyProvider} which determines the columns' width.
+     * @since 0.3.0
      */
     @NotNull
     public ColumnOnlyPropertyProvider<VerticalAlign> getVerticalAlignPropertyProvider() {
@@ -351,7 +351,7 @@ public class RenderContext {
      *
      * @param htmlOptions HTML special options.
      * @return This reference.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     public RenderContext withHtmlWriter(final HtmlOptions htmlOptions) {
@@ -455,7 +455,7 @@ public class RenderContext {
      * Returns the helper object which determines the column widths.
      *
      * @return Helper object which determines the column widths.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     @Contract(pure = true)
@@ -473,7 +473,7 @@ public class RenderContext {
      * @throws IllegalArgumentException When <code>widths</code> value is unexpected, depending on <code>mode</code>
      *                                  parameter.
      * @see ColumnWidthResolver#configure(AlignmentMode, int[])
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     @Contract("_,_-> this")
@@ -557,7 +557,7 @@ public class RenderContext {
      *
      * @return This reference.
      * @see AlignmentMode#EQUAL
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @Contract("-> this")
     @NotNull
@@ -704,7 +704,7 @@ public class RenderContext {
      * @param column Related column.
      * @param align  The cell {@link VerticalAlign}.
      * @return This reference.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     @Contract("_, _-> this")
@@ -718,7 +718,7 @@ public class RenderContext {
      *
      * @param columnSelector {@link ColumnSelector} instance.
      * @return This reference.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @Contract("_-> this")
     public RenderContext withColumns(ColumnSelector columnSelector) {
@@ -732,7 +732,7 @@ public class RenderContext {
      *
      * @param columnSelector {@link ColumnSelector} instance.
      * @return This reference.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @Contract("_-> this")
     public RenderContext withColumnNames(ColumnSelector columnSelector) {

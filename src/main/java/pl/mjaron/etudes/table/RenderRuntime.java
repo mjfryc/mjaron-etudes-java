@@ -181,7 +181,7 @@ public class RenderRuntime implements AutoCloseable {
      * Provides {@link VerticalAlign} related to currently processed column.
      *
      * @return {@link VerticalAlign} related to currently processed column.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public VerticalAlign getCurrentColumnVerticalAlign() {
         return getVerticalAlign(columnIdx);
@@ -192,7 +192,7 @@ public class RenderRuntime implements AutoCloseable {
      *
      * @param column Requested column index.
      * @return {@link VerticalAlign} related to given <code>column</code> parameter.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public VerticalAlign getVerticalAlign(@Range(from = 0, to = Integer.MAX_VALUE) final int column) {
         return getContext().getVerticalAlignPropertyProvider().get(column, -1);
@@ -242,7 +242,7 @@ public class RenderRuntime implements AutoCloseable {
      * Appends given {@code char} and new line characters to the table rendering output.
      *
      * @param what {@code char} to append.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public void appendLine(final char what) {
         append(what);

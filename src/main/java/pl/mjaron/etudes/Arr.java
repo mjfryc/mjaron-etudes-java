@@ -37,7 +37,7 @@ public abstract class Arr {
      *
      * @param arrayList {@link ArrayList} to update.
      * @param size      Required minimal size of {@link ArrayList}.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static void ensureSize(@NotNull ArrayList<?> arrayList, @Range(from = 0, to = Integer.MAX_VALUE) final int size) {
         arrayList.ensureCapacity(size);
@@ -53,7 +53,7 @@ public abstract class Arr {
      *
      * @param arrayList {@link ArrayList} to update.
      * @param size      Required maximal size of {@link ArrayList}.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static void trimToSize(@NotNull ArrayList<?> arrayList, @Range(from = 0, to = Integer.MAX_VALUE) final int size) {
         while (arrayList.size() > size) {
@@ -66,7 +66,7 @@ public abstract class Arr {
      *
      * @param arrayList {@link ArrayList} to update.
      * @param size      Required maximal size of {@link ArrayList}.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static void resize(@NotNull ArrayList<?> arrayList, @Range(from = 0, to = Integer.MAX_VALUE) final int size) {
         ensureSize(arrayList, size);
@@ -78,7 +78,7 @@ public abstract class Arr {
      *
      * @param array Given array.
      * @return Maximum value in array.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static int max(final int[] array) {
         int v = Integer.MIN_VALUE;
@@ -95,7 +95,7 @@ public abstract class Arr {
      *
      * @param array Given array.
      * @return Minimum value in array.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static int min(final int[] array) {
         int v = Integer.MAX_VALUE;

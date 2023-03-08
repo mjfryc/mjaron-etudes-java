@@ -28,7 +28,7 @@ import java.util.Iterator;
 /**
  * Transforms the original table source.
  *
- * @since 0.2.2
+ * @since 0.3.0
  */
 public class ManipulatingTableSource implements ITableSource {
 

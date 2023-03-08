@@ -31,7 +31,7 @@ import java.util.Iterator;
  * It caches the already accessed values to skip object iteration every time when random position is accessed.
  *
  * @param <T> Iterated container element type.
- * @since 0.2.2
+ * @since 0.3.0
  */
 public class CachingRandomIteratorWrapper<T> implements IRandomIterator<T> {
 

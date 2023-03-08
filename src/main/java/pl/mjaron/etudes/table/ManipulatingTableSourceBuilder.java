@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Helper class used to build {@link ManipulatingTableSource}.
  *
- * @since 0.2.2
+ * @since 0.3.0
  */
 public class ManipulatingTableSourceBuilder {
 
@@ -165,7 +165,7 @@ public class ManipulatingTableSourceBuilder {
     /**
      * Keeps the column metadata consistency.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static class ColumnEntry {
         int sourceColumnIndex = -1;

@@ -28,7 +28,7 @@ import java.util.RandomAccess;
  * Random access designed for {@link java.util.ArrayList}.
  *
  * @param <T> List element type.
- * @since 0.2.2
+ * @since 0.3.0
  */
 public class ListRandomAccess<T> implements IRandomAccess<T> {
 

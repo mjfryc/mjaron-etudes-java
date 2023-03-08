@@ -14,67 +14,104 @@ Utils compatible with Java 1.8.
 ### Short example
 
 ```gradle
-implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.1'
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.3.0'
 ```
 
-```ignorelang
-Table.render(myCatsArray, Cat.class).markdown().run();
+```
+Table.render(persons, Person.class).run();
 ```
 
-```ignorelang
-| name | legsCount | lazy  | topSpeed |
-|------|-----------|-------|----------|
-| John | 4         | true  | 35.24    |
-| Bob  | 5         | false | 75.0     |
-```
+| name  | surname | birthDay                      | address | contact                       |
+|-------|---------|-------------------------------|---------|-------------------------------|
+| Sally | Fox     | Thu Feb 20 00:00:00 CET 3890  | London  | sally@sallymfox.com           |
+| Jay   | Acunzo  | Thu Apr 20 00:00:00 CEST 3820 | Paris   | jay.acunzo@protonmail.com.com |
+| Bella | Tran    | Fri Jun 12 00:00:00 CEST 3863 | China   | a@b.com                       |
 
-### Verbose example of printing java iterables as Markdown / CSV / HTML table
+### Verbose example
+
+Let's assume following Person class:
 
 ```java
-// Sample class.
-// When generating the table, each instance of this class will be converted to single row.
-class Cat {
-    String name = "Tom";
-    int age = 2;
+package pl.mjaron.etudes.sample;
 
-    Cat() {
+import java.util.Calendar;
+import java.util.Date;
+
+public class Person {
+    private final String name;
+    private final String surname;
+    private final Date birthDay;
+    private final String address;
+    private final String contact;
+
+    public Person(String name, String surname, Date birthDay, String address, String contact) {
+        this.name = name;
+        this.surname = surname;
+        this.birthDay = birthDay;
+        this.address = address;
+        this.contact = contact;
     }
 
-    Cat(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public static Person[] getSampleData() {
+        return new Person[]{
+                new Person("Sally", "Fox", new Date(1990, Calendar.FEBRUARY, 20), "London", "sally@sallymfox.com"),
+                new Person("Jay", "Acunzo", new Date(1920, Calendar.APRIL, 20), "Paris", "jay.acunzo@protonmail.com.com"),
+                new Person("Bella", "Tran", new Date(1963, Calendar.JUNE, 12), "China", "a@b.com")
+        };
     }
 }
+```
 
-class Sample {
-    void test() {
+Then following code will render the table:
 
-        // Sample array or iterable of Java objects.
-        final Cat[] cats = new Cat[]{new Cat(), new Cat("_Michael_", 5)};
+```java
+package pl.mjaron.etudes.sample;
 
-        // It will print the Markdown table to the System.out.
-        Table.render(cats, Cat.class).run();
+import pl.mjaron.etudes.Table;
+import pl.mjaron.etudes.table.VerticalAlign;
 
-        // Or
-        final String catsTableString = Table.render(cats, Cat.class).runString();
-        System.out.println(catsTableString);
-
+public class PersonVerboseSample {
+    public static void run() {
         // Verbose options demo
-        Table.render(cats, Cat.class)
+        Table.render(Person.getSampleData(), Person.class)
 
-                .markdown() // Use Markdown renderer and escaper (option used by default).
+                // By default, the Markdown table format without escaper is used.
+                // Calling .markdown() causes using Markdown renderer and Markdown escaper.
+                .markdown() // Use Markdown renderer and escaper.
                 // or
                 // .csv() // Use CSV renderer and CSV escaper.
                 // or
                 // .html() // Use HTML renderer and HTML escaper.
-                
+
                 // Skip escaping the special characters.
                 .withEscaper(null)
-                
+
                 // Optionally force align / do not align column widths.
-                .withAlignedColumnWidths(false)
+                .withAlignedColumnWidths()
                 // or
-                // .withAlignedColumnWidths(true)
+                //.withoutAlignedColumnWidths()
+                // or
+                //.withEqualColumnWidths()
 
                 // Optionally use the custom cell delimiter.
                 // ',' is the default cell delimiter.
@@ -104,124 +141,164 @@ class Sample {
 
                 // Run the render operation.
                 .run()
-                // or
-                // .runToString() // to create the String with whole table.
+        // or
+        // .runToString() // to create the String with whole table.
         ;
     }
 }
 ```
 
-Sample generated table:
+### Markdown customization
 
-```
-| name | legsCount |  lazy | topSpeed |
-| ---- | --------- | ----- | -------- |
-| John |         4 |  true |    35.24 |
-|  Bob |         5 | false |     75.0 |
-```
-
-### Table generation customization
-
-#### Markdown customization
-
-Following code creates Markdown table with center vertical align and with escaping the special characters.
+Following example shows the Markdown customization options.
 
 ```java
-class Sample {
-    void test() {
-        Table.render(cats, Cat.class).withMarkdownEscaper()
-                .withAlign(VerticalAlign.Center)    // General table align
-                .withAlign(1, VerticalAlign.Right)  // Particular column align.
-                .run();
+package pl.mjaron.etudes.sample;
+
+import pl.mjaron.etudes.Table;
+import pl.mjaron.etudes.table.VerticalAlign;
+
+import static pl.mjaron.etudes.table.RenderContext.col;
+
+public class MarkdownCustomizationSample {
+    public static void customizeAlignment() {
+        Table.render(Person.getSampleData(), Person.class).markdown().withAlign(VerticalAlign.Right).withAlign(1, VerticalAlign.Left).run();
+    }
+
+    public static void customizeColumnsOrder() {
+        Table.render(Person.getSampleData(), Person.class).markdown().withColumns(
+                // @formatter:off Preferences > Editor > Code Style > Formatter Control
+                 col("contact", "CONTACT")
+                .col("address")
+                .col("surname").as("SURNAME")
+                // @formatter:on
+        ).run();
     }
 }
 ```
 
-So now all special characters are escaped by HTML number syntax, there is following raw text:
+#### Column alignment
 
-    |       name        | age |
-    |:-----------------:|----:|
-    |        Tom        |   2 |
-    | &#95;Michael&#95; |   5 |
+There is possibility to set the all columns alignment and particular columns alignment. Column indexes are counted from 0.
 
-Rendered by Markdown as:
+|  name | surname |                      birthDay | address |                                   contact |
+|------:|:--------|------------------------------:|--------:|------------------------------------------:|
+| Sally | Fox     |  Thu Feb 20 00:00:00 CET 3890 |  London |                   sally@sallymfox&#46;com |
+|   Jay | Acunzo  | Thu Apr 20 00:00:00 CEST 3820 |   Paris | jay&#46;acunzo@protonmail&#46;com&#46;com |
+| Bella | Tran    | Fri Jun 12 00:00:00 CEST 3863 |   China |                               a@b&#46;com |
 
-|       name        | age |
-|:-----------------:|----:|
-|        Tom        |   2 |
-| &#95;Michael&#95; |   5 |
+#### Column names and order
 
-Without a `MarkdownEscaper`, cells will be rendered 'as is', so user is responsible for correct cell values:
+There is possibility to filter the columns, customize column names and order.
 
-```java
-class Sample {
-    void test() {
-        Table.render(cats, Cat.class).withoutEscaper().run();
-    }
-}
-```
+| CONTACT                                   | address | SURNAME |
+|-------------------------------------------|---------|---------|
+| sally@sallymfox&#46;com                   | London  | Fox     |
+| jay&#46;acunzo@protonmail&#46;com&#46;com | Paris   | Acunzo  |
+| a@b&#46;com                               | China   | Tran    |
 
-    | name      | age |
-    |-----------|-----|
-    | Tom       | 2   |
-    | _Michael_ | 5   |
+### CSV customization
 
-| name      | age |
-|-----------|-----|
-| Tom       | 2   |
-| _Michael_ | 5   |
-
-#### Markdown custom escaper - @TODO
-
-`@todo`Implement escaper which escapes only when preceded by (eg.) backslash `&#92;`.
-
-### CSV
-
-Below code configures the rendering with the CSV renderer and CSV special characters' escaper:
+Below sample CSV snippet. Custom value separator may be set. Columns may be aligned but it is not recommended when importing by spreadsheet programs.
 
 ```java
-class Sample {
-    void test() {
-        Table.render(cats, Cat.class).csv().run();
+package pl.mjaron.etudes.sample;
+
+import pl.mjaron.etudes.Table;
+
+import static pl.mjaron.etudes.table.RenderContext.col;
+
+public class CsvCustomizationSample {
+    public static void run() {
+        Table.render(Person.getSampleData(), Person.class).csv()
+                .withCellDelimiter(" , ")    // Allows changing the cell separator; ',' is by default.
+
+                // Column alignment used here only to make it more human-readable.
+                // Column alignment is not recommended for CSV due to importing it later by spreadsheet applications.
+                // Additional spaces for alignment may break the cell content.
+                // E.g. Use "Trim spaces" option when importing with LibreOffice Calc.
+                .withAlignedColumnWidths()
+
+                // Let's select the rendered columns.
+                .withColumns(
+                // @formatter:off Preferences > Editor > Code Style > Formatter Control
+                col("contact", "CONTACT")
+                        .col("address")
+                        .col("surname").as("SURNAME")
+                // @formatter:on
+        ).run();
     }
 }
 ```
 
 ```csv
-name,age
-Tom,2
-_Michael_,5
+CONTACT                       , address , SURNAME
+sally@sallymfox.com           , London  , Fox    
+jay.acunzo@protonmail.com.com , Paris   , Acunzo 
+a@b.com                       , China   , Tran   
 ```
 
-### HTML
+### HTML customization
 
-Below code configures the rendering with the HTML renderer and HTML special characters' escaper:
+Basic HTML table may be rendered. When the align is specified, it is written as inline style attribute.
+
+There is possibility to set the table id and class HTML attributes, so it can be customized with CSS.
 
 ```java
-class Sample {
-    void test() {
-        Table.render(cats, Cat.class).html().withAlign(VerticalAlign.Right).run();
+package pl.mjaron.etudes.sample;
+
+import pl.mjaron.etudes.Table;
+import pl.mjaron.etudes.table.VerticalAlign;
+
+import static pl.mjaron.etudes.table.Html.tableId;
+import static pl.mjaron.etudes.table.RenderContext.col;
+
+public class HtmlCustomizationSample {
+    public static void run() {
+        // @formatter:off Preferences > Editor > Code Style > Formatter Control
+        Table.render(Person.getSampleData(), Person.class)
+                .html(tableId("my-table-id").tableClass("my-table-class"))
+                .withAlign(VerticalAlign.Center)
+                .withAlign(1, VerticalAlign.Right)
+
+                // Let's select the rendered columns.
+                .withColumns(
+                        col("contact", "CONTACT")
+                        .col("address")
+                        .col("surname").as("SURNAME")
+        ).run();
+        // @formatter:on
     }
 }
 ```
 
 ```html
-
-<table>
+<table id="my-table-id" class="my-table-class">
     <tr>
-        <th style="text-align: right;">name</th>
-        <th style="text-align: right;">age</th>
+        <th style="text-align: center;">CONTACT</th>
+        <th style="text-align: right;">address</th>
+        <th style="text-align: center;">SURNAME</th>
     </tr>
     <tr>
-        <td style="text-align: right;">Tom</td>
-        <td style="text-align: right;">2</td>
+        <td style="text-align: center;">sally@sallymfox.com</td>
+        <td style="text-align: right;">London</td>
+        <td style="text-align: center;">Fox</td>
     </tr>
     <tr>
-        <td style="text-align: right;">_Michael_</td>
-        <td style="text-align: right;">5</td>
+        <td style="text-align: center;">jay.acunzo@protonmail.com.com</td>
+        <td style="text-align: right;">Paris</td>
+        <td style="text-align: center;">Acunzo</td>
+    </tr>
+    <tr>
+        <td style="text-align: center;">a@b.com</td>
+        <td style="text-align: right;">China</td>
+        <td style="text-align: center;">Tran</td>
     </tr>
 </table>
 ```
+
+
+
 
 ## Object utils
 
@@ -359,10 +436,10 @@ class Sample {
 
 ### From Maven Central
 
-<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.2.1/jar>
+<https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/0.3.0/jar>
 
 ```gradle
-implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.1'
+implementation 'io.github.mjfryc:mjaron-etudes-java:0.3.0'
 ```
 
 ### As local `jar` file
@@ -370,9 +447,9 @@ implementation 'io.github.mjfryc:mjaron-etudes-java:0.2.1'
 * Download the latest release
     * From [here](https://github.com/mjfryc/mjaron-etudes-java/releases)
     * To `[gradle's root directory]/libs/`
-    * E.g: `my-project/libs/mjaron-etudes-java-0.2.1.jar`
+    * E.g: `my-project/libs/mjaron-etudes-java-0.3.0.jar`
 * In any Gradle subproject which needs this library, put following content:
-    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.2.1.jar')`
+    * `implementation files(project.rootDir.absolutePath + '/libs/mjaron-etudes-java-0.3.0.jar')`
 * Now import package and use it, e.g:
     * `import pl.mjaron.etudes.*;`
 

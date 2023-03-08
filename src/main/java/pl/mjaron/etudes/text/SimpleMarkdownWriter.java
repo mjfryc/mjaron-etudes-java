@@ -29,11 +29,12 @@ import pl.mjaron.etudes.table.RenderContext;
  * <p>
  * Partial implementation of Markdown standard.
  * <p>
+ * This API is experimental and may be changed in future release.
+ * <p>
  * Markdown specification reference: <a
  * href="https://www.markdownguide.org/basic-syntax">https://www.markdownguide.org/basic-syntax</a>
  *
- * @apiNote This API is experimental and may be changed in future release.
- * @since 0.2.2
+ * @since 0.3.0
  */
 @ApiStatus.Experimental
 public class SimpleMarkdownWriter {

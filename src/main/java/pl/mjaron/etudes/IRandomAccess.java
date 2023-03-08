@@ -33,7 +33,7 @@ import java.util.Vector;
  * {@link IRandomAccess} object should fail if object is not a {@link java.util.RandomAccess}.
  *
  * @param <T> Container element type.
- * @since 0.2.2
+ * @since 0.3.0
  */
 public interface IRandomAccess<T> {
 
@@ -41,7 +41,7 @@ public interface IRandomAccess<T> {
      * Provides container elements count.
      *
      * @return Elements count.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @Contract(pure = true)
     int size();
@@ -51,7 +51,7 @@ public interface IRandomAccess<T> {
      *
      * @param position Element position counting from <code>0</code>.
      * @return Element at given position. It may be <code>null</code>.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @Contract(pure = true)
     @Nullable T get(int position);
@@ -63,7 +63,7 @@ public interface IRandomAccess<T> {
      * @param <U>  List element type.
      * @return Appropriate {@link IRandomAccess} instance.
      * @throws IllegalArgumentException when given list is not a {@link java.util.RandomAccess}.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     static <U> IRandomAccess<U> from(@NotNull List<U> list) {
@@ -76,7 +76,7 @@ public interface IRandomAccess<T> {
      * @param vector {@link Vector} instance.
      * @param <U>    Vector element type.
      * @return Appropriate {@link IRandomAccess} instance.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     static <U> IRandomAccess<U> from(@NotNull Vector<U> vector) {

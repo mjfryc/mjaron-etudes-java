@@ -27,21 +27,21 @@ import java.util.Arrays;
 /**
  * Used to determine the final column widths.
  *
- * @since 0.2.2
+ * @since 0.3.0
  */
 public class ColumnWidthResolver {
 
     /**
      * The column width policy.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     private AlignmentMode mode = AlignmentMode.DEFAULT;
 
     /**
      * Requested widths of all columns used during the table rendering.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     private int[] widths = null;
 
@@ -51,7 +51,7 @@ public class ColumnWidthResolver {
      * @param mode   Requested mode.
      * @param widths Column widths. It must be set only when mode is {@link AlignmentMode#ARBITRARY}.
      * @throws IllegalArgumentException When widths value is unexpected.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public void configure(final AlignmentMode mode, final int[] widths) {
         if (mode == AlignmentMode.ARBITRARY) {
@@ -93,7 +93,7 @@ public class ColumnWidthResolver {
      * Tells whether column widths are specified or not.
      *
      * @return <code>true</code> when column widths are specified, <code>false</code> otherwise.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public boolean hasWidths() {
         return this.widths != null;
@@ -103,7 +103,7 @@ public class ColumnWidthResolver {
      * Provides the resolved column widths or null if not specified.
      *
      * @return Requested column widths or <code>null</code>.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public int[] getWidths() {
         return widths;

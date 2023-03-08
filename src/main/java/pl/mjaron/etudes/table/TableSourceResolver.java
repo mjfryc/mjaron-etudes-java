@@ -26,7 +26,7 @@ package pl.mjaron.etudes.table;
  * <p>
  * Useful when table is modified on the fly, e.g. when columns are skipped or renamed.
  *
- * @since 0.2.2
+ * @since 0.3.0
  * @deprecated Use {@link ManipulatingTableSource} directly.
  */
 @Deprecated
@@ -35,7 +35,7 @@ public class TableSourceResolver {
     /**
      * Source of headers and data used to fill the table.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     private ITableSource originalTableSource = null;
 

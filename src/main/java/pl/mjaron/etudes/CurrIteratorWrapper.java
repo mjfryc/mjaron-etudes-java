@@ -7,7 +7,7 @@ import java.util.function.Consumer;
  * Allows getting current iterated element with {@link #getCurrent()} method.
  *
  * @param <T> Iterated element type
- * @since 0.2.2
+ * @since 0.3.0
  */
 public class CurrIteratorWrapper<T> implements ICurrIterator<T> {
 

@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @see HtmlOptions
  * @see HtmlTableWriter
- * @since 0.2.2
+ * @since 0.3.0
  */
 public abstract class Html {
 

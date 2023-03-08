@@ -29,7 +29,7 @@ import java.util.List;
  * <p>
  * The order of the declared columns matters.
  *
- * @since 0.2.2
+ * @since 0.3.0
  */
 public class ColumnSelector {
 

@@ -22,41 +22,41 @@ package pl.mjaron.etudes.table;
 /**
  * Tells how to align the columns.
  *
- * @since 0.2.2
+ * @since 0.3.0
  */
 public enum AlignmentMode {
 
     /**
      * Use the value from {@link ITableWriter#getDefaultAlignedColumnWidths()}.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     DEFAULT,
 
     /**
      * Use the fixed width values.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     ARBITRARY,
 
     /**
      * Do not align the columns. Each row will have different cell widths. Good for CSV format.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     NOT_ALIGNED,
 
     /**
      * Align the row's columns.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     ALIGNED,
 
     /**
      * All columns will have the same width.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     EQUAL
 }

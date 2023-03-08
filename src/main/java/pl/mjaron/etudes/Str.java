@@ -597,7 +597,7 @@ public abstract class Str {
      * @param separator Separator inserted between iterable elements.
      * @param out       Where to write the result.
      * @param <T>       Iterated element type.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static <T> void join(Iterable<T> what, final String separator, IPureAppendable out) {
         boolean isFirst = true;
@@ -618,7 +618,7 @@ public abstract class Str {
      * @param separator Separator inserted between iterable elements.
      * @param out       Where to write the result.
      * @param <T>       Iterated element type.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static <T> void join(Iterable<T> what, final String separator, StringBuilder out) {
         join(what, separator, IPureAppendable.from(out));
@@ -631,7 +631,7 @@ public abstract class Str {
      * @param separator Separator inserted between iterable elements.
      * @param out       Where to write the result.
      * @param <T>       Iterated element type.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static <T> void join(Iterable<T> what, final String separator, PrintStream out) {
         join(what, separator, IPureAppendable.from(out));
@@ -644,7 +644,7 @@ public abstract class Str {
      * @param separator Separator inserted between iterable elements.
      * @param <T>       Iterated element type.
      * @return Joined elements string.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     public static <T> String join(Iterable<T> what, final String separator) {
         StringBuilder out = new StringBuilder();

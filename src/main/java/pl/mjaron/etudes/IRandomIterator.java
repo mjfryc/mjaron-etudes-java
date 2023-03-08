@@ -33,7 +33,7 @@ import java.util.Vector;
  * Specifies the iterator which allows accessing the random positions.
  *
  * @param <T> Container element type.
- * @since 0.2.2
+ * @since 0.3.0
  */
 public interface IRandomIterator<T> extends ICurrIterator<T> {
 
@@ -47,7 +47,7 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * Tells whether this iterator is at the {@link #FLOOR} position.
      *
      * @return <code>true</code> when this iterator is at the {@link #FLOOR} position.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     default boolean isFloorPosition() {
         return getPosition() == FLOOR;
@@ -61,7 +61,7 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * Provides current element position.
      *
      * @return Current element position.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @Contract(pure = true)
     int getPosition();
@@ -70,7 +70,7 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * Sets the current element position.
      *
      * @param position Requested position to set.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     void setPosition(int position);
 
@@ -78,14 +78,14 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * Increases the current element position.
      *
      * @param count Tells how much to increase the position.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     void increment(int count);
 
     /**
      * Increases the current element position by one.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     void increment();
 
@@ -93,14 +93,14 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * Decreases the current element position.
      *
      * @param count Tells how much to decrease the position.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     void decrement(int count);
 
     /**
      * Decreases the current element position by one.
      *
-     * @since 0.2.2
+     * @since 0.3.0
      */
     void decrement();
 
@@ -111,7 +111,7 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * @param it  Underlying iterator instance.
      * @param <U> Container element type.
      * @return Appropriate {@link IRandomIterator} instance.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     static <U> IRandomIterator<U> from(Iterator<U> it) {
@@ -125,7 +125,7 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * @param list Any list.
      * @param <U>  Container element type.
      * @return Appropriate {@link IRandomIterator} instance.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     static <U> IRandomIterator<U> from(List<U> list) {
@@ -141,7 +141,7 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * @param vector {@link Vector} object instance.
      * @param <U>    Container element type.
      * @return Appropriate {@link IRandomIterator} instance.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     static <U> IRandomIterator<U> from(Vector<U> vector) {
@@ -154,7 +154,7 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * @param it  Any iterable object.
      * @param <U> Container element type.
      * @return Appropriate {@link IRandomIterator} instance.
-     * @since 0.2.2
+     * @since 0.3.0
      */
     @NotNull
     static <U> IRandomIterator<U> from(Iterable<U> it) {
