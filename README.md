@@ -6,6 +6,7 @@ Utils compatible with Java 1.8.
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.mjfryc/mjaron-etudes-java?color=dark-green&style=flat)](https://search.maven.org/artifact/io.github.mjfryc/mjaron-etudes-java/)
 [![Java CI with Gradle](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle.yml)
 [![Publish package to GitHub Packages](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/mjfryc/mjaron-etudes-java/actions/workflows/gradle-publish.yml)
+[![Run on Repl.it](https://img.shields.io/badge/replit-Try%20online-orange)](https://replit.com/@mjfryc/Test-of-mjaron-etudes-java030?v=1)
 
 ![Etudes](other/Etudes.png)
 
