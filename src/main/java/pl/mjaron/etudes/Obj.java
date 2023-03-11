@@ -58,6 +58,56 @@ public abstract class Obj {
     }
 
     /**
+     * Obtains value of single field. Prefers to call getters over fields direct access.
+     *
+     * @param tObject Object instance of type {@code tClass}.
+     * @param tClass  Object class type.
+     * @param field   Field which value will be obtained.
+     * @param <T>     Object type.
+     * @return Object field value. It may be {@code null} when field value is {@code null}.
+     * @since 0.3.1
+     */
+    public static <T> Object getFieldValue(final T tObject, final Class<T> tClass, final Field field) {
+        try {
+            return field.get(tObject);
+        } catch (final IllegalAccessException ignored) {
+        }
+
+        // Failed to get field value. Trying to obtain getter method.
+        final String fieldNameCapitalized = Str.capitalize(field.getName());
+        Method getter;
+        try {
+            getter = tClass.getMethod("get" + fieldNameCapitalized);
+        } catch (final NoSuchMethodException e1) {
+            if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
+                try {
+                    getter = tClass.getMethod("is" + fieldNameCapitalized);
+                } catch (final NoSuchMethodException e2) {
+                    try {
+                        field.setAccessible(true);
+                        return field.get(tObject);
+                    } catch (final IllegalAccessException e3) {
+                        throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: Field is not public and there is no get" + fieldNameCapitalized + "() + nor is" + fieldNameCapitalized + "() method available.", e3);
+                    }
+                }
+            } else {
+                try {
+                    field.setAccessible(true);
+                    return field.get(tObject);
+                } catch (final IllegalAccessException e3) {
+                    throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: Field is not public and there is no get" + fieldNameCapitalized + "() method available.", e3);
+                }
+            }
+        }
+        try {
+            getter.setAccessible(true);
+            return getter.invoke(tObject);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: invocation of getter has failed.", e);
+        }
+    }
+
+    /**
      * Allows to visit all values of Java Bean object.
      *
      * @param what    Object reference.
@@ -68,37 +118,8 @@ public abstract class Obj {
      */
     public static <T> void visitFieldValues(final T what, final Class<T> tClass, final Field[] fields, final IFieldVisitor visitor) {
         for (final Field field : fields) {
-            try {
-                final Object fieldValue = field.get(what);
-                visitor.visit(field.getName(), fieldValue);
-                continue;
-            } catch (IllegalAccessException e) {
-//                throw new RuntimeException("Cannot obtain value of field: [" + field.getName() +
-//                        "], of type: [" + field.getType() + "]: Getting field value has failed.");
-            }
-
-            // Failed to get field value. Trying to obtain getter method.
-            final String fieldNameCapitalized = Str.capitalize(field.getName());
-            Method getter;
-            try {
-                getter = tClass.getMethod("get" + fieldNameCapitalized);
-            } catch (final NoSuchMethodException e1) {
-                if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
-                    try {
-                        getter = tClass.getMethod("is" + fieldNameCapitalized);
-                    } catch (final NoSuchMethodException e2) {
-                        throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: Field is not public and there is no get" + fieldNameCapitalized + "() + nor is" + fieldNameCapitalized + "() method accessible.", e2);
-                    }
-                } else {
-                    throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: Field is not public and there is no get" + fieldNameCapitalized + "() method accessible.", e1);
-                }
-            }
-            try {
-                final Object getterResult = getter.invoke(what);
-                visitor.visit(field.getName(), getterResult);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException("Cannot obtain value of field: [" + field.getName() + "], of type: [" + field.getType() + "]: invocation of getter has failed.", e);
-            }
+            final Object fieldValue = getFieldValue(what, tClass, field);
+            visitor.visit(field.getName(), fieldValue);
         }
     }
 
@@ -150,6 +171,7 @@ public abstract class Obj {
      * @deprecated Use {@link Table#render(Iterable, Class)}
      */
     @Contract(pure = true)
+    @Deprecated
     public static <T> String asTable(final Iterable<T> iterable, final Class<T> tClass) {
         return Table.render(iterable, tClass).runToString();
     }
@@ -165,6 +187,7 @@ public abstract class Obj {
      * @deprecated Use {@link Table#render(ITableSource)}
      */
     @Contract(pure = true)
+    @Deprecated
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
         return Table.render(source).withWriter(writer).runToString();
     }
