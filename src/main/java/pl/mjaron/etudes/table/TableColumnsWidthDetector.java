@@ -33,11 +33,11 @@ public abstract class TableColumnsWidthDetector {
      * @param widths array of maximum column widths.
      * @param series Single row (record) of data. Used to check the cell width.
      */
-    private static void applyRow(final int[] widths, final Iterable<String> series, final IEscaper escaper) {
+    private static void applyRow(final int[] widths, final Iterable<?> series, final IEscaper escaper) {
         int i = 0;
-        for (final String entry : series) {
+        for (final Object entry : series) {
             final int oldEntryWidth = widths[i];
-            final int newEntryWidth = Integer.max(oldEntryWidth, escaper.escape(entry).length());
+            final int newEntryWidth = Integer.max(oldEntryWidth, escaper.escape(entry.toString()).length()); // @todo Use value converter instead of direct toString().
             widths[i] = newEntryWidth;
             ++i;
         }
@@ -55,7 +55,7 @@ public abstract class TableColumnsWidthDetector {
         if (source.hasHeaders()) {
             applyRow(widths, source.getHeaders(), escaper);
         }
-        for (final Iterable<String> row : source) {
+        for (final Iterable<Object> row : source) {
             applyRow(widths, row, escaper);
         }
         return widths;

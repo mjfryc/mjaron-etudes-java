@@ -19,6 +19,7 @@
 
 package pl.mjaron.etudes.table;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,16 +44,20 @@ public class ListTableSource<T> implements ITableSource {
     }
 
     @Override
-    public Iterator<Iterable<String>> iterator() {
+    public Iterator<Iterable<Object>> iterator() {
         return new ArrayIterator<>(array);
     }
 
-    private static class ArrayIterator<T> implements Iterator<Iterable<String>> {
-        private final List<List<T>> array;
+    /**
+     * Provides rows of array table source.
+     *
+     * @param <T> Type of table cell.
+     * @since 0.2.0
+     */
+    private static class ArrayIterator<T> implements Iterator<Iterable<Object>> {
         private final Iterator<List<T>> it;
 
         ArrayIterator(final List<List<T>> array) {
-            this.array = array;
             this.it = array.iterator();
         }
 
@@ -62,8 +67,8 @@ public class ListTableSource<T> implements ITableSource {
         }
 
         @Override
-        public Iterable<String> next() {
-            return StringSeries.from(it.next());
+        public Iterable<Object> next() {
+            return Collections.unmodifiableList(it.next());
         }
     }
 }

@@ -37,8 +37,8 @@ public abstract class TableSourceFactory {
             }
 
             @Override
-            public Iterator<Iterable<String>> iterator() {
-                return new Iterator<Iterable<String>>() {
+            public Iterator<Iterable<Object>> iterator() {
+                return new Iterator<Iterable<Object>>() {
 
                     int rowIdx = 0;
 
@@ -48,13 +48,11 @@ public abstract class TableSourceFactory {
                     }
 
                     @Override
-                    public Iterable<String> next() {
-                        return () -> SeriesIteratorFactory.from(data[rowIdx++]);
+                    public Iterable<Object> next() {
+                        return () -> ObjectSeriesIteratorFactory.from(data[rowIdx++]);
                     }
                 };
             }
         };
     }
-
 }
-

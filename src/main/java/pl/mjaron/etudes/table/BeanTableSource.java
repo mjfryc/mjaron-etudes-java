@@ -75,7 +75,7 @@ public class BeanTableSource<BeanT> implements ITableSource {
     }
 
     @Override
-    public Iterator<Iterable<String>> iterator() {
+    public Iterator<Iterable<Object>> iterator() {
         return new RowsIterator<>(tClass, tFields, values);
     }
 
@@ -84,7 +84,7 @@ public class BeanTableSource<BeanT> implements ITableSource {
      *
      * @param <BeanT> Type of the object.
      */
-    private static class RowsIterator<BeanT> implements Iterator<Iterable<String>> {
+    private static class RowsIterator<BeanT> implements Iterator<Iterable<Object>> {
 
         final Iterator<BeanT> beanIterator;
         final private Class<BeanT> tClass;
@@ -107,11 +107,11 @@ public class BeanTableSource<BeanT> implements ITableSource {
          * @return Next table row.
          */
         @Override
-        public Iterable<String> next() {
+        public Iterable<Object> next() {
             final BeanT bean = beanIterator.next();
-            List<String> stringSeries = new ArrayList<>(tFields.length);
-            Obj.visitFieldValues(bean, this.tClass, this.tFields, (name, value) -> stringSeries.add(Str.orEmpty(value)));
-            return stringSeries;
+            List<Object> record = new ArrayList<>(tFields.length);
+            Obj.visitFieldValues(bean, this.tClass, this.tFields, (name, value) -> record.add(value));
+            return record;
         }
     }
 }

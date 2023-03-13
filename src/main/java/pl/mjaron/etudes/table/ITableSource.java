@@ -24,7 +24,7 @@ import java.util.Iterator;
 /**
  * Abstract source which provides string-based data usable for printing table.
  */
-public interface ITableSource extends Iterable<Iterable<String>> {
+public interface ITableSource extends Iterable<Iterable<Object>> {
 
     /**
      * @return Width of table.
@@ -40,7 +40,7 @@ public interface ITableSource extends Iterable<Iterable<String>> {
      * @return Iterator which allows to read all rows sequentially.
      */
     @Override
-    Iterator<Iterable<String>> iterator();
+    Iterator<Iterable<Object>> iterator();
 
     default boolean hasHeaders() {
         return getHeaders() != null;

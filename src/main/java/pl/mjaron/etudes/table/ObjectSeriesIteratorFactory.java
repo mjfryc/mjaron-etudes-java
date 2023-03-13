@@ -21,13 +21,10 @@ package pl.mjaron.etudes.table;
 
 import java.util.Iterator;
 
-public abstract class SeriesIteratorFactory {
+public abstract class ObjectSeriesIteratorFactory {
 
-    private SeriesIteratorFactory() {
-    }
-
-    public static Iterator<String> from(final byte[] src) {
-        return new Iterator<String>() {
+    public static Iterator<Object> from(final byte[] src) {
+        return new Iterator<Object>() {
             private int idx = 0;
 
             @Override
@@ -36,14 +33,14 @@ public abstract class SeriesIteratorFactory {
             }
 
             @Override
-            public String next() {
-                return "" + src[idx++];
+            public Object next() {
+                return src[idx++];
             }
         };
     }
 
-    public static Iterator<String> from(final short[] src) {
-        return new Iterator<String>() {
+    public static Iterator<Object> from(final short[] src) {
+        return new Iterator<Object>() {
             private int idx = 0;
 
             @Override
@@ -52,14 +49,14 @@ public abstract class SeriesIteratorFactory {
             }
 
             @Override
-            public String next() {
-                return "" + src[idx++];
+            public Object next() {
+                return src[idx++];
             }
         };
     }
 
-    public static Iterator<String> from(final int[] src) {
-        return new Iterator<String>() {
+    public static Iterator<Object> from(final int[] src) {
+        return new Iterator<Object>() {
             private int idx = 0;
 
             @Override
@@ -68,14 +65,14 @@ public abstract class SeriesIteratorFactory {
             }
 
             @Override
-            public String next() {
-                return "" + src[idx++];
+            public Object next() {
+                return src[idx++];
             }
         };
     }
 
-    public static Iterator<String> from(final long[] src) {
-        return new Iterator<String>() {
+    public static Iterator<Object> from(final long[] src) {
+        return new Iterator<Object>() {
             private int idx = 0;
 
             @Override
@@ -84,14 +81,14 @@ public abstract class SeriesIteratorFactory {
             }
 
             @Override
-            public String next() {
-                return "" + src[idx++];
+            public Object next() {
+                return src[idx++];
             }
         };
     }
 
-    public static Iterator<String> from(final float[] src) {
-        return new Iterator<String>() {
+    public static Iterator<Object> from(final float[] src) {
+        return new Iterator<Object>() {
             private int idx = 0;
 
             @Override
@@ -100,14 +97,14 @@ public abstract class SeriesIteratorFactory {
             }
 
             @Override
-            public String next() {
-                return "" + src[idx++];
+            public Object next() {
+                return src[idx++];
             }
         };
     }
 
-    public static Iterator<String> from(final double[] src) {
-        return new Iterator<String>() {
+    public static Iterator<Object> from(final double[] src) {
+        return new Iterator<Object>() {
             private int idx = 0;
 
             @Override
@@ -116,14 +113,14 @@ public abstract class SeriesIteratorFactory {
             }
 
             @Override
-            public String next() {
-                return "" + src[idx++];
+            public Object next() {
+                return src[idx++];
             }
         };
     }
 
-    public static Iterator<String> from(final boolean[] src) {
-        return new Iterator<String>() {
+    public static Iterator<Object> from(final boolean[] src) {
+        return new Iterator<Object>() {
             private int idx = 0;
 
             @Override
@@ -132,14 +129,14 @@ public abstract class SeriesIteratorFactory {
             }
 
             @Override
-            public String next() {
-                return "" + src[idx++];
+            public Object next() {
+                return src[idx++];
             }
         };
     }
 
-    public static Iterator<String> from(final char[] src) {
-        return new Iterator<String>() {
+    public static Iterator<Object> from(final char[] src) {
+        return new Iterator<Object>() {
             private int idx = 0;
 
             @Override
@@ -148,8 +145,8 @@ public abstract class SeriesIteratorFactory {
             }
 
             @Override
-            public String next() {
-                return "" + src[idx++];
+            public Object next() {
+                return src[idx++];
             }
         };
     }

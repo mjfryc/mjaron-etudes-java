@@ -58,7 +58,7 @@ public class ManipulatingTableSource implements ITableSource {
     }
 
     @Override
-    public Iterator<Iterable<String>> iterator() {
+    public Iterator<Iterable<Object>> iterator() {
         return new ManipulatingTableSourceIterator(underlyingSource, columnOrder);
     }
 
@@ -68,21 +68,21 @@ public class ManipulatingTableSource implements ITableSource {
     }
 }
 
-class ManipulatingTableSourceRow implements Iterable<String> {
+class ManipulatingTableSourceRow implements Iterable<Object> {
 
     private final ArrayList<Integer> columnOrder;
 
-    private final IRandomIterator<String> underlyingRowRandomIterator;
+    private final IRandomIterator<Object> underlyingRowRandomIterator;
 
-    public ManipulatingTableSourceRow(ArrayList<Integer> columnOrder, Iterable<String> underlyingRow) {
+    public ManipulatingTableSourceRow(ArrayList<Integer> columnOrder, Iterable<Object> underlyingRow) {
         this.columnOrder = columnOrder;
         this.underlyingRowRandomIterator = IRandomIterator.from(underlyingRow);
     }
 
     @NotNull
     @Override
-    public Iterator<String> iterator() {
-        return new Iterator<String>() {
+    public Iterator<Object> iterator() {
+        return new Iterator<Object>() {
 
             int currentColumnIndex = -1;
 
@@ -92,7 +92,7 @@ class ManipulatingTableSourceRow implements Iterable<String> {
             }
 
             @Override
-            public String next() {
+            public Object next() {
                 ++currentColumnIndex;
                 underlyingRowRandomIterator.setPosition(columnOrder.get(currentColumnIndex));
                 return underlyingRowRandomIterator.getCurrent();
@@ -101,10 +101,10 @@ class ManipulatingTableSourceRow implements Iterable<String> {
     }
 }
 
-class ManipulatingTableSourceIterator implements Iterator<Iterable<String>> {
+class ManipulatingTableSourceIterator implements Iterator<Iterable<Object>> {
 
     private final ArrayList<Integer> columnOrder;
-    private final Iterator<Iterable<String>> underlyingIterator;
+    private final Iterator<Iterable<Object>> underlyingIterator;
 
     public ManipulatingTableSourceIterator(ITableSource underlyingSource, ArrayList<Integer> columnOrder) {
         this.columnOrder = columnOrder;
@@ -127,7 +127,7 @@ class ManipulatingTableSourceIterator implements Iterator<Iterable<String>> {
      * @return Next row.
      */
     @Override
-    public Iterable<String> next() {
+    public Iterable<Object> next() {
         return new ManipulatingTableSourceRow(columnOrder, underlyingIterator.next());
     }
 }
