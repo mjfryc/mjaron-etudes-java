@@ -81,9 +81,9 @@ public class ColumnWidthResolver {
         }
 
         if (mode == AlignmentMode.ALIGNED) {
-            this.widths = TableColumnsWidthDetector.compute(runtime.getSource(), runtime.getEscaper());
+            this.widths = TableColumnsWidthDetector.compute(runtime);
         } else if (mode == AlignmentMode.EQUAL) {
-            this.widths = TableColumnsWidthDetector.compute(runtime.getSource(), runtime.getEscaper());
+            this.widths = TableColumnsWidthDetector.compute(runtime);
             final int maxWidth = Arr.max(this.widths);
             Arrays.fill(widths, maxWidth);
         }

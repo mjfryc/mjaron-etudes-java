@@ -90,6 +90,10 @@ public class RenderRuntime implements AutoCloseable {
         return tableSource;
     }
 
+    public IPropertyProvider<IFormatter> getFormatters() {
+        return context.getCellFormatterPropertyProvider();
+    }
+
     public IPureAppendable getOut() {
         return out;
     }
@@ -309,6 +313,12 @@ public class RenderRuntime implements AutoCloseable {
      */
     public void appendPadded(String what) {
         this.appendPadded(what, ' ');
+    }
+
+    public String renderCell(final int column, final int row, final Object value) {
+        final IFormatter formatter = getFormatters().getOrDefault(column, row, IFormatter.dummy());
+        final String formatted = formatter.format(value);
+        return getEscaper().escape(formatted);
     }
 
     @Override

@@ -19,7 +19,10 @@
 
 package pl.mjaron.etudes;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Time-related code.
@@ -34,5 +37,12 @@ public abstract class TimeUtils {
         date.set(Calendar.MONTH, month + 1);
         date.set(Calendar.DAY_OF_MONTH, day);
         return date;
+    }
+
+    public static String formatAsIso8601(final Date date) {
+        SimpleDateFormat sdf;
+        sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(TimeZone.getDefault());
+        return sdf.format(date);
     }
 }

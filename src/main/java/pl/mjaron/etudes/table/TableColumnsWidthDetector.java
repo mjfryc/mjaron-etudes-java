@@ -33,11 +33,23 @@ public abstract class TableColumnsWidthDetector {
      * @param widths array of maximum column widths.
      * @param series Single row (record) of data. Used to check the cell width.
      */
-    private static void applyRow(final int[] widths, final Iterable<?> series, final IEscaper escaper) {
+    private static void applyRow(final int[] widths, final int row, final Iterable<?> series, final RenderRuntime runtime) {
         int i = 0;
         for (final Object entry : series) {
             final int oldEntryWidth = widths[i];
-            final int newEntryWidth = Integer.max(oldEntryWidth, escaper.escape(entry.toString()).length()); // @todo Use value converter instead of direct toString().
+            final String rendered = runtime.renderCell(i, row, entry);
+            final int newEntryWidth = Integer.max(oldEntryWidth, rendered.length());
+            widths[i] = newEntryWidth;
+            ++i;
+        }
+    }
+
+    private static void applyRow(final int[] widths, final Iterable<String> series, final IEscaper escaper) {
+        int i = 0;
+        for (final String entry : series) {
+            final int oldEntryWidth = widths[i];
+            final String escaped = escaper.escape(entry);
+            final int newEntryWidth = Integer.max(oldEntryWidth, escaped.length());
             widths[i] = newEntryWidth;
             ++i;
         }
@@ -46,22 +58,19 @@ public abstract class TableColumnsWidthDetector {
     /**
      * Detects the maximum values of each column's cell width
      *
-     * @param escaper {@link IEscaper} instance or null if it is not necessary
-     * @param source  Input table
+     * @param runtime Instance of {@link RenderRuntime}
      * @return Array of max widths of corresponding columns
      */
-    public static int[] compute(@NotNull final ITableSource source, @NotNull final IEscaper escaper) {
-        final int[] widths = new int[source.getColumnsCount()];
-        if (source.hasHeaders()) {
-            applyRow(widths, source.getHeaders(), escaper);
+    public static int[] compute(@NotNull final RenderRuntime runtime) {
+        final int[] widths = new int[runtime.getSource().getColumnsCount()];
+        if (runtime.getSource().hasHeaders()) {
+            applyRow(widths, runtime.getSource().getHeaders(), runtime.getEscaper());
         }
-        for (final Iterable<Object> row : source) {
-            applyRow(widths, row, escaper);
+        int rowIndex = 0;
+        for (final Iterable<Object> row : runtime.getSource()) {
+            applyRow(widths, rowIndex, row, runtime);
+            ++rowIndex;
         }
         return widths;
-    }
-
-    public static int[] compute(final ITableSource source) {
-        return compute(source, DummyEscaper.getInstance());
     }
 }

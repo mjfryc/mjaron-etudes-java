@@ -19,36 +19,15 @@
 
 package pl.mjaron.etudes.table;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+public class DummyFormatter implements IFormatter {
+    @Override
+    public String format(Object what) {
+        return what.toString();
+    }
 
-/**
- * Provides information about property value used by each table cell.
- *
- * @param <T> Property type.
- * @since 0.3.0
- */
-public interface IPropertyProvider<T> {
+    private static final DummyFormatter instance = new DummyFormatter();
 
-    /**
-     * Resolves the value for given table cell.
-     *
-     * @param column Table column index.
-     * @param row    Table row index.
-     * @return Property value or null when cannot determine the value.
-     * @since 0.3.0
-     */
-    @Contract(pure = true)
-    @Nullable T get(int column, int row);
-
-    @Contract(pure = true)
-    @NotNull
-    default T getOrDefault(int column, int row, @NotNull final T defaultValue) {
-        final T nullableValue = get(column, row);
-        if (nullableValue == null) {
-            return defaultValue;
-        }
-        return nullableValue;
+    public static DummyFormatter getInstance() {
+        return instance;
     }
 }

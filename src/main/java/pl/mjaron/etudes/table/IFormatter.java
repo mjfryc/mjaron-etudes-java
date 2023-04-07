@@ -19,36 +19,23 @@
 
 package pl.mjaron.etudes.table;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 /**
- * Provides information about property value used by each table cell.
+ * Formats any object as {@link String}.
  *
- * @param <T> Property type.
- * @since 0.3.0
+ * @since 0.3.1
  */
-public interface IPropertyProvider<T> {
+public interface IFormatter {
 
     /**
-     * Resolves the value for given table cell.
+     * Formats any object as {@link String}.
      *
-     * @param column Table column index.
-     * @param row    Table row index.
-     * @return Property value or null when cannot determine the value.
-     * @since 0.3.0
+     * @param what Object to format.
+     * @return {@link String} representation of given object.
+     * @since 0.3.1
      */
-    @Contract(pure = true)
-    @Nullable T get(int column, int row);
+    String format(Object what);
 
-    @Contract(pure = true)
-    @NotNull
-    default T getOrDefault(int column, int row, @NotNull final T defaultValue) {
-        final T nullableValue = get(column, row);
-        if (nullableValue == null) {
-            return defaultValue;
-        }
-        return nullableValue;
+    static IFormatter dummy() {
+        return DummyFormatter.getInstance();
     }
 }

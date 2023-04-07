@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import pl.mjaron.etudes.IPureAppendable;
 import pl.mjaron.etudes.Str;
+import pl.mjaron.etudes.table.property.ByColumnPropertyProvider;
 import pl.mjaron.etudes.table.property.ColumnOnlyPropertyProvider;
 
 import java.io.File;
@@ -45,6 +46,8 @@ public class RenderContext {
      * @since 0.3.0
      */
     private final ManipulatingTableSourceBuilder tableSourceBuilder = new ManipulatingTableSourceBuilder();
+
+    private final ByColumnPropertyProvider<IFormatter> cellFormatterPropertyProvider = new ByColumnPropertyProvider<>();
     /**
      * Determines the column widths depending on {@link AlignmentMode}.
      *
@@ -159,6 +162,11 @@ public class RenderContext {
         return this.tableSourceBuilder;
     }
 
+    @NotNull
+    public ByColumnPropertyProvider<IFormatter> getCellFormatterPropertyProvider() {
+        return this.cellFormatterPropertyProvider;
+    }
+
     /**
      * Provides {@link ColumnOnlyPropertyProvider} which determines the columns' width.
      *
@@ -168,6 +176,21 @@ public class RenderContext {
     @NotNull
     public ColumnOnlyPropertyProvider<VerticalAlign> getVerticalAlignPropertyProvider() {
         return verticalAlignPropertyProvider;
+    }
+
+    public RenderContext withFormatter(IFormatter formatter) {
+        getCellFormatterPropertyProvider().put(formatter);
+        return this;
+    }
+
+    public RenderContext withFormatter(final int column, IFormatter formatter) {
+        getCellFormatterPropertyProvider().put(column, formatter);
+        return this;
+    }
+
+    public RenderContext withFormatter(final int column, final int row, IFormatter formatter) {
+        getCellFormatterPropertyProvider().put(column, row, formatter);
+        return this;
     }
 
     /**
