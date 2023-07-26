@@ -56,6 +56,29 @@ test {
     }
 }
 
+final def generatedDir = new File(buildDir, "generated-java")
+final def generatedPackageDir = new File(generatedDir, "pl/mjaron/etudes")
+def generateVersionFile = tasks.register('generateVersionFile') {
+    group 'generate'
+    doLast {
+        generatedPackageDir.mkdirs()
+        def versionFile = new File(generatedPackageDir, "Version.java")
+        println("Generating version file: ${versionFile}")
+        versionFile.text = '''\
+package pl.mjaron.etudes;
+public class Version {
+    public static String getVersion() {
+        return "PROJECT_VERSION";
+    }
+}
+'''.replace("PROJECT_VERSION", project.version.toString())
+    }
+}
+sourceSets.main.java.srcDir generatedDir
+project.tasks.named("compileJava") {
+    dependsOn(generateVersionFile)
+}
+
 project.plugins.withType(MavenPublishPlugin).all {
     PublishingExtension publishing = project.extensions.getByType(PublishingExtension)
     publishing.publications.withType(MavenPublication).all { mavenPublication ->

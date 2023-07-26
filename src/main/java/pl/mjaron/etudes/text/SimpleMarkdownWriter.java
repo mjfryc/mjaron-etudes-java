@@ -20,6 +20,9 @@
 package pl.mjaron.etudes.text;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 import pl.mjaron.etudes.IPureAppendable;
 import pl.mjaron.etudes.Str;
 import pl.mjaron.etudes.table.RenderContext;
@@ -39,20 +42,78 @@ import pl.mjaron.etudes.table.RenderContext;
 @ApiStatus.Experimental
 public class SimpleMarkdownWriter {
 
+    /**
+     * Where to write the markdown output.
+     */
+    @NotNull
     private final IPureAppendable out;
 
-    public SimpleMarkdownWriter(IPureAppendable out) {
+    /**
+     * Initial nest level of markdown headers.
+     * Value {@code 0} means the top header. Bigger values refer to sub-headers.
+     */
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    private final int headerNestLevelBase;
+
+    /**
+     * Initializes all fields of the writer.
+     *
+     * @param out                 Where to write the markdown output.
+     * @param headerNestLevelBase Base level of headers.
+     */
+    public SimpleMarkdownWriter(@NotNull final IPureAppendable out, @Range(from = 0, to = Integer.MAX_VALUE) final int headerNestLevelBase) {
         this.out = out;
+        this.headerNestLevelBase = headerNestLevelBase;
     }
 
+    /**
+     * Initializes new writer with custom initial header nest level.
+     *
+     * @param headerNestLevelBase Base level of headers. Value {@code 0} means the top header. Bigger values refer to sub-headers.
+     */
+    public SimpleMarkdownWriter(@Range(from = 0, to = Integer.MAX_VALUE) final int headerNestLevelBase) {
+        this(IPureAppendable.from(new StringBuilder()), headerNestLevelBase);
+    }
+
+    /**
+     * Initializes the default writer with new empty pure appendable and top level of the header.
+     */
     public SimpleMarkdownWriter() {
-        this.out = IPureAppendable.from(new StringBuilder());
+        this(IPureAppendable.from(new StringBuilder()), 0);
     }
 
+    /**
+     * Creates child writer with sub-header nested relatively to parent header nest level.
+     *
+     * @param headerNestLevelRelative Nesting relative to parent base header level.
+     * @return New writer instance.
+     */
+    @NotNull
+    @Contract("_-> new")
+    public SimpleMarkdownWriter child(@Range(from = 0, to = Integer.MAX_VALUE) final int headerNestLevelRelative) {
+        return new SimpleMarkdownWriter(getOut(), headerNestLevelBase + headerNestLevelRelative);
+    }
+
+    @NotNull
+    @Contract("-> new")
+    public SimpleMarkdownWriter child() {
+        return child(1);
+    }
+
+    @NotNull
+    @Contract("_-> new")
+    public SimpleMarkdownWriter child(final String header) {
+        final SimpleMarkdownWriter childWriter = this.child(1);
+        childWriter.header(header);
+        return childWriter;
+    }
+
+    @NotNull
     public IPureAppendable getOut() {
         return out;
     }
 
+    @NotNull
     public String getOutString() {
         if (out.getUnderlyingObject() instanceof StringBuilder) {
             return ((StringBuilder) out.getUnderlyingObject()).toString();
@@ -60,14 +121,18 @@ public class SimpleMarkdownWriter {
         throw new RuntimeException("Only " + StringBuilder.class.getSimpleName() + " class can be used with getOutputString().");
     }
 
-    public void header(int nestLevel, String what) {
-        Str.pad(out, nestLevel, '#');
+    public void header(@Range(from = 0, to = Integer.MAX_VALUE) final int nestLevel, final String what) {
+        Str.pad(out, headerNestLevelBase + nestLevel + 1, '#');
         out.append(' ');
         out.append(what);
         out.append("\n\n");
     }
 
-    public void writeRaw(String what) {
+    public void header(final String what) {
+        header(0, what);
+    }
+
+    public void writeRaw(final String what) {
         out.append(what);
     }
 
@@ -79,35 +144,42 @@ public class SimpleMarkdownWriter {
         out.append("  \n");
     }
 
-    public void codeBlock(String what) {
+    public void codeBlock(final String what) {
         out.append("    ");
         out.append(what.replace("\n", "    \n"));
         out.append("\n\n");
     }
 
-    public void fencedCodeBlock(String lang, String code) {
+    public void fencedCodeBlock(final String lang, final String code) {
         out.append("```");
         if (lang != null) {
             out.append(lang);
         }
         out.append("\n");
         out.append(code);
-        out.append("\n```\n\n");
+        if (!code.endsWith("\n")) {
+            out.append("\n");
+        }
+        out.append("```\n\n");
     }
 
-    public void table(RenderContext render) {
+    public void table(@NotNull final RenderContext render) {
         render.to(out);
         render.run();
         out.append("\n");
     }
 
-    public void paragraph(String what) {
+    public void paragraph(final String what) {
         out.append(what);
         out.append("\n\n");
     }
 
-    public void writeRawLine(String what) {
+    public void writeRawLine(final String what) {
         out.append(what);
+        out.append("\n");
+    }
+
+    public void writeRawLine() {
         out.append("\n");
     }
 }
