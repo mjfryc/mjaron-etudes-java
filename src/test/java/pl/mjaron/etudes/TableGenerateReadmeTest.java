@@ -31,6 +31,8 @@ public class TableGenerateReadmeTest {
             verboseExampleWriter.fencedCodeBlock("java", TestCommon.getTestClassContent(Person.class));
             verboseExampleWriter.paragraph("Then following code will render the table:");
             verboseExampleWriter.fencedCodeBlock("java", TestCommon.getTestClassContent(PersonVerboseSample.class));
+            verboseExampleWriter.paragraph("With following result:");
+            verboseExampleWriter.writeRawLine(ISystemOutAcquire.acquire(PersonVerboseSample::run));
         }
 
         {

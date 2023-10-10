@@ -42,14 +42,17 @@ public abstract class RenderOperation {
                 runtime.setHeaderState(false);
             }
 
+            runtime.resetRow();
             for (final Iterable<Object> row : source) {
                 writer.beginRow();
                 runtime.resetColumn();
                 for (final Object cell : row) {
-                    writer.writeCell(runtime.getEscaper().escape(cell.toString())); // @todo Use value converter instead of direct toString().
+                    //writer.writeCell(runtime.getEscaper().escape(cell.toString())); // @todo Use value converter instead of direct toString().
+                    writer.writeCell(runtime.renderCell(cell));
                     runtime.nextColumn();
                 }
                 writer.endRow();
+                runtime.nextRow();
             }
             writer.endTable();
         } catch (final Exception e) {

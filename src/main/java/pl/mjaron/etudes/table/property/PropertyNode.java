@@ -19,14 +19,18 @@
 
 package pl.mjaron.etudes.table.property;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 import java.util.TreeMap;
 
 public class PropertyNode<T> {
-    private T value;
+    @Nullable
+    private T value = null;
 
     private Map<Integer, PropertyNode<T>> children = null;
 
+    @Nullable
     public T getValue() {
         return this.value;
     }
@@ -46,12 +50,13 @@ public class PropertyNode<T> {
             children = new TreeMap<>();
         }
 
-        PropertyNode<T> newChildNode = new PropertyNode<>();
+        final PropertyNode<T> newChildNode = new PropertyNode<>();
         children.put(index, newChildNode);
         return newChildNode;
     }
 
-    public PropertyNode<T> getChild(int index) {
+    @Nullable
+    public PropertyNode<T> getChild(final int index) {
         if (children == null) {
             return null;
         }

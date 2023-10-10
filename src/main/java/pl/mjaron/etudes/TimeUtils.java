@@ -42,7 +42,8 @@ public abstract class TimeUtils {
     public static String formatAsIso8601(final Date date) {
         SimpleDateFormat sdf;
         sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getDefault());
+        final TimeZone timeZone = TimeZone.getDefault();
+        sdf.setTimeZone(timeZone);
         return sdf.format(date);
     }
 }

@@ -26,8 +26,8 @@ public class ByRowPropertyProvider<T> implements IPropertyProvider<T> {
     private final HierarchicalPropertyProvider<T> hierarchicalPropertyProvider = new HierarchicalPropertyProvider<>();
 
     @Override
-    public T get(int column, int row) {
-        return hierarchicalPropertyProvider.getValue(row, column);
+    public T get(final int column, final int row, final Class<?> clazz) {
+        return hierarchicalPropertyProvider.getValue(row, column, clazz);
     }
 
     public void put(T value) {

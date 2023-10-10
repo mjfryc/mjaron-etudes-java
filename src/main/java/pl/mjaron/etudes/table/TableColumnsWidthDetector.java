@@ -34,13 +34,13 @@ public abstract class TableColumnsWidthDetector {
      * @param series Single row (record) of data. Used to check the cell width.
      */
     private static void applyRow(final int[] widths, final int row, final Iterable<?> series, final RenderRuntime runtime) {
-        int i = 0;
+        int column = 0;
         for (final Object entry : series) {
-            final int oldEntryWidth = widths[i];
-            final String rendered = runtime.renderCell(i, row, entry);
+            final int oldEntryWidth = widths[column];
+            final String rendered = runtime.renderCell(column, row, entry);
             final int newEntryWidth = Integer.max(oldEntryWidth, rendered.length());
-            widths[i] = newEntryWidth;
-            ++i;
+            widths[column] = newEntryWidth;
+            ++column;
         }
     }
 

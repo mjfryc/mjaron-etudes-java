@@ -1,9 +1,15 @@
 package pl.mjaron.etudes.sample;
 
 import pl.mjaron.etudes.Table;
+import pl.mjaron.etudes.table.DateIso8601Formatter;
 import pl.mjaron.etudes.table.VerticalAlign;
 
 public class PersonVerboseSample {
+
+    public static void main(final String[] args) {
+        run();
+    }
+
     public static void run() {
         // Verbose options demo
         Table.render(Person.getSampleData(), Person.class)
@@ -46,10 +52,12 @@ public class PersonVerboseSample {
                 // or
                 // .withAlign(null) // Use the default align.
 
+                .withFormatter(java.util.Date.class, new DateIso8601Formatter())
+
                 // Where to save the table.
-                .toFile("build/sample.csv")
+                //.toFile("build/sample.csv")
                 // By default, the System.out is used, which can be specified as:
-                // .to(System.out)
+                .to(System.out)
                 // or: .to(Stream|PrintStream|Appendable|File|StringBuilder out)
 
                 // Run the render operation.

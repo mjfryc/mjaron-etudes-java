@@ -26,15 +26,15 @@ public class RowOnlyPropertyProvider<T> implements IPropertyProvider<T> {
     private final ArraySingleDimensionPropertyProvider<T> provider = new ArraySingleDimensionPropertyProvider<>();
 
     @Override
-    public T get(int column, int row) {
-        return provider.get(row);
+    public T get(final int column, final int row, final Class<?> clazz) {
+        return provider.get(row, clazz);
     }
 
-    public void put(T value) {
+    public void put(final T value) {
         provider.setValue(value);
     }
 
-    public void put(int row, T value) {
+    public void put(final int row, final T value) {
         provider.setValue(row, value);
     }
 }

@@ -19,25 +19,62 @@
 
 package pl.mjaron.etudes.table.property;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class HierarchicalPropertyProvider<T> {
 
+    /**
+     * Contains properties depending on class type.
+     * By-class properties have bigger priority than root node, but lower than direct rows / cells.
+     *
+     * @since 0.3.1
+     */
+    private Map<Class<?>, T> byClassProperties = null;
+
     private final PropertyNode<T> tableNode = new PropertyNode<>();
+
+    public void setByClass(final Class<?> clazz, final T prop) {
+        if (byClassProperties == null) { // Ensure not null.
+            byClassProperties = new HashMap<>();
+        }
+        byClassProperties.put(clazz, prop);
+    }
 
     public PropertyNode<T> getRootNode() {
         return tableNode;
     }
 
-    T getValue(int a, int b) {
+    T getByClassPropertyOrRootValue(final @Nullable Class<?> clazz) {
+        if (clazz != null && byClassProperties != null) {
+            final T byClassValue = byClassProperties.get(clazz);
+            if (byClassValue != null) {
+                return byClassValue;
+            }
+        }
+        return tableNode.getValue();
+    }
+
+    /**
+     * Provides property value from three-level tree, where the first level is a root node.
+     *
+     * @param a Second level.
+     * @param b Third level.
+     * @return Property value.
+     */
+    T getValue(int a, int b, final Class<?> clazz) {
         PropertyNode<T> aChild = tableNode.getChild(a);
         if (aChild == null) {
-            return tableNode.getValue();
+            return getByClassPropertyOrRootValue(clazz); // If a-child missing, provide root node.
         }
         PropertyNode<T> bChild = aChild.getChild(b);
         if (bChild == null) {
             if (aChild.getValue() != null) {
                 return aChild.getValue();
             }
-            return tableNode.getValue();
+            return getByClassPropertyOrRootValue(clazz);
         }
         if (bChild.getValue() != null) {
             return bChild.getValue();
@@ -45,6 +82,6 @@ public class HierarchicalPropertyProvider<T> {
         if (aChild.getValue() != null) {
             return aChild.getValue();
         }
-        return tableNode.getValue();
+        return getByClassPropertyOrRootValue(clazz);
     }
 }

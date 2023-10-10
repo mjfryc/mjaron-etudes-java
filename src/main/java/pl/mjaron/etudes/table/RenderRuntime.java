@@ -50,6 +50,13 @@ public class RenderRuntime implements AutoCloseable {
     private int columnIdx = 0;
 
     /**
+     * Updated internally by {@link RenderOperation} when visiting related cells.
+     *
+     * @since 0.3.1
+     */
+    private int rowIdx = 0;
+
+    /**
      * Updated internally by {@link RenderOperation}. Defines whether currently the headers are rendered or not.
      * <p>
      * If false, the table body is rendered.
@@ -158,6 +165,34 @@ public class RenderRuntime implements AutoCloseable {
      */
     public void resetColumn() {
         this.columnIdx = 0;
+    }
+
+    /**
+     * Provides currently rendered row index, counting from <code>0</code>.
+     *
+     * @return Currently rendered row index.
+     * @since 0.3.1
+     */
+    public int getRowIdx() {
+        return this.rowIdx;
+    }
+
+    /**
+     * Increments by one currently rendered row index.
+     *
+     * @since 0.3.1
+     */
+    public void nextRow() {
+        ++this.rowIdx;
+    }
+
+    /**
+     * Resets to <code>0</code> currently rendered row index.
+     *
+     * @since 0.3.1
+     */
+    public void resetRow() {
+        this.rowIdx = 0;
     }
 
     /**
@@ -316,9 +351,13 @@ public class RenderRuntime implements AutoCloseable {
     }
 
     public String renderCell(final int column, final int row, final Object value) {
-        final IFormatter formatter = getFormatters().getOrDefault(column, row, IFormatter.dummy());
+        final IFormatter formatter = getFormatters().getOrDefault(column, row, value.getClass(), IFormatter.dummy());
         final String formatted = formatter.format(value);
         return getEscaper().escape(formatted);
+    }
+
+    public String renderCell(final Object value) {
+        return renderCell(this.getColumnIdx(), this.getRowIdx(), value);
     }
 
     @Override

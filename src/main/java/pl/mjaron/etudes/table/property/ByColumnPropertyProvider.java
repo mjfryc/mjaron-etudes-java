@@ -26,19 +26,23 @@ public class ByColumnPropertyProvider<T> implements IPropertyProvider<T> {
     private final HierarchicalPropertyProvider<T> hierarchicalPropertyProvider = new HierarchicalPropertyProvider<>();
 
     @Override
-    public T get(int column, int row) {
-        return hierarchicalPropertyProvider.getValue(column, row);
+    public T get(final int column, final int row, final Class<?> clazz) {
+        return hierarchicalPropertyProvider.getValue(column, row, clazz);
     }
 
-    public void put(T value) {
+    public void put(final T value) {
         hierarchicalPropertyProvider.getRootNode().setValue(value);
     }
 
-    public void put(int column, T value) {
+    public void put(final Class<?> clazz, final T value) {
+        hierarchicalPropertyProvider.setByClass(clazz, value);
+    }
+
+    public void put(final int column, final T value) {
         hierarchicalPropertyProvider.getRootNode().ensureChild(column).setValue(value);
     }
 
-    public void put(int column, int row, T value) {
+    public void put(final int column, final int row, final T value) {
         hierarchicalPropertyProvider.getRootNode().ensureChild(column).ensureChild(row).setValue(value);
     }
 }

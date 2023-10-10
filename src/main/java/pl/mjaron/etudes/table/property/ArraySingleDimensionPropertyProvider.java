@@ -24,6 +24,8 @@ import org.jetbrains.annotations.Range;
 import pl.mjaron.etudes.Arr;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ArraySingleDimensionPropertyProvider<T> {
 
@@ -31,13 +33,26 @@ public class ArraySingleDimensionPropertyProvider<T> {
 
     private ArrayList<T> arrayList = null;
 
-    public @Nullable T get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
+    @Nullable
+    Map<Class<?>, T> byClassProperties = null;
+
+    private T getByClassOrRootValue(final @Nullable Class<?> clazz) {
+        if (clazz != null && byClassProperties != null) {
+            final T byClassValue = byClassProperties.get(clazz);
+            if (byClassValue != null) {
+                return byClassValue;
+            }
+        }
+        return rootValue;
+    }
+
+    public @Nullable T get(@Range(from = 0, to = Integer.MAX_VALUE) final int index, final Class<?> clazz) {
         if (arrayList == null || arrayList.size() <= index) {
-            return rootValue;
+            return getByClassOrRootValue(clazz);
         }
         final T indexValue = arrayList.get(index);
         if (indexValue == null) {
-            return rootValue;
+            return getByClassOrRootValue(clazz);
         }
         return indexValue;
     }
@@ -53,6 +68,13 @@ public class ArraySingleDimensionPropertyProvider<T> {
         }
         Arr.ensureSize(arrayList, index + 1);
         arrayList.set(index, value);
+    }
+
+    public void setByClass(final Class<?> clazz, final T value) {
+        if (byClassProperties == null) {
+            byClassProperties = new HashMap<>();
+        }
+        byClassProperties.put(clazz, value);
     }
 
     @Nullable

@@ -36,19 +36,37 @@ public interface IPropertyProvider<T> {
      *
      * @param column Table column index.
      * @param row    Table row index.
+     * @param clazz  Class of cell entry.
+     * @return Property value or null when cannot determine the value.
+     * @since 0.3.1
+     */
+    @Contract(pure = true)
+    @Nullable T get(final int column, final int row, final @Nullable Class<?> clazz);
+
+    /**
+     * Resolves the value for given table cell.
+     *
+     * @param column Table column index.
+     * @param row    Table row index.
      * @return Property value or null when cannot determine the value.
      * @since 0.3.0
      */
     @Contract(pure = true)
-    @Nullable T get(int column, int row);
+    default @Nullable T get(final int column, final int row) {
+        return get(column, row, null);
+    }
 
     @Contract(pure = true)
     @NotNull
-    default T getOrDefault(int column, int row, @NotNull final T defaultValue) {
-        final T nullableValue = get(column, row);
+    default T getOrDefault(final int column, final int row, final @Nullable Class<?> clazz, @NotNull final T defaultValue) {
+        final T nullableValue = get(column, row, clazz);
         if (nullableValue == null) {
             return defaultValue;
         }
         return nullableValue;
+    }
+
+    default T getOrDefault(final int column, final int row, @NotNull final T defaultValue) {
+        return getOrDefault(column, row, null, defaultValue);
     }
 }

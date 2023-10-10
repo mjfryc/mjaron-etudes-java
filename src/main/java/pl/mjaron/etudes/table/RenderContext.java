@@ -183,6 +183,11 @@ public class RenderContext {
         return this;
     }
 
+    public RenderContext withFormatter(final Class<?> clazz, IFormatter formatter) {
+        getCellFormatterPropertyProvider().put(clazz, formatter);
+        return this;
+    }
+
     public RenderContext withFormatter(final int column, IFormatter formatter) {
         getCellFormatterPropertyProvider().put(column, formatter);
         return this;
@@ -269,7 +274,7 @@ public class RenderContext {
      */
     @NotNull
     @Contract("_ -> this")
-    public RenderContext to(Appendable out) {
+    public RenderContext to(@NotNull Appendable out) {
         if (out instanceof IPureAppendable) {
             return to((IPureAppendable) out);
         }
@@ -285,7 +290,7 @@ public class RenderContext {
      */
     @NotNull
     @Contract("_ -> this")
-    public RenderContext to(File file) {
+    public RenderContext to(final @NotNull File file) {
         this.out = null;
         this.outFile = file;
         return this;
