@@ -20,13 +20,14 @@
 package pl.mjaron.etudes.table;
 
 import org.jetbrains.annotations.Range;
-import pl.mjaron.etudes.IPureAppendable;
-import pl.mjaron.etudes.Str;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import pl.mjaron.etudes.IPureAppendable;
+import pl.mjaron.etudes.Str;
 
 public class RenderRuntime implements AutoCloseable {
 
@@ -35,13 +36,9 @@ public class RenderRuntime implements AutoCloseable {
     private final ITableSource tableSource;
 
     private final IEscaper escaper;
-
-    OutputStream internalOutputStream = null;
-
     private final IPureAppendable out;
-
     private final String cellDelimiter;
-
+    OutputStream internalOutputStream = null;
     /**
      * Updated internally by {@link RenderOperation} when visiting related cells.
      *

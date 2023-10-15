@@ -1,7 +1,12 @@
 package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
-import pl.mjaron.etudes.sample.*;
+
+import pl.mjaron.etudes.sample.CsvCustomizationSample;
+import pl.mjaron.etudes.sample.HtmlCustomizationSample;
+import pl.mjaron.etudes.sample.MarkdownCustomizationSample;
+import pl.mjaron.etudes.sample.Person;
+import pl.mjaron.etudes.sample.PersonVerboseSample;
 import pl.mjaron.etudes.text.SimpleMarkdownWriter;
 
 public class TableGenerateReadmeTest {
@@ -74,7 +79,9 @@ public class TableGenerateReadmeTest {
         writer.paragraph("Then following code will fetch the object fields:");
         writer.fencedCodeBlock("java", TestCommon.getTestClassContent(ObjTest.class));
         writer.paragraph("With the following result:");
-        writer.fencedCodeBlock("json", ISystemOutAcquire.acquire(() -> {new ObjTest().getFieldValues();}));
+        writer.fencedCodeBlock("json", ISystemOutAcquire.acquire(() -> {
+            new ObjTest().getFieldValues();
+        }));
     }
 
     @Test

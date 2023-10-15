@@ -19,10 +19,10 @@
 
 package pl.mjaron.etudes.table;
 
-import pl.mjaron.etudes.Str;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import pl.mjaron.etudes.Str;
 
 @Deprecated
 public abstract class StringSeries {

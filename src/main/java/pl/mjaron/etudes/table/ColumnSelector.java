@@ -19,10 +19,10 @@
 
 package pl.mjaron.etudes.table;
 
-import pl.mjaron.etudes.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import pl.mjaron.etudes.Pair;
 
 /**
  * Used to select the columns which will be rendered.

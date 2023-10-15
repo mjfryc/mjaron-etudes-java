@@ -1,13 +1,14 @@
 package pl.mjaron.etudes;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+
 import pl.mjaron.etudes.sample.Cat;
 import pl.mjaron.etudes.table.BlankTableWriter;
 import pl.mjaron.etudes.table.ITableSource;
 import pl.mjaron.etudes.table.ListTableSource;
 import pl.mjaron.etudes.table.StringSeriesList;
-
-import java.util.Arrays;
 
 @Deprecated
 public class ObjDeprecatedTest {

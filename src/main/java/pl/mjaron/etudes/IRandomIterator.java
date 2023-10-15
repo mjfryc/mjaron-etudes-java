@@ -21,13 +21,14 @@ package pl.mjaron.etudes;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import pl.mjaron.etudes.iterator.CachingRandomIteratorWrapper;
-import pl.mjaron.etudes.iterator.RandomAccessIteratorWrapper;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
 import java.util.Vector;
+
+import pl.mjaron.etudes.iterator.CachingRandomIteratorWrapper;
+import pl.mjaron.etudes.iterator.RandomAccessIteratorWrapper;
 
 /**
  * Specifies the iterator which allows accessing the random positions.
@@ -42,6 +43,63 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * {@link Iterator#next()} increments this value.
      */
     int FLOOR = -1;
+
+    /**
+     * Creates the iterator which caches the iterated values to achieve good performance for objects which doesn't
+     * implement {@link RandomAccess}.
+     *
+     * @param it  Underlying iterator instance.
+     * @param <U> Container element type.
+     * @return Appropriate {@link IRandomIterator} instance.
+     * @since 0.3.0
+     */
+    @NotNull
+    static <U> IRandomIterator<U> from(Iterator<U> it) {
+        return new CachingRandomIteratorWrapper<>(it);
+    }
+
+    /**
+     * Determines whether given {@link List} implements {@link RandomAccess} and provides the best implementation of
+     * {@link IRandomIterator}.
+     *
+     * @param list Any list.
+     * @param <U>  Container element type.
+     * @return Appropriate {@link IRandomIterator} instance.
+     * @since 0.3.0
+     */
+    @NotNull
+    static <U> IRandomIterator<U> from(List<U> list) {
+        if (list instanceof RandomAccess) {
+            return new RandomAccessIteratorWrapper<>(IRandomAccess.from(list));
+        }
+        return new CachingRandomIteratorWrapper<>(list.iterator());
+    }
+
+    /**
+     * Creates {@link IRandomIterator} from {@link Vector} object.
+     *
+     * @param vector {@link Vector} object instance.
+     * @param <U>    Container element type.
+     * @return Appropriate {@link IRandomIterator} instance.
+     * @since 0.3.0
+     */
+    @NotNull
+    static <U> IRandomIterator<U> from(Vector<U> vector) {
+        return new RandomAccessIteratorWrapper<>(IRandomAccess.from(vector));
+    }
+
+    /**
+     * Creates {@link IRandomIterator} from any {@link Iterable} object.
+     *
+     * @param it  Any iterable object.
+     * @param <U> Container element type.
+     * @return Appropriate {@link IRandomIterator} instance.
+     * @since 0.3.0
+     */
+    @NotNull
+    static <U> IRandomIterator<U> from(Iterable<U> it) {
+        return new CachingRandomIteratorWrapper<>(it.iterator());
+    }
 
     /**
      * Tells whether this iterator is at the {@link #FLOOR} position.
@@ -103,61 +161,4 @@ public interface IRandomIterator<T> extends ICurrIterator<T> {
      * @since 0.3.0
      */
     void decrement();
-
-    /**
-     * Creates the iterator which caches the iterated values to achieve good performance for objects which doesn't
-     * implement {@link RandomAccess}.
-     *
-     * @param it  Underlying iterator instance.
-     * @param <U> Container element type.
-     * @return Appropriate {@link IRandomIterator} instance.
-     * @since 0.3.0
-     */
-    @NotNull
-    static <U> IRandomIterator<U> from(Iterator<U> it) {
-        return new CachingRandomIteratorWrapper<>(it);
-    }
-
-    /**
-     * Determines whether given {@link List} implements {@link RandomAccess} and provides the best implementation of
-     * {@link IRandomIterator}.
-     *
-     * @param list Any list.
-     * @param <U>  Container element type.
-     * @return Appropriate {@link IRandomIterator} instance.
-     * @since 0.3.0
-     */
-    @NotNull
-    static <U> IRandomIterator<U> from(List<U> list) {
-        if (list instanceof RandomAccess) {
-            return new RandomAccessIteratorWrapper<>(IRandomAccess.from(list));
-        }
-        return new CachingRandomIteratorWrapper<>(list.iterator());
-    }
-
-    /**
-     * Creates {@link IRandomIterator} from {@link Vector} object.
-     *
-     * @param vector {@link Vector} object instance.
-     * @param <U>    Container element type.
-     * @return Appropriate {@link IRandomIterator} instance.
-     * @since 0.3.0
-     */
-    @NotNull
-    static <U> IRandomIterator<U> from(Vector<U> vector) {
-        return new RandomAccessIteratorWrapper<>(IRandomAccess.from(vector));
-    }
-
-    /**
-     * Creates {@link IRandomIterator} from any {@link Iterable} object.
-     *
-     * @param it  Any iterable object.
-     * @param <U> Container element type.
-     * @return Appropriate {@link IRandomIterator} instance.
-     * @since 0.3.0
-     */
-    @NotNull
-    static <U> IRandomIterator<U> from(Iterable<U> it) {
-        return new CachingRandomIteratorWrapper<>(it.iterator());
-    }
 }

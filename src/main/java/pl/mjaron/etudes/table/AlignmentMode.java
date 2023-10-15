@@ -35,6 +35,7 @@ public enum AlignmentMode {
 
     /**
      * Use the fixed width values.
+     *
      * @since 0.3.0
      */
     ARBITRARY,

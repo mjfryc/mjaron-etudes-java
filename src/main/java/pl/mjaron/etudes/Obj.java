@@ -20,12 +20,17 @@
 package pl.mjaron.etudes;
 
 import org.jetbrains.annotations.Contract;
-import pl.mjaron.etudes.table.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import pl.mjaron.etudes.table.ITableSource;
+import pl.mjaron.etudes.table.ITableWriter;
 
 /**
  * Common object code.
@@ -48,13 +53,6 @@ public abstract class Obj {
     public static <T> List<String> getFieldNames(final Class<T> tClass) {
         final Field[] fields = getFields(tClass);
         return getFieldNames(fields);
-    }
-
-    /**
-     * Abstract visitor of any types of field values.
-     */
-    public interface IFieldVisitor {
-        void visit(final String name, final Object value);
     }
 
     /**
@@ -190,5 +188,12 @@ public abstract class Obj {
     @Deprecated
     public static <SourceT extends ITableSource, WriterT extends ITableWriter> String asTable(final SourceT source, final WriterT writer) {
         return Table.render(source).withWriter(writer).runToString();
+    }
+
+    /**
+     * Abstract visitor of any types of field values.
+     */
+    public interface IFieldVisitor {
+        void visit(final String name, final Object value);
     }
 }

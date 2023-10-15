@@ -20,9 +20,10 @@
 package pl.mjaron.etudes.table;
 
 import org.jetbrains.annotations.NotNull;
-import pl.mjaron.etudes.Arr;
 
 import java.util.Arrays;
+
+import pl.mjaron.etudes.Arr;
 
 /**
  * Used to determine the final column widths.

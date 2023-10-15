@@ -19,13 +19,12 @@
 
 package pl.mjaron.etudes.table;
 
-import pl.mjaron.etudes.Obj;
-import pl.mjaron.etudes.Str;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import pl.mjaron.etudes.Obj;
 
 /**
  * Creates table source from the java bean. Each table row describes single object instance. Each table column describes

@@ -20,14 +20,14 @@
 package pl.mjaron.etudes.table;
 
 public class DummyEscaper implements IEscaper {
-    @Override
-    public String escape(String what) {
-        return what;
-    }
-
     private static final DummyEscaper instance = new DummyEscaper();
 
     public static DummyEscaper getInstance() {
         return instance;
+    }
+
+    @Override
+    public String escape(String what) {
+        return what;
     }
 }

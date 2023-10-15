@@ -30,7 +30,7 @@ public class MarkdownEscaper implements IEscaper {
             '_', '*', '[', ']', '(', ')', '~', '`', '>',
             '#', '+', '-', '=', '|', '{', '}', '.', '!'
     };
-
+    private final static MarkdownEscaper DEFAULT_INSTANCE = new MarkdownEscaper();
     private char[] escaped = DEFAULT_ESCAPED_CHARS;
 
     public MarkdownEscaper() {
@@ -41,6 +41,10 @@ public class MarkdownEscaper implements IEscaper {
         if (escaped == null) {
             throw new NullPointerException("Escaped chars must be initialized, got null.");
         }
+    }
+
+    public static MarkdownEscaper getDefaultInstance() {
+        return DEFAULT_INSTANCE;
     }
 
     @Override
@@ -57,11 +61,5 @@ public class MarkdownEscaper implements IEscaper {
             }
         }
         return out.toString();
-    }
-
-    private final static MarkdownEscaper DEFAULT_INSTANCE = new MarkdownEscaper();
-
-    public static MarkdownEscaper getDefaultInstance() {
-        return DEFAULT_INSTANCE;
     }
 }

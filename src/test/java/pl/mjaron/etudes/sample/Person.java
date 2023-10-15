@@ -19,6 +19,14 @@ public class Person {
         this.contact = contact;
     }
 
+    public static Person[] getSampleData() {
+        return new Person[]{
+                new Person("Sally", "Fox", new Date(1972 - 1900, Calendar.MARCH, 25), "London", "sally@sallymfox.com"),
+                new Person("Jay", "Elephant", new Date(1920 - 1900, Calendar.MARCH, 20), "Paris", "jay.elephant@protonmail.com"),
+                new Person("Bella", "Tran", new Date(1963 - 1900, Calendar.APRIL, 12), "Warszawa", "tran@bella.com")
+        };
+    }
+
     public String getName() {
         return name;
     }
@@ -37,13 +45,5 @@ public class Person {
 
     public String getContact() {
         return contact;
-    }
-
-    public static Person[] getSampleData() {
-        return new Person[] {
-                new Person("Sally", "Fox", new Date(1972 - 1900, Calendar.MARCH, 25), "London", "sally@sallymfox.com"),
-                new Person("Jay", "Elephant", new Date(1920 - 1900, Calendar.MARCH, 20), "Paris", "jay.elephant@protonmail.com"),
-                new Person("Bella", "Tran", new Date(1963 - 1900, Calendar.APRIL, 12), "Warszawa", "tran@bella.com")
-        };
     }
 }

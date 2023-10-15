@@ -19,11 +19,11 @@
 
 package pl.mjaron.etudes.container;
 
-import pl.mjaron.etudes.IPureAppendable;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+
+import pl.mjaron.etudes.IPureAppendable;
 
 public class OutputStreamPureAppendable implements IPureAppendable {
 

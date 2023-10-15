@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 
 public abstract class TestCommon {
     public static String getTestClassPath(Class<?> clazz) {
-        String packagePath = clazz.getPackage().getName().replaceAll("\\.","/");
+        String packagePath = clazz.getPackage().getName().replaceAll("\\.", "/");
         return Paths.get("src", "test", "java", packagePath, clazz.getSimpleName() + ".java").toAbsolutePath().toString();
     }
 

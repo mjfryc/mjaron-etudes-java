@@ -19,13 +19,13 @@
 
 package pl.mjaron.etudes.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pl.mjaron.etudes.Container;
 import pl.mjaron.etudes.IRandomIterator;
 import pl.mjaron.etudes.Pair;
 import pl.mjaron.etudes.Str;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Helper class used to build {@link ManipulatingTableSource}.

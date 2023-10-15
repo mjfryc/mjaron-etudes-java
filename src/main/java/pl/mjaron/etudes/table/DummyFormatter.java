@@ -20,14 +20,14 @@
 package pl.mjaron.etudes.table;
 
 public class DummyFormatter implements IFormatter {
-    @Override
-    public String format(Object what) {
-        return what.toString();
-    }
-
     private static final DummyFormatter instance = new DummyFormatter();
 
     public static DummyFormatter getInstance() {
         return instance;
+    }
+
+    @Override
+    public String format(Object what) {
+        return what.toString();
     }
 }

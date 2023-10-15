@@ -43,10 +43,6 @@ public class TableSourceResolver {
 
     private ColumnSelector columnSelector = null;
 
-    public void setTableSource(ITableSource tableSource) {
-        this.originalTableSource = tableSource;
-    }
-
     public void setColumnSelector(final ColumnSelector columnSelector) {
         this.columnSelector = columnSelector;
     }
@@ -64,5 +60,9 @@ public class TableSourceResolver {
 
     public ITableSource getTableSource() {
         return finalTableSource;
+    }
+
+    public void setTableSource(ITableSource tableSource) {
+        this.originalTableSource = tableSource;
     }
 }

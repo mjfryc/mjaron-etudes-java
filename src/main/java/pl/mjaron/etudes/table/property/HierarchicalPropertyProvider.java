@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class HierarchicalPropertyProvider<T> {
 
+    private final PropertyNode<T> tableNode = new PropertyNode<>();
     /**
      * Contains properties depending on class type.
      * By-class properties have bigger priority than root node, but lower than direct rows / cells.
@@ -33,8 +34,6 @@ public class HierarchicalPropertyProvider<T> {
      * @since 0.3.1
      */
     private Map<Class<?>, T> byClassProperties = null;
-
-    private final PropertyNode<T> tableNode = new PropertyNode<>();
 
     public void setByClass(final Class<?> clazz, final T prop) {
         if (byClassProperties == null) { // Ensure not null.

@@ -19,30 +19,17 @@
 
 package pl.mjaron.etudes;
 
-import pl.mjaron.etudes.container.OutputStreamPureAppendable;
-import pl.mjaron.etudes.container.WrappingPureAppendable;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+
+import pl.mjaron.etudes.container.OutputStreamPureAppendable;
+import pl.mjaron.etudes.container.WrappingPureAppendable;
 
 /**
  * {@link Appendable} interface without exceptions in method signatures.
  */
 public interface IPureAppendable extends Appendable {
-
-    @Override
-    IPureAppendable append(CharSequence csq);
-
-    @Override
-    IPureAppendable append(CharSequence csq, int start, int end);
-
-    @Override
-    IPureAppendable append(char c);
-
-    default Object getUnderlyingObject() {
-        return null;
-    }
 
     static WrappingPureAppendable from(Appendable appendable) {
         return WrappingPureAppendable.from(appendable);
@@ -58,5 +45,18 @@ public interface IPureAppendable extends Appendable {
 
     static OutputStreamPureAppendable from(OutputStream outputStream, Charset charset) {
         return OutputStreamPureAppendable.from(outputStream, charset);
+    }
+
+    @Override
+    IPureAppendable append(CharSequence csq);
+
+    @Override
+    IPureAppendable append(CharSequence csq, int start, int end);
+
+    @Override
+    IPureAppendable append(char c);
+
+    default Object getUnderlyingObject() {
+        return null;
     }
 }

@@ -21,20 +21,19 @@ package pl.mjaron.etudes.table.property;
 
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import pl.mjaron.etudes.Arr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import pl.mjaron.etudes.Arr;
+
 public class ArraySingleDimensionPropertyProvider<T> {
-
-    private T rootValue = null;
-
-    private ArrayList<T> arrayList = null;
 
     @Nullable
     Map<Class<?>, T> byClassProperties = null;
+    private T rootValue = null;
+    private ArrayList<T> arrayList = null;
 
     private T getByClassOrRootValue(final @Nullable Class<?> clazz) {
         if (clazz != null && byClassProperties != null) {

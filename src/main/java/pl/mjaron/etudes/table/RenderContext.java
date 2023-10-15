@@ -23,15 +23,16 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import pl.mjaron.etudes.IPureAppendable;
-import pl.mjaron.etudes.Str;
-import pl.mjaron.etudes.table.property.ByColumnPropertyProvider;
-import pl.mjaron.etudes.table.property.ColumnOnlyPropertyProvider;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+
+import pl.mjaron.etudes.IPureAppendable;
+import pl.mjaron.etudes.Str;
+import pl.mjaron.etudes.table.property.ByColumnPropertyProvider;
+import pl.mjaron.etudes.table.property.ColumnOnlyPropertyProvider;
 
 /**
  * Common table rendering options.

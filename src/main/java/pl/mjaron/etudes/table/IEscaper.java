@@ -26,6 +26,13 @@ package pl.mjaron.etudes.table;
  */
 public interface IEscaper {
 
+    static IEscaper dummyOr(final IEscaper what) {
+        if (what == null) {
+            return DummyEscaper.getInstance();
+        }
+        return what;
+    }
+
     default void beginTable(RenderRuntime runtime) {
     }
 
@@ -37,11 +44,4 @@ public interface IEscaper {
      * @since 0.1.12
      */
     String escape(String what);
-
-    static IEscaper dummyOr(final IEscaper what) {
-        if (what == null) {
-            return DummyEscaper.getInstance();
-        }
-        return what;
-    }
 }

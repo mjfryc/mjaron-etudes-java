@@ -20,9 +20,12 @@
 package pl.mjaron.etudes;
 
 import org.jetbrains.annotations.Contract;
-import pl.mjaron.etudes.table.*;
 
 import java.util.Arrays;
+
+import pl.mjaron.etudes.table.BeanTableSource;
+import pl.mjaron.etudes.table.ITableSource;
+import pl.mjaron.etudes.table.RenderContext;
 
 /**
  * A set of methods used to generate table, e.g, any {@link Iterable} or array may be converted to following

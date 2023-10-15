@@ -22,11 +22,12 @@ package pl.mjaron.etudes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.mjaron.etudes.container.ListRandomAccess;
-import pl.mjaron.etudes.container.VectorRandomAccess;
 
 import java.util.List;
 import java.util.Vector;
+
+import pl.mjaron.etudes.container.ListRandomAccess;
+import pl.mjaron.etudes.container.VectorRandomAccess;
 
 /**
  * Unifying interface for objects implementing {@link java.util.RandomAccess} interface. Creation of
@@ -36,25 +37,6 @@ import java.util.Vector;
  * @since 0.3.0
  */
 public interface IRandomAccess<T> {
-
-    /**
-     * Provides container elements count.
-     *
-     * @return Elements count.
-     * @since 0.3.0
-     */
-    @Contract(pure = true)
-    int size();
-
-    /**
-     * Provides element with given index.
-     *
-     * @param position Element position counting from <code>0</code>.
-     * @return Element at given position. It may be <code>null</code>.
-     * @since 0.3.0
-     */
-    @Contract(pure = true)
-    @Nullable T get(int position);
 
     /**
      * Creates appropriate {@link IRandomAccess} instance.
@@ -82,4 +64,23 @@ public interface IRandomAccess<T> {
     static <U> IRandomAccess<U> from(@NotNull Vector<U> vector) {
         return new VectorRandomAccess<>(vector);
     }
+
+    /**
+     * Provides container elements count.
+     *
+     * @return Elements count.
+     * @since 0.3.0
+     */
+    @Contract(pure = true)
+    int size();
+
+    /**
+     * Provides element with given index.
+     *
+     * @param position Element position counting from <code>0</code>.
+     * @return Element at given position. It may be <code>null</code>.
+     * @since 0.3.0
+     */
+    @Contract(pure = true)
+    @Nullable T get(int position);
 }

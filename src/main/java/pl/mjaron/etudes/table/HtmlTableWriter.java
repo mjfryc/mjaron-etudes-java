@@ -26,14 +26,12 @@ package pl.mjaron.etudes.table;
  */
 public class HtmlTableWriter implements ITableWriter {
 
-    private RenderRuntime runtime = null;
-
     /**
      * TODO Move it to RenderContext.
      */
     private final String indentationUnit = "    ";
-
     private final HtmlOptions htmlOptions;
+    private RenderRuntime runtime = null;
 
     public HtmlTableWriter(HtmlOptions htmlOptions) {
         this.htmlOptions = htmlOptions;

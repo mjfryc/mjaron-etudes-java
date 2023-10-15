@@ -26,6 +26,10 @@ package pl.mjaron.etudes.table;
  */
 public interface IFormatter {
 
+    static IFormatter dummy() {
+        return DummyFormatter.getInstance();
+    }
+
     /**
      * Formats any object as {@link String}.
      *
@@ -34,8 +38,4 @@ public interface IFormatter {
      * @since 0.3.1
      */
     String format(Object what);
-
-    static IFormatter dummy() {
-        return DummyFormatter.getInstance();
-    }
 }

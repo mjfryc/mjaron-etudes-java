@@ -27,12 +27,12 @@ public class BlankTableWriter implements ITableWriter {
 
     private int columnIdx = 0;
 
+    public BlankTableWriter() {
+    }
+
     @Override
     public boolean getDefaultAlignedColumnWidths() {
         return true;
-    }
-
-    public BlankTableWriter() {
     }
 
     @Override

@@ -20,10 +20,15 @@
 package pl.mjaron.etudes.table;
 
 import org.jetbrains.annotations.NotNull;
-import pl.mjaron.etudes.IRandomIterator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import pl.mjaron.etudes.IRandomIterator;
+
+interface IColumnNameGenerator {
+    String getColumnName(int columnSourceIndex, String columnSourceName, int columnDestinationIndex);
+}
 
 /**
  * Transforms the original table source.
@@ -32,13 +37,10 @@ import java.util.Iterator;
  */
 public class ManipulatingTableSource implements ITableSource {
 
-    private final ITableSource underlyingSource;
-
-    private final ArrayList<Integer> columnOrder;
-
-    private final ArrayList<String> columnNames;
-
     final IRandomIterator<String> headers;
+    private final ITableSource underlyingSource;
+    private final ArrayList<Integer> columnOrder;
+    private final ArrayList<String> columnNames;
 
     public ManipulatingTableSource(ITableSource underlyingSource, ArrayList<Integer> columnOrder, ArrayList<String> columnNames) {
         this.underlyingSource = underlyingSource;
@@ -130,9 +132,5 @@ class ManipulatingTableSourceIterator implements Iterator<Iterable<Object>> {
     public Iterable<Object> next() {
         return new ManipulatingTableSourceRow(columnOrder, underlyingIterator.next());
     }
-}
-
-interface IColumnNameGenerator {
-    String getColumnName(int columnSourceIndex, String columnSourceName, int columnDestinationIndex);
 }
 

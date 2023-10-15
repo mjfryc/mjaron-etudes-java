@@ -19,13 +19,15 @@
 
 package pl.mjaron.etudes;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import org.junit.jupiter.api.Test;
-import pl.mjaron.etudes.iterator.RandomAccessIteratorWrapper;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import pl.mjaron.etudes.iterator.RandomAccessIteratorWrapper;
 
 class RandomAccessIteratorWrapperTest {
 

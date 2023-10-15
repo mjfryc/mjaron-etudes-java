@@ -19,10 +19,10 @@
 
 package pl.mjaron.etudes.iterator;
 
-import pl.mjaron.etudes.IRandomIterator;
-
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import pl.mjaron.etudes.IRandomIterator;
 
 /**
  * {@link IRandomIterator} implementation designed for objects which doesn't provide the

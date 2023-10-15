@@ -19,9 +19,9 @@
 
 package pl.mjaron.etudes.container;
 
-import pl.mjaron.etudes.IRandomAccess;
-
 import java.util.Vector;
+
+import pl.mjaron.etudes.IRandomAccess;
 
 public class VectorRandomAccess<T> implements IRandomAccess<T> {
 

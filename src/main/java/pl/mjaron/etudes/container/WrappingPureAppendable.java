@@ -21,9 +21,10 @@ package pl.mjaron.etudes.container;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import pl.mjaron.etudes.IPureAppendable;
 
 import java.io.IOException;
+
+import pl.mjaron.etudes.IPureAppendable;
 
 /**
  * Wraps the {@link Appendable} object so append operations doesn't have signatures with exceptions.

@@ -24,6 +24,26 @@ import java.io.PrintStream;
 
 public interface ISystemOutAcquire extends AutoCloseable {
 
+    public static ToPrintStream acquire(final PrintStream newOut) {
+        return new ToPrintStream(newOut);
+    }
+
+    static ToByteArray acquire(final ByteArrayOutputStream byteArrayOutputStream) {
+        return new ToByteArray(byteArrayOutputStream);
+    }
+
+    static ToByteArray acquire() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        return acquire(byteArrayOutputStream);
+    }
+
+    static String acquire(final Runnable runnable) {
+        try (ISystemOutAcquire acquire = ISystemOutAcquire.acquire()) {
+            runnable.run();
+            return acquire.toString();
+        }
+    }
+
     PrintStream getOriginalOut();
 
     PrintStream getNewOut();
@@ -67,10 +87,6 @@ public interface ISystemOutAcquire extends AutoCloseable {
         }
     }
 
-    public static ToPrintStream acquire(final PrintStream newOut) {
-        return new ToPrintStream(newOut);
-    }
-
     /**
      * Captures the {@link System#out} to {@link ByteArrayOutputStream}.
      * <p>
@@ -92,22 +108,6 @@ public interface ISystemOutAcquire extends AutoCloseable {
 
         public ByteArrayOutputStream getByteArrayOutputStream() {
             return byteArrayOutputStream;
-        }
-    }
-
-    static ToByteArray acquire(final ByteArrayOutputStream byteArrayOutputStream) {
-        return new ToByteArray(byteArrayOutputStream);
-    }
-
-    static ToByteArray acquire() {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        return acquire(byteArrayOutputStream);
-    }
-
-    static String acquire(final Runnable runnable) {
-        try (ISystemOutAcquire acquire = ISystemOutAcquire.acquire()) {
-            runnable.run();
-            return acquire.toString();
         }
     }
 }

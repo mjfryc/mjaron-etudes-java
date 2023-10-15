@@ -1,8 +1,8 @@
 package pl.mjaron.etudes.sample;
 
-import pl.mjaron.etudes.Table;
-
 import static pl.mjaron.etudes.table.RenderContext.col;
+
+import pl.mjaron.etudes.Table;
 
 public class CsvCustomizationSample {
     public static void run() {
@@ -17,11 +17,11 @@ public class CsvCustomizationSample {
 
                 // Let's select the rendered columns.
                 .withColumns(
-                // @formatter:off Preferences > Editor > Code Style > Formatter Control
-                col("contact", "CONTACT")
-                        .col("address")
-                        .col("surname").as("SURNAME")
-                // @formatter:on
-        ).run();
+                        // @formatter:off Preferences > Editor > Code Style > Formatter Control
+                        col("contact", "CONTACT")
+                                .col("address")
+                                .col("surname").as("SURNAME")
+                        // @formatter:on
+                ).run();
     }
 }

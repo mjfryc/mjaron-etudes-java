@@ -26,8 +26,8 @@ import java.util.TreeMap;
 
 public class RandomSingleDimensionPropertyProvider<T> {
 
-    private T tableValue = null;
     Map<Integer, T> columnValues = null;
+    private T tableValue = null;
 
     public T get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         if (columnValues == null) {

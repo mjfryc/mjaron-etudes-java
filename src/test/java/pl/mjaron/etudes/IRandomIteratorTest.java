@@ -19,15 +19,16 @@
 
 package pl.mjaron.etudes;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
-import pl.mjaron.etudes.iterator.CachingRandomIteratorWrapper;
-import pl.mjaron.etudes.iterator.RandomAccessIteratorWrapper;
 
 import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import pl.mjaron.etudes.iterator.CachingRandomIteratorWrapper;
+import pl.mjaron.etudes.iterator.RandomAccessIteratorWrapper;
 
 public class IRandomIteratorTest {
 

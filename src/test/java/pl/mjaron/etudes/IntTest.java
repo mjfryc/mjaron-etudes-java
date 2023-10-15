@@ -19,9 +19,10 @@
 
 package pl.mjaron.etudes;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class IntTest {
 
@@ -57,11 +58,11 @@ class IntTest {
 
     @Test
     void toByteArrayBE() {
-        assertArrayEquals(new byte[]{(byte)0xDD, (byte)0x01, (byte)0x10, (byte)0x11}, Int.toByteArrayBE(0xDD011011));
+        assertArrayEquals(new byte[]{(byte) 0xDD, (byte) 0x01, (byte) 0x10, (byte) 0x11}, Int.toByteArrayBE(0xDD011011));
     }
 
     @Test
     void toByteArrayLE() {
-        assertArrayEquals(new byte[]{(byte)0x11, (byte)0x10, (byte)0x01, (byte)0xDD}, Int.toByteArrayLE(0xDD011011));
+        assertArrayEquals(new byte[]{(byte) 0x11, (byte) 0x10, (byte) 0x01, (byte) 0xDD}, Int.toByteArrayLE(0xDD011011));
     }
 }

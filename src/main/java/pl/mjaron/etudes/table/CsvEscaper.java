@@ -20,6 +20,7 @@
 package pl.mjaron.etudes.table;
 
 import org.jetbrains.annotations.Contract;
+
 import pl.mjaron.etudes.Str;
 
 /**

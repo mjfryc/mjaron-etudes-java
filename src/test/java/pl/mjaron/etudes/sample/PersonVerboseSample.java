@@ -52,6 +52,7 @@ public class PersonVerboseSample {
                 // or
                 // .withAlign(null) // Use the default align.
 
+                // If default toString() method is not satisfying, use custom formatter for specific class of cells.
                 .withFormatter(java.util.Date.class, new DateIso8601Formatter())
 
                 // Where to save the table.
@@ -63,7 +64,7 @@ public class PersonVerboseSample {
                 // Run the render operation.
                 .run()
         // or
-        // .runToString() // to create the String with whole table.
+        // .runToString() // to create the String with whole table - instead .to() option.
         ;
     }
 }

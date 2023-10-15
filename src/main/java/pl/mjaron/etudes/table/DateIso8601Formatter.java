@@ -19,9 +19,9 @@
 
 package pl.mjaron.etudes.table;
 
-import pl.mjaron.etudes.TimeUtils;
-
 import java.util.Date;
+
+import pl.mjaron.etudes.TimeUtils;
 
 public class DateIso8601Formatter implements IFormatter {
     @Override

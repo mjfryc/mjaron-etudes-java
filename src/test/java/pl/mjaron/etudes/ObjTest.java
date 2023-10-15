@@ -1,11 +1,12 @@
 package pl.mjaron.etudes;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
-import pl.mjaron.etudes.sample.Person;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import pl.mjaron.etudes.sample.Person;
 
 class ObjTest {
 

@@ -23,6 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+
 import pl.mjaron.etudes.IPureAppendable;
 import pl.mjaron.etudes.Str;
 import pl.mjaron.etudes.table.RenderContext;

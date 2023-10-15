@@ -19,10 +19,10 @@
 
 package pl.mjaron.etudes.container;
 
-import pl.mjaron.etudes.IRandomAccess;
-
 import java.util.List;
 import java.util.RandomAccess;
+
+import pl.mjaron.etudes.IRandomAccess;
 
 /**
  * Random access designed for {@link java.util.ArrayList}.

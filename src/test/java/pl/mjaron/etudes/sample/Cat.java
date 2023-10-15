@@ -27,22 +27,6 @@ public class Cat {
      */
     private double topSpeed = 0;
 
-    public double getTopSpeed() {
-        return topSpeed;
-    }
-
-    public void setTopSpeed(final double topSpeed) {
-        this.topSpeed = topSpeed;
-    }
-
-    public boolean isLazy() {
-        return lazy;
-    }
-
-    public void setLazy(final boolean lazy) {
-        this.lazy = lazy;
-    }
-
     public static Cat sampleCat() {
         final Cat cat = new Cat();
         cat.name = "John";
@@ -59,5 +43,21 @@ public class Cat {
         cat.setLazy(false);
         cat.setTopSpeed(75.00);
         return cat;
+    }
+
+    public double getTopSpeed() {
+        return topSpeed;
+    }
+
+    public void setTopSpeed(final double topSpeed) {
+        this.topSpeed = topSpeed;
+    }
+
+    public boolean isLazy() {
+        return lazy;
+    }
+
+    public void setLazy(final boolean lazy) {
+        this.lazy = lazy;
     }
 }
